@@ -2,84 +2,77 @@
 
 import MySQLdb
 import checksum 
-import ConfigParser
 
 class packageInfo:
 	
 	def __init__(self, 
 			packagePath, 
-			packageVersion = "", 
-			packageSupplier = "", 
-			packageOriginator = "", 
+			packageVersion 		= "", 
+			packageSupplier 	= "", 
+			packageOriginator 	= "", 
 			packageDownloadLocation = "", 
-			packageHomePage = "", 
-			packageSourceInfo = "", 
-			packageLicenseComments = "", 
-			packageDescription = ""):
+			packageHomePage 	= "", 
+			packageSourceInfo 	= "", 
+			packageLicenseComments 	= "", 
+			packageDescription 	= ""):
 
-		self.packageName 			 	 			= ""
-		self.packageVersion 			 			= packageVersion
-		self.packageFileName			 			= ""
-		self.fileSize				 				= 100
-		self.packageSupplier			 			= packageSupplier
-		self.packageOriginator			 			= packageOriginator
-		self.packageDownloadLocation				= packageDownloadLocation
-		self.packageVerificationCode				= ""
-		self.packageChecksum			 			= "" #checksum(packagePath)
-		self.packageHomePage			 			= packageHomePage
-		self.packageSourceInfo			 			= packageSourceInfo
-		self.packageLicenseConcluded				= ""
-		self.packageLicenseInfoFromFiles			= []
-		self.packageLicenseDeclared		 			= ""
-		self.packageLicenseComments		 			= packageLicenseComments
-		self.packageCopyrightText		 			= ""
-		self.packageSummary			 				= ""
-		self.packageDescription			 			= packageDescription
-		self.packageVerificationCodeExcludedFile 	= ""
+		self.packageName 				= ""
+		self.packageVersion 			 	= packageVersion
+		self.packageFileName			 	= ""
+		self.fileSize				 	= 100
+		self.packageSupplier			 	= packageSupplier
+		self.packageOriginator			 	= packageOriginator
+		self.packageDownloadLocation			= packageDownloadLocation
+		self.packageVerificationCode			= ""
+		self.packageChecksum			 	= "" #checksum(packagePath)
+		self.packageHomePage			 	= packageHomePage
+		self.packageSourceInfo			 	= packageSourceInfo
+		self.packageLicenseConcluded			= ""
+		self.packageLicenseInfoFromFiles		= ""
+		self.packageLicenseDeclared		 	= ""
+		self.packageLicenseComments		 	= packageLicenseComments
+		self.packageCopyrightText		 	= ""
+		self.packageSummary			 	= ""
+		self.packageDescription			 	= packageDescription
+		self.packageVerficationCodeExcludedFile 	= ""
 		
-	def insertPackageInfo(self, checksum_algorithm = "SHA1"):
+	def insertPackageInfo(self, dbHost, dbUserName, dbUserPass, dbName, checksum_algorithm = "SHA1"):
 		'''
 		inserts packageInformation into database.
 		'''
-
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
 
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			sqlCommand = "SHOW TABLE STATUS LIKE 'packages'"
 			dbCursor.execute(sqlCommand)
 			packageId = dbCursor.fetchone()
-			packageId = packageId['Auto_increment']
+			packageId = packageId[10]
 
 			sqlCommand = """INSERT INTO packages (	package_name, 
-												   	package_file_name, 
-													package_download_location, 
-													package_copyright_text, 
-													package_version, 
-													package_description, 
-													package_summary, 
-													package_originator, 
-													package_supplier, 
-													package_license_concluded, 
-													package_license_declared, 
-													package_checksum, 
-													checksum_algorithm, 
-													package_home_hage, 
-													package_source_info, 
-													package_license_info_from_files, 
-													package_license_comments,
-													package_verification_code, 
-													package_verification_code_excluded_file, 
-													created_at, updated_at)
-									VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+								package_file_name, 
+								package_download_location, 
+								package_copyright_text, 
+								package_version, 
+								package_description, 
+								package_summary, 
+								package_originator, 
+								package_supplier, 
+								package_license_concluded, 
+								package_license_declared, 
+								package_checksum, 
+								checksum_algorithm, 
+								package_home_page, 
+								package_source_info, 
+								package_license_info_from_files, 
+								package_license_comments,
+								package_verification_code, 
+								package_verification_code_excluded_file, 
+								created_at, 
+								updated_at)
+					VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 
-			dbCursor.execute( 	sqlCommand, 
-							 	(self.packageName, 
+			dbCursor.execute( sqlCommand, 
+							 (
+								self.packageName, 
 								self.packageFileName, 
 								self.packageDownloadLocation, 
 								self.packageCopyrightText, 
@@ -90,14 +83,16 @@ class packageInfo:
 								self.packageSupplier, 
 								self.packageLicenseConcluded, 
 								self.packageLicenseDeclared, 
-								self.packageCheckum.sha1, 
+								self.packageChecksum, 
 								checksum_algorithm, 
 								self.packageHomePage, 
 								self.packageSourceInfo, 
 								self.packageLicenseInfoFromFiles, 
 								self.packageLicenseComments, 
 								self.packageVerificationCode, 
-								self.packageVerficationCodeExcludedFile))
+								self.packageVerficationCodeExcludedFile
+							)
+					)
 
 		return packageId	
 	
@@ -144,58 +139,42 @@ class packageInfo:
 			print "PackageDescription: <text>" + self.packageDescription + "</text>"
 
 		
-	def getPackageInformation(self, package_id):
+	def getPackageInformation(self, package_id, dbHost, dbUserName, dbUserPass, dbName):
 		'''
 		gets package information from database
 		'''
 		
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			sqlCommand = "SELECT * FROM packages WHERE id = ?"
-			dbCursor.execute(sqlCommand, package_id)	
+			dbCursor.execute(sqlCommand, (package_id))	
 			queryReturn = dbCursor.fetchone()
 
-			self.packageName 					= queryReturn.package_name
-			self.packageVersion 				= queryReturn.package_version
-			self.packageFileName				= queryReturn.package_file_name
-			self.packageSupplier				= queryReturn.package_supplier
-			self.packageOriginator				= queryReturn.package_originator
+			self.packageName 			= queryReturn.package_name
+			self.packageVersion 			= queryReturn.package_version
+			self.packageFileName			= queryReturn.package_file_name
+			self.packageSupplier			= queryReturn.package_supplier
+			self.packageOriginator			= queryReturn.package_originator
 			self.packageDownloadLocation		= queryReturn.package_download_location
 			self.packageVerificationCode		= queryReturn.verification_code
-			self.packageChecksum				= queryReturn.package_checksum
-			self.packageHomePage				= queryReturn.package_home_page
-			self.packageSourceInfo				= queryReturn.package_source_info
+			self.packageChecksum			= queryReturn.package_checksum
+			self.packageHomePage			= queryReturn.package_home_page
+			self.packageSourceInfo			= queryReturn.package_source_info
 			self.packageLicenseConcluded		= queryReturn.package_license_concluded
 			self.packageLicenseInfoFromFiles	= queryReturn.package_license_info_from_files
-			self.packageLicenseDeclared			= queryReturn.package_license_declared
-			self.packageLicenseComments			= queryReturn.package_license_comments
-			self.packageCopyrightText			= queryReturn.package_copyright_text
-			self.packageDescription				= queryReturn.package_description
-			self.packageSummary					= queryReturn.package_summary
+			self.packageLicenseDeclared		= queryReturn.package_license_declared
+			self.packageLicenseComments		= queryReturn.package_license_comments
+			self.packageCopyrightText		= queryReturn.package_copyright_text
+			self.packageDescription			= queryReturn.package_description
+			self.packageSummary			= queryReturn.package_summary
 
-	def isCached(self, package_checksum):
+	def isCached(self, package_checksum, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		checks database to see if package is cached
 		'''
 
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			sqlCommand = "SELECT id FROM packages WHERE package_checksum = ?"
-			dbCursor.execute(sqlCommand, package_checksum)
+			dbCursor.execute(sqlCommand, (package_checksum))
 
 			queryReturn = dbCursor.fetchone()
 

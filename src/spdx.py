@@ -7,7 +7,6 @@ import fileInfo
 import reviewerInfo
 import json
 import MySQLdb
-import ConfigParser
 
 '''
 This contains the definition for the SPDX object
@@ -15,27 +14,27 @@ This contains the definition for the SPDX object
 
 class SPDX:
 	def __init__(	self, 
-					packagePath,
-			     		version 			= "1.2", 
-			     		dataLicense 			= "CC-1.0", 
-					documentComment 		= "", 
-				    	creator 			= "", 
-					creatorComment 			= "", 
-					licenseListVersion 		= "",
-				    	packageVersion 			= "", 
-					packageSupplier 		= "", 
-					packageOriginator 		= "", 
-					packageDownloadLocation 	= "", 
-					packageHomePage 		= "", 
-					packageSourceInfo 		= "", 
-					packageLicenseComments 		= "", 
-					packageDescription 		= ""):
+			packagePath,
+			version 			= "1.2", 
+			dataLicense 			= "CC-1.0", 
+			documentComment 		= "", 
+			creator 			= "", 
+			creatorComment 			= "", 
+			licenseListVersion 		= "",
+			packageVersion 			= "", 
+			packageSupplier 		= "", 
+			packageOriginator 		= "", 
+			packageDownloadLocation 	= "", 
+			packageHomePage 		= "", 
+			packageSourceInfo 		= "", 
+			packageLicenseComments 		= "", 
+			packageDescription 		= ""):
 
-			self.version 			= version
-			self.dataLicense 		= dataLicense
-			self.documentComment 	= documentComment
-			self.creatorInfo		= creatorInfo.creatorInfo(creator, creatorComment, licenseListVersion)
-			self.packageInfo		= packageInfo.packageInfo(	packagePath,
+		self.version 			= version
+		self.dataLicense 		= dataLicense
+		self.documentComment 		= documentComment
+		self.creatorInfo		= creatorInfo.creatorInfo(creator, creatorComment, licenseListVersion)
+		self.packageInfo		= packageInfo.packageInfo(	packagePath,
 										packageVersion, 
 										packageSupplier, 
 										packageOriginator, 
@@ -44,25 +43,17 @@ class SPDX:
 										packageSourceInfo, 
 										packageLicenseComments, 
 										packageDescription)
-			self.licensingInfo		= []
-			self.fileInfo			= []
-			self.reviewerInfo		= []
+		self.licensingInfo		= []
+		self.fileInfo			= []
+		self.reviewerInfo		= []
 		
-	def insertSPDX(self):
+	def insertSPDX(self, dbHost, dbUserName, dbUserPass, dbName):
 		'''
 		insert SPDX doc into db
 		'''
 		spdxDocId = None
 		
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
-        with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+        	with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			
 			'''get spdx doc id'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
@@ -83,19 +74,19 @@ class SPDX:
 
 			dbCursor.execute(sqlCommand, (self.version, self.dataLicense, self.packageInfo.packageName, 'SQL', self.packageInfo.fileSize, self.documentComment))
 			
-			''' Insert Creator Information '''
-			creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId)
-			''' Insert Package Information '''
-			packageId = self.packageInfo.insertPackageInfo()
-			''' Insert File Information '''
-			for files in self.fileInfo:
-				files.insertFileInfo()
-			''' Insert License Information '''
-			for licenses in self.licensingInfo:
-				licenses.insertLicensingInfo(spdxDocId)
-			''' Insert Reviewer Information '''
-			for reviewer in self.reviewerInfo:
-				reviewer.insertReviewerInfo(spdxDocId)
+		''' Insert Creator Information '''
+		creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
+		''' Insert Package Information '''
+		packageId = self.packageInfo.insertPackageInfo(dbHost, dbUserName, dbUserPass, dbName)
+		''' Insert File Information '''
+		for files in self.fileInfo:
+			files.insertFileInfo()
+		''' Insert License Information '''
+		for licenses in self.licensingInfo:
+			licenses.insertLicensingInfo(spdxDocId)
+		''' Insert Reviewer Information '''
+		for reviewer in self.reviewerInfo:
+			reviewer.insertReviewerInfo(spdxDocId)
 
 	def outputSPDX_TAG(self):
 		
@@ -131,20 +122,12 @@ class SPDX:
 	def outputSPDX_JSON(self):
 		print json.dumps(self)	
 		
-	def getSPDX(self, spdx_doc_id):
+	def getSPDX(self, spdx_doc_id, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		Generates the entire structure from the database.
 		'''
 		
-		'''Create connection'''
-        with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.py")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
-        with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+	        with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 
 			sqlCommand = """SELECT spdx_version,data_license,document_comment FROM spdx_docs WHERE spdx_doc_id = ?"""
 			dbCursor.execute(sqlCommand, spdx_doc_id)

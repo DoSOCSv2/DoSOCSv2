@@ -1,39 +1,31 @@
 #!/usr/bin/python
 import checksum
-import ConfigParser
+import MySQLdb
 
 class fileInfo:
 	
 	def __init__(self, filePath):
-		self.fileName 					= ""
-		self.fileType 					= ""
-		self.fileChecksum 				= checksum.getChecksum(filePath)
+		self.fileName 				= ""
+		self.fileType 				= ""
+		self.fileChecksum 			= checksum.getChecksum(filePath)
 		self.licenseConcluded 			= ""
 		self.licenseInfoInFile			= ""
 		self.licenseComments			= ""
 		self.fileCopyRightText			= ""
 		self.artifactOfProjectName		= ""
-		self.artifactOfProjectHomePage	= ""
+		self.artifactOfProjectHomePage		= ""
 		self.artifactOfProjectURI 		= []
-		self.fileComment				= ""
-		self.fileNotice					= ""
+		self.fileComment			= ""
+		self.fileNotice				= ""
 		self.fileContributor			= []
-		self.fileDependency				= []
+		self.fileDependency			= []
 		self.fileRealativePath			= ""
 		
 
-	def getFileInfo(self, package_file_id):
+	def getFileInfo(self, package_file_id, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		populates fileInfo from database
 		'''
-
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-				configParser.read("do_spdx.cfg") 
-                dbUserName   = configParser.get('Database','database_user')
-                dbUserPass   = configParser.get('Database','database_pass')
-                dbHost       = configParser.get('Database','database_host')
-                dbName       = configParser.get('Database','database_name')
 
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 
@@ -57,19 +49,10 @@ class fileInfo:
 			self.fileDependency				= queryResult.file_dependency
 			self.fileRealativePath			= queryResult.relative_path
 	
-	def insertFileInfo(self, spdx_doc_id, package_id, file_checksum_algorithm = "SHA1"):
+	def insertFileInfo(self, spdx_doc_id, package_id, dbHost, dbUsserName, dbUserPass, dbName, file_checksum_algorithm = "SHA1"):
 		'''
 		inserts fileInfo into database.
 		'''
-
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			'''Get id of next file'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'package_files'"
@@ -79,47 +62,50 @@ class fileInfo:
 
 
 			sqlCommand = """INSERT INTO package_files(file_name, 
-													  file_type, 
-													  file_copyright_text, 
-													  artifact_of_project_name, 
-													  artifact_of_project_homepage, 
-													  artifact_of_project_uri, 
-													  license_concluded, 
-													  license_info_in_file, 
-													  file_checksum, 
-													  file_checksum_algorithm, 
-												  	  relative_path, 
-												 	  license_comments, 
-													  file_notice, 
-													  file_contributor, 
-													  file_dependency, 
-													  file_comment, 
-													  created_at, 
-													  updated_at)
-					  	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP)"""
+								  file_type, 
+								  file_copyright_text, 
+								  artifact_of_project_name, 
+								  artifact_of_project_homepage, 
+								  artifact_of_project_uri, 
+								  license_concluded, 
+								  license_info_in_file, 
+								  file_checksum, 
+								  file_checksum_algorithm, 
+								  relative_path, 
+								  license_comments, 
+								  file_notice, 
+								  file_contributor, 
+							          file_dependency, 
+								  file_comment, 
+								  created_at, 
+								  updated_at)
+					  	VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP)"""
 	
 			dbCursor.execute( sqlCommand, 
-								(self.fileName, 
-								self.fileType, 
-								self.fileCopyRightText, 
-								self.artifactOfProjectName, 
-								self.artifactOfProjectHomePage, 
-								self.artifactOfProjectURI, 
-								self.licenseConcluded, 
-								self.licenseInfoInFile, 
-								self.fileChecksum.sha1, 
-								file_checksum_algorithm, 
-								self.fileRelativePath, 
-								self.licenseComments, 
-								self.fileNotice, 
-								self.fileContributor, 
-								self.fileDependency, 
-								self.fileComment))
+					       	(
+							self.fileName, 
+							self.fileType, 
+							self.fileCopyRightText, 
+							self.artifactOfProjectName, 
+							self.artifactOfProjectHomePage, 
+							self.artifactOfProjectURI, 
+							self.licenseConcluded, 
+							self.licenseInfoInFile, 
+							self.fileChecksum.sha1, 
+							file_checksum_algorithm, 
+							self.fileRelativePath, 
+							self.licenseComments, 
+							self.fileNotice, 
+							self.fileContributor, 
+							self.fileDependency, 
+							self.fileComment
+						)
+					)
 	
 			sqlCommand = """INSERT INTO doc_file_package_associations (spdx_doc_id, package_id, package_file_id, created_at, updated_at)
-  				        	VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+  				        VALUES (%s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 
-			dbCursor.execute(sqlCommand, spdx_doc_id, package_id, fileId)
+			dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId))
 
 		return fileId
 
@@ -161,22 +147,13 @@ class fileInfo:
 			print "FileDependency: " + dependency		
 			
  
-	def isCached(self, file_checksum):
+	def isCached(self, file_checksum, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		checks whether or not file is in database
 		'''
-				
-		'''Create connection'''
-		with ConfigParser.ConfigParser("do_spdx.cfg") as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
-			sqlCommand = "SELECT id FROM package_files WHERE file_checksum = ?"
-			dbCursor.execute(sqlCommand, file_checksum)
+			sqlCommand = "SELECT id FROM package_files WHERE file_checksum = %s"
+			dbCursor.execute(sqlCommand, (file_checksum))
 			queryResult = dbCursor.fetchone()
 
 			if (queryResult == None):

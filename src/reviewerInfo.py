@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import MySQLdb
-import ConfigParser
 
 class reviewerInfo:
 	
@@ -10,22 +9,13 @@ class reviewerInfo:
 		self.reviewDate 	= ""
 		self.reviewComment 	= ""
 
-	def getReviewerInfo(self, reviewer_id):
+	def getReviewerInfo(self, reviewer_id, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		gets reviewerInfo from database
 		'''
-
-		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			sqlCommand = """SELECT * FROM reviewers WHERE id = ?"""
-			dbCursor.execute(sqlCommand, reviewer_id)
+			dbCursor.execute(sqlCommand, (reviewer_id))
 			
 			queryReturn = dbCursor.fetchone()
 
@@ -33,18 +23,10 @@ class reviewerInfo:
 			self.reviewDate		= queryReturn.reviewer_date
 			self.reviewComment	= queryReturn.reviewer_comment
 	
-	def insertReviewerInfo(self, spdx_doc_id):
+	def insertReviewerInfo(self, spdx_doc_id, dbHost, dbUsserName, dbUserPass, dbName):
 		'''
 		inserts reviewerInfo into database
 		'''
- 		'''Create connection'''
-		with ConfigParser.ConfigParser() as configParser:
-			configParser.read("do_spdx.cfg")
-			dbUserName   = configParser.get('Database','database_user')
-			dbUserPass   = configParser.get('Database','database_pass')
-			dbHost       = configParser.get('Database','database_host')
-			dbName       = configParser.get('Database','database_name')
-
 		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
 			'''Get id of reviewer'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
@@ -53,7 +35,7 @@ class reviewerInfo:
 			reviewerId = reviewerId['Auto_increment']
 
 			sqlCommand   = """INSERT INTO reviewers (reviewer, reviewer_date, reviewer_comment, spdx_doc_id, created_at, updated_at)
- 					  		  VALUES (?, ?, ?, ?, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"""
+ 					  VALUES (?, ?, ?, ?, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"""
 			dbCursor.execute(sqlCommand, (self.reviewer, self.reviewerDate, self.reviewerComment, spdx_doc_id))
 		
 		return reviewerId
