@@ -1,15 +1,19 @@
 #!/usr/bin/python
 
+'''
+Define Reviewer information in the spdx object.
+'''
 import MySQLdb
+import datetime
 
 class reviewerInfo:
 	
 	def __init__( self):
 		self.reviewer 		= ""
-		self.reviewDate 	= ""
+		self.reviewDate 	= datetime.datetime.now()
 		self.reviewComment 	= ""
 
-	def getReviewerInfo(self, reviewer_id, dbHost, dbUsserName, dbUserPass, dbName):
+	def getReviewerInfo(self, reviewer_id, dbHost, dbUserName, dbUserPass, dbName):
 		'''
 		gets reviewerInfo from database
 		'''
@@ -23,7 +27,7 @@ class reviewerInfo:
 			self.reviewDate		= queryReturn.reviewer_date
 			self.reviewComment	= queryReturn.reviewer_comment
 	
-	def insertReviewerInfo(self, spdx_doc_id, dbHost, dbUsserName, dbUserPass, dbName):
+	def insertReviewerInfo(self, spdx_doc_id, dbHost, dbUserName, dbUserPass, dbName):
 		'''
 		inserts reviewerInfo into database
 		'''
@@ -31,12 +35,11 @@ class reviewerInfo:
 			'''Get id of reviewer'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
 			dbCursor.execute(sqlCommand)
-			reviewerId = dbCursor.fetchone()
-			reviewerId = reviewerId['Auto_increment']
+			reviewerId = dbCursor.fetchone()[10]
 
 			sqlCommand   = """INSERT INTO reviewers (reviewer, reviewer_date, reviewer_comment, spdx_doc_id, created_at, updated_at)
- 					  VALUES (?, ?, ?, ?, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"""
-			dbCursor.execute(sqlCommand, (self.reviewer, self.reviewerDate, self.reviewerComment, spdx_doc_id))
+ 					  VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+			dbCursor.execute(sqlCommand, (self.reviewer, self.reviewDate, self.reviewComment, spdx_doc_id))
 		
 		return reviewerId
 			

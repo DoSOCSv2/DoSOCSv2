@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+'''
+Defines the creator info section of an spdx object.
+'''
 import MySQLdb
 import datetime
 

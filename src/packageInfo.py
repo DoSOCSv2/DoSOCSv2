@@ -1,5 +1,8 @@
 #!/user/bin/python
 
+'''
+Defines the package level information for the spdx object.
+'''
 import MySQLdb
 import checksum 
 

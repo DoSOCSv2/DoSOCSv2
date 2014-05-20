@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+'''
+Defines the file level information in an spdx object.
+'''
 import checksum
 import MySQLdb
 
@@ -7,19 +11,19 @@ class fileInfo:
 	def __init__(self, filePath):
 		self.fileName 				= ""
 		self.fileType 				= ""
-		self.fileChecksum 			= checksum.getChecksum(filePath)
+		self.fileChecksum 			= ""
 		self.licenseConcluded 			= ""
 		self.licenseInfoInFile			= ""
 		self.licenseComments			= ""
 		self.fileCopyRightText			= ""
 		self.artifactOfProjectName		= ""
 		self.artifactOfProjectHomePage		= ""
-		self.artifactOfProjectURI 		= []
+		self.artifactOfProjectURI 		= ""
 		self.fileComment			= ""
 		self.fileNotice				= ""
-		self.fileContributor			= []
-		self.fileDependency			= []
-		self.fileRealativePath			= ""
+		self.fileContributor			= ""
+		self.fileDependency			= ""
+		self.fileRealativePath			= filePath
 		
 
 	def getFileInfo(self, package_file_id, dbHost, dbUsserName, dbUserPass, dbName):
@@ -33,23 +37,23 @@ class fileInfo:
 			dbCursor.execute(sqlCommand, package_file_id)
 			queryResult = dbCursor.fetchone()
 
-			self.fileName 					= queryResult.file_name
-			self.fileType 					= queryResult.file_type
-			self.fileChecksum 				= queryResult.file_checksum
-			self.licenseConcluded 			= queryResult.license_concluded
-			self.licenseInfoInFile			= queryResult.license_info_in_file
-			self.licenseComments			= queryResult.license_comments
-			self.fileCopyRightText			= queryResult.file_copyright_text
-			self.artifactOfProjectName		= queryResult.artifact_of_project_name
+			self.fileName 			= queryResult.file_name
+			self.fileType 			= queryResult.file_type
+			self.fileChecksum 		= queryResult.file_checksum
+			self.licenseConcluded 		= queryResult.license_concluded
+			self.licenseInfoInFile		= queryResult.license_info_in_file
+			self.licenseComments		= queryResult.license_comments
+			self.fileCopyRightText		= queryResult.file_copyright_text
+			self.artifactOfProjectName	= queryResult.artifact_of_project_name
 			self.artifactOfProjectHomePage	= queryResult.artifact_of_project_homepage
-			self.artifactOfProjectURI 		= queryResult.artifact_of_project_uri
-			self.fileComment				= queryResult.file_comment
-			self.fileNotice					= queryResult.file_notice
-			self.fileContributor			= queryResult.file_contributor
-			self.fileDependency				= queryResult.file_dependency
-			self.fileRealativePath			= queryResult.relative_path
+			self.artifactOfProjectURI 	= queryResult.artifact_of_project_uri
+			self.fileComment		= queryResult.file_comment
+			self.fileNotice			= queryResult.file_notice
+			self.fileContributor		= queryResult.file_contributor
+			self.fileDependency		= queryResult.file_dependency
+			self.fileRealativePath		= queryResult.relative_path
 	
-	def insertFileInfo(self, spdx_doc_id, package_id, dbHost, dbUsserName, dbUserPass, dbName, file_checksum_algorithm = "SHA1"):
+	def insertFileInfo(self, spdx_doc_id, package_id, dbHost, dbUserName, dbUserPass, dbName, file_checksum_algorithm = "SHA1"):
 		'''
 		inserts fileInfo into database.
 		'''
@@ -57,11 +61,10 @@ class fileInfo:
 			'''Get id of next file'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'package_files'"
 			dbCursor.execute(sqlCommand)
-			fileId = dbCursor.fetchone()
-			fileId = fileId.Auto_increment
+			fileId = dbCursor.fetchone()[10]
 
 
-			sqlCommand = """INSERT INTO package_files(file_name, 
+			sqlCommand = """INSERT INTO package_files (file_name, 
 								  file_type, 
 								  file_copyright_text, 
 								  artifact_of_project_name, 
@@ -79,7 +82,7 @@ class fileInfo:
 								  file_comment, 
 								  created_at, 
 								  updated_at)
-					  	VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP)"""
+					  	VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 	
 			dbCursor.execute( sqlCommand, 
 					       	(
@@ -91,9 +94,9 @@ class fileInfo:
 							self.artifactOfProjectURI, 
 							self.licenseConcluded, 
 							self.licenseInfoInFile, 
-							self.fileChecksum.sha1, 
+							self.fileChecksum, 
 							file_checksum_algorithm, 
-							self.fileRelativePath, 
+							self.fileRealativePath, 
 							self.licenseComments, 
 							self.fileNotice, 
 							self.fileContributor, 
@@ -161,4 +164,5 @@ class fileInfo:
 			else :
 				return queryResult.id
 
-		
+	def getFileInfo(self):
+		self.fileChecksum = checksum.getChecksum(self.filePath)

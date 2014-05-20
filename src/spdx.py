@@ -9,7 +9,7 @@ import json
 import MySQLdb
 
 '''
-This contains the definition for the SPDX object
+This contains the definition for the SPDX object.
 '''
 
 class SPDX:
@@ -80,13 +80,13 @@ class SPDX:
 		packageId = self.packageInfo.insertPackageInfo(dbHost, dbUserName, dbUserPass, dbName)
 		''' Insert File Information '''
 		for files in self.fileInfo:
-			files.insertFileInfo()
+			files.insertFileInfo(spdxDocId, packageId, dbHost, dbUserName, dbUserPass, dbName)
 		''' Insert License Information '''
 		for licenses in self.licensingInfo:
-			licenses.insertLicensingInfo(spdxDocId)
+			licenses.insertLicensingInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
 		''' Insert Reviewer Information '''
 		for reviewer in self.reviewerInfo:
-			reviewer.insertReviewerInfo(spdxDocId)
+			reviewer.insertReviewerInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
 
 	def outputSPDX_TAG(self):
 		

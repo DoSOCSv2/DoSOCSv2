@@ -1,10 +1,12 @@
 #!/usr/bin/python
+'''
+Defines the checkum object for files.
+'''
 
 import hashlib
 
 class checksum:
 
-	@staticmethod
 	def getChecksum(filePath):
 		with open(filePath, 'rb') as fileIn:
 			fileSha1 = sha1()
