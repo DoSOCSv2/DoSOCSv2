@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+'''
+Defines the license level information in the spdx object.
+'''
 import MySQLdb
 
 class licensingInfo:
@@ -8,10 +11,10 @@ class licensingInfo:
 		self.licenseId 			= ""
 		self.extractedText 		= ""
 		self.licenseName		= ""
-		self.licenseCrossReference 	= []	
+		self.licenseCrossReference 	= ""
 		self.licenseComment		= ""
 	
-	def insertLicensingInfo(self, spdx_doc_id, dbHost, dbUsserName, dbUserPass, dbName, osi_approved = "", standard_license_header = ""):
+	def insertLicensingInfo(self, spdx_doc_id, dbHost, dbUserName, dbUserPass, dbName, osi_approved = "", standard_license_header = ""):
 		'''
 		inserts licensingInfo into database
 		'''
@@ -19,11 +22,10 @@ class licensingInfo:
 			'''Get id of license'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'licenses'"
 			dbCursor.execute(sqlCommand)
-			licenseId = dbCursor.fetchone()
-			licenseId = licenseId['Auto_increment']
+			licenseId = dbCursor.fetchone()[10]
 	
-			sqlCommend = """INSERT INTO licenses (extracted_text, license_name, osi_approved, standard_license_header, license_cross_reference, created_at, updated_at)
-				        VALUES (%s, %s, %s, %s, %s, CURRNET_TIMESTAMP, CURRENT_TIMESTAMP)"""
+			sqlCommand = """INSERT INTO licenses (extracted_text, license_name, osi_approved, standard_license_header, license_cross_reference, created_at, updated_at)
+				        VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 
 			dbCursor.execute(sqlCommand, (self.extractedText, self.licenseName, osi_approved, standard_license_header, self.licenseCrossReference))
 
