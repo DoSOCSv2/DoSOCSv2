@@ -1,12 +1,20 @@
 #!/user/bin/python
 
+import errno
 import creatorInfo
 import packageInfo
 import licensingInfo
 import fileInfo
 import reviewerInfo
+import os
 import json
 import MySQLdb
+import tempfile
+import shutil
+import settings
+import tarfile
+import zipfile
+import sets
 
 '''
 This contains the definition for the SPDX object.
@@ -30,6 +38,7 @@ class SPDX:
 			packageLicenseComments 		= "", 
 			packageDescription 		= ""):
 
+		self.packagePath		= packagePath
 		self.version 			= version
 		self.dataLicense 		= dataLicense
 		self.documentComment 		= documentComment
@@ -47,13 +56,13 @@ class SPDX:
 		self.fileInfo			= []
 		self.reviewerInfo		= []
 		
-	def insertSPDX(self, dbHost, dbUserName, dbUserPass, dbName):
+	def insertSPDX(self):
 		'''
 		insert SPDX doc into db
 		'''
 		spdxDocId = None
 		
-        	with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+        	with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 			
 			'''get spdx doc id'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
@@ -75,18 +84,18 @@ class SPDX:
 			dbCursor.execute(sqlCommand, (self.version, self.dataLicense, self.packageInfo.packageName, 'SQL', self.packageInfo.fileSize, self.documentComment))
 			
 		''' Insert Creator Information '''
-		creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
+		creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId)
 		''' Insert Package Information '''
-		packageId = self.packageInfo.insertPackageInfo(dbHost, dbUserName, dbUserPass, dbName)
+		packageId = self.packageInfo.insertPackageInfo()
 		''' Insert File Information '''
 		for files in self.fileInfo:
-			files.insertFileInfo(spdxDocId, packageId, dbHost, dbUserName, dbUserPass, dbName)
+			files.insertFileInfo(spdxDocId, packageId)
 		''' Insert License Information '''
 		for licenses in self.licensingInfo:
-			licenses.insertLicensingInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
+			licenses.insertLicensingInfo(spdxDocId)
 		''' Insert Reviewer Information '''
 		for reviewer in self.reviewerInfo:
-			reviewer.insertReviewerInfo(spdxDocId, dbHost, dbUserName, dbUserPass, dbName)
+			reviewer.insertReviewerInfo(spdxDocId)
 
 	def outputSPDX_TAG(self):
 		
@@ -104,6 +113,7 @@ class SPDX:
 	
 		print "## Package Information\n"
 		self.packageInfo.outputPackageInfo_TAG()
+		print "\n"
 
 		print "## File Information\n"
 		for files in self.fileInfo:
@@ -115,19 +125,47 @@ class SPDX:
 			licenses.outputLicensingInfo_TAG()
 			print "\n"	
 		
-		print "## Reviewer Information\n"
-		for reviewer in self.reviewerInfo:
-			reviewer.outputReviewerInfo_TAG()
-		
+		if len(self.reviewerInfo) > 0:
+			print "## Reviewer Information\n"
+			for reviewer in self.reviewerInfo:
+				reviewer.outputReviewerInfo_TAG()
+
+	def outputSPDX_RDF(self):
+		print '<SpdxDocument rdf:about="">'
+		print '<specVersion>' + self.version + '</specVersion>'
+		print '<dataLicense rdf:resource="' + self.dataLicense + '" />'
+		print '<rdfs:comment>' + self.documentComment + '</rdfs:comment>'
+
+		print '<CreationInfo>'
+		self.creatorInfo.outputCreatorInfo_RDF()
+		print '</CreationInfo>'
+
+		print '<Package rdf:about="">'
+		self.packageInfo.outputPackageInfo_RDF()
+		print '</Package>'
+
+		for files in self.fileInfo:
+			print '<File rdf:about="">'
+			files.outputFileInfo_RDF()
+			print '</File>'
+				
+		if len(self.licensingInfo) > 0:
+			for licenses in self.licensingInfo:
+				print '<ExtractedLicensingInfo>'
+				licenses.outputLicensingInfo_RDF()
+				print '</ExtractedLicensingInfo>'
+
+		print '</SpdxDocument>'		
+
 	def outputSPDX_JSON(self):
 		print json.dumps(self)	
 		
-	def getSPDX(self, spdx_doc_id, dbHost, dbUsserName, dbUserPass, dbName):
+	def getSPDX(self, spdx_doc_id):
 		'''
 		Generates the entire structure from the database.
 		'''
 		
-	        with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+	        with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 
 			sqlCommand = """SELECT spdx_version,data_license,document_comment FROM spdx_docs WHERE spdx_doc_id = ?"""
 			dbCursor.execute(sqlCommand, spdx_doc_id)
@@ -143,29 +181,40 @@ class SPDX:
 			self.fileInfo = getFileInfo(spdx_doc_id)
 			self.reviewInfo = getReviewerInfo(spdx_doc_id)
 
-	def getLicenseInfo(self, spdx_doc_id):
+	def generateSPDXDoc(self):
 		'''
-		Get the licenses of an spdx document from the database
+		Generates the entire structure by querying and scanning the files.
 		'''
-		pass
-	
-	def getFileInfo(self, spdx_doc_id):
-		'''
-		Get the file info of an spdx document from the database
-		'''
-		pass
+		extractTo 		= tempfile.mkdtemp()
+		ninka_out 		= tempfile.NamedTemporaryFile() 
+		foss_out 		= tempfile.NamedTemporaryFile()
+		licenseCounter 		= 0
+		scanners 		= []
+		licensesFromFiles 	= []
+		sha1Checksums		= []
 
-	def getReviewerInfo(self, spdx_doc_id):
-		'''
-		Get the reviewer info of an spdx document from the database
-		'''
-		pass
+		if tarfile.is_tarfile(self.packagePath):
+			archive = tarfile.open(self.packagePath)
+			archive.extractall(extractTo)				
+			for fileName in archive.getnames():
+				if os.path.isfile(os.path.join(extractTo, fileName)):
+					tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName))
+					tempFileInfo.populateFileInfo()
+					tempLicenseInfo = licensingInfo.licensingInfo("LicenseRef-" + str(licenseCounter), "", tempFileInfo.licenseInfoInFile[0], "", tempFileInfo.licenseComments)
+					if tempLicenseInfo not in self.licensingInfo:
+						self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
+						self.licensingInfo.append(tempLicenseInfo)
+						licenseCounter += 1
 
-	def popluateFileInfo(self, path):
-		'''
-		Get the file info of an spdx document from the scanner
-		'''
-		
-                
-
-	
+					sha1Checksums.append(tempFileInfo.fileChecksum)
+					self.fileInfo.append(tempFileInfo)
+											
+		elif zipfile.is_zipfile(self.packagePath):
+			'''TODO
+			archive = zipfile.ZipFile(self.packagePath, "r")
+			archive.extractall(extractTo)
+			names = archive.namelist()
+			'''
+		self.packageInfo.generatePackageInfo(sha1Checksums)
+		ninka_out.close()
+		foss_out.close()

@@ -4,7 +4,9 @@
 Defines the package level information for the spdx object.
 '''
 import MySQLdb
-import checksum 
+import settings
+import os
+import hashlib
 
 class packageInfo:
 	
@@ -19,32 +21,35 @@ class packageInfo:
 			packageLicenseComments 	= "", 
 			packageDescription 	= ""):
 
-		self.packageName 				= ""
+		self.packagePath				= packagePath
+		self.packageName 				= os.path.split(packagePath)[1]
 		self.packageVersion 			 	= packageVersion
-		self.packageFileName			 	= ""
-		self.fileSize				 	= 100
+		self.packageFileName			 	= os.path.split(packagePath)[1]
+		self.fileSize				 	= os.path.getsize(packagePath)
 		self.packageSupplier			 	= packageSupplier
 		self.packageOriginator			 	= packageOriginator
 		self.packageDownloadLocation			= packageDownloadLocation
 		self.packageVerificationCode			= ""
-		self.packageChecksum			 	= "" #checksum(packagePath)
+		self.packageChecksum			 	= ""
+		self.packageChecksumAlgorithm			= ""
 		self.packageHomePage			 	= packageHomePage
 		self.packageSourceInfo			 	= packageSourceInfo
-		self.packageLicenseConcluded			= ""
-		self.packageLicenseInfoFromFiles		= ""
-		self.packageLicenseDeclared		 	= ""
+		self.packageLicenseConcluded			= "NO ASSERTION"
+		self.packageLicenseInfoFromFiles		= []
+		self.packageLicenseDeclared		 	= "NO ASSERTION"
 		self.packageLicenseComments		 	= packageLicenseComments
 		self.packageCopyrightText		 	= ""
 		self.packageSummary			 	= ""
 		self.packageDescription			 	= packageDescription
-		self.packageVerficationCodeExcludedFile 	= ""
+		self.packageVerificationCodeExcludedFile 	= ""
+		self.getChecksum()
 		
-	def insertPackageInfo(self, dbHost, dbUserName, dbUserPass, dbName, checksum_algorithm = "SHA1"):
+	def insertPackageInfo(self):
 		'''
 		inserts packageInformation into database.
 		'''
 
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 			sqlCommand = "SHOW TABLE STATUS LIKE 'packages'"
 			dbCursor.execute(sqlCommand)
 			packageId = dbCursor.fetchone()
@@ -65,13 +70,13 @@ class packageInfo:
 								checksum_algorithm, 
 								package_home_page, 
 								package_source_info, 
-								package_license_info_from_files, 
 								package_license_comments,
 								package_verification_code, 
 								package_verification_code_excluded_file, 
 								created_at, 
 								updated_at)
-					VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+
+					VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 
 			dbCursor.execute( sqlCommand, 
 							 (
@@ -87,14 +92,23 @@ class packageInfo:
 								self.packageLicenseConcluded, 
 								self.packageLicenseDeclared, 
 								self.packageChecksum, 
-								checksum_algorithm, 
+								self.packageChecksumAlgorithm,
 								self.packageHomePage, 
 								self.packageSourceInfo, 
-								self.packageLicenseInfoFromFiles, 
 								self.packageLicenseComments, 
 								self.packageVerificationCode, 
-								self.packageVerficationCodeExcludedFile
+								self.packageVerificationCodeExcludedFile
 							)
+					)
+		for license_info in self.packageLicenseInfoFromFiles:
+			sqlCommand = """INSERT INTO package_license_info_from_files (package_id, package_license_info_from_files, created_at, updated_at)
+				        VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+		
+			dbCursor.execute( sqlCommand, 
+						(
+							packageId,
+							license_info
+						)
 					)
 
 		return packageId	
@@ -129,7 +143,7 @@ class packageInfo:
 		print "PackageLicenseDeclared: " + self.packageLicenseDeclared
 
 		for license in self.packageLicenseInfoFromFiles:
-			print "PackageLicenseInfoFromFiles: " + license.name
+			print "PackageLicenseInfoFromFiles: " + license
 
 		if self.packageLicenseComments != "":
 			print "PackageLicenseComments: <text>" + self.packageLicenseComments + "</text>"
@@ -141,47 +155,132 @@ class packageInfo:
 		if self.packageDescription != "":
 			print "PackageDescription: <text>" + self.packageDescription + "</text>"
 
+	def outputPackageInfo_RDF(self):
+		print '<name>' + self.packageName + '</name>'
+		if self.packageVersion != "":
+                        print '<versionInfo>' + self.packageVersion + '</versionInfo>'
+                if self.packageFileName != "":
+                        print '<PackageFileName>' + self.packageFileName + '</packageFileName>'
+                if self.packageSupplier != "":
+                        print '<supplier>' + self.packageSupplier + '</supplier>'
+                if self.packageOriginator != "":
+                        print '<originator>' + self.packageOriginator + '</originator>'
+
+                print '<downloadLocation>' + self.packageDownloadLocation + '</downloadLocation>'
+		print '<packageVerificationCode>'
+		print '<PackageVerificationCode>'
+		print '<packageVerificationCodeValue>' + self.packageVerificationCode + '</packageVerificationCodeValue>'
+		print '<packageVerificationCodeExcludedFile>' + self.packageVerificationCodeExcludedFile +  '</packageVerificationCodeExcludedFile>'
+		print '</PackageVerificationCode>'
+		print '</packageVerificationCode>'
+		print '<checksum>'
+		print '<Checksum>'
+		print '<algorithm rdf:resource="' + self.packageChecksumAlgorithm + '"/>'
+		print '<checksumValue>' + self.packageChecksum + '</checksumValue>'
+		print '</Checksum>'
+		print '</checksum>'
 		
-	def getPackageInformation(self, package_id, dbHost, dbUserName, dbUserPass, dbName):
+
+                if self.packageHomePage != "":
+                        print '<' + self.packageName + ':homepage rdf:resource="' + self.packageHomePage + '"/>'
+                if self.packageSourceInfo != "":
+                        print '<sourceInfo>' + self.packageSourceInfo + '</sourceInfo>'
+
+		if self.packageLicenseConcluded  != "":
+	                print '<licenseConcluded>'
+			print '<DisjunctiveLicenseSet>'
+			print '<member rdf:resource="' + self.packageLicenseConcluded + '"/>'
+			print '</DisjunctiveLicenseSet>'
+
+		if self.packageLicenseDeclared != "":
+			print '<licenseDeclared>'
+			print '<ConjunctiveLicenseSet>'
+			print '<member rdf:resource="' + self.packageLicenseDeclared + '" />'
+			print '</ConjunctiveLicenseSet>'
+			print '</licenseDeclared>'
+
+                for license in self.packageLicenseInfoFromFiles:
+                        print '<licenseInfoFromFiles rdf:resource="' + license + '" />'
+
+                if self.packageLicenseComments != "":
+                        print '<licenseComments>' + self.packageLicenseComments + '</licenseComments>'
+
+                print '<copyrightText>' + self.packageCopyrightText + '</copyrightText>'
+
+                if self.packageSummary != "":
+                        print '<summary>' + self.packageSummary + '</summary>'
+                if self.packageDescription != "":
+                        print '<description>' + self.packageDescription + '</description>'
+		
+	def getPackageInformation(self, package_id):
 		'''
 		gets package information from database
 		'''
 		
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
-			sqlCommand = "SELECT * FROM packages WHERE id = ?"
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
+			sqlCommand = """SELECT package_name,
+					     package_version,
+					     package_file_name,
+					     package_supplier,
+					     package_originator,
+					     package_download_location,
+					     package_verification_code,
+					     package_checksum,
+					     package_home_page,
+					     package_source_info,
+					     package_license_concluded,
+					     package_license_declared,
+					     package_license_comments,
+					     package_copyright_text,
+					     package_description,
+					     package_summary
+				       FROM packages 
+				       WHERE id = %s"""
 			dbCursor.execute(sqlCommand, (package_id))	
 			queryReturn = dbCursor.fetchone()
 
-			self.packageName 			= queryReturn.package_name
-			self.packageVersion 			= queryReturn.package_version
-			self.packageFileName			= queryReturn.package_file_name
-			self.packageSupplier			= queryReturn.package_supplier
-			self.packageOriginator			= queryReturn.package_originator
-			self.packageDownloadLocation		= queryReturn.package_download_location
-			self.packageVerificationCode		= queryReturn.verification_code
-			self.packageChecksum			= queryReturn.package_checksum
-			self.packageHomePage			= queryReturn.package_home_page
-			self.packageSourceInfo			= queryReturn.package_source_info
-			self.packageLicenseConcluded		= queryReturn.package_license_concluded
-			self.packageLicenseInfoFromFiles	= queryReturn.package_license_info_from_files
-			self.packageLicenseDeclared		= queryReturn.package_license_declared
-			self.packageLicenseComments		= queryReturn.package_license_comments
-			self.packageCopyrightText		= queryReturn.package_copyright_text
-			self.packageDescription			= queryReturn.package_description
-			self.packageSummary			= queryReturn.package_summary
+			self.packageName 			= queryReturn[0]
+			self.packageVersion 			= queryReturn[1]
+			self.packageFileName			= queryReturn[2]
+			self.packageSupplier			= queryReturn[3]
+			self.packageOriginator			= queryReturn[4]
+			self.packageDownloadLocation		= queryReturn[5]
+			self.packageVerificationCode		= queryReturn[6]
+			self.packageChecksum			= queryReturn[7]
+			self.packageHomePage			= queryReturn[8]
+			self.packageSourceInfo			= queryReturn[9]
+			self.packageLicenseConcluded		= queryReturn[10]
+			self.packageLicenseDeclared		= queryReturn[11]
+			self.packageLicenseComments		= queryReturn[12]
+			self.packageCopyrightText		= queryReturn[13]
+			self.packageDescription			= queryReturn[14]
+			self.packageSummary			= queryReturn[15]
+	def getChecksum(self):
+                with open(self.packagePath, 'rb') as fileIn:
+                        self.packageChecksum = hashlib.sha1(fileIn.read()).hexdigest()
 
-	def isCached(self, package_checksum, dbHost, dbUsserName, dbUserPass, dbName):
+	def isCached(self):
 		'''
 		checks database to see if package is cached
 		'''
 
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
-			sqlCommand = "SELECT id FROM packages WHERE package_checksum = ?"
-			dbCursor.execute(sqlCommand, (package_checksum))
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
+			sqlCommand = "SELECT id FROM packages WHERE package_checksum = %s"
+			dbCursor.execute(sqlCommand, (self.packageChecksum))
 
 			queryReturn = dbCursor.fetchone()
 
 			if (queryReturn == None):
 				return -1
 			else :
-				return queryReturn.id
+				return queryReturn[0]
+	
+	def generatePackageInfo(self, sha1List):
+		'''Generate verification code'''
+		sha1List.sort()
+		self.packageVerificationCode = hashlib.sha1(''.join(sha1List)).hexdigest()
+		
+		cached = self.isCached()
+		if cached != -1:
+			self.getPackageInformation(cached)
+

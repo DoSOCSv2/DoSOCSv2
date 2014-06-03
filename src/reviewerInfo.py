@@ -5,6 +5,7 @@ Define Reviewer information in the spdx object.
 '''
 import MySQLdb
 import datetime
+import settings
 
 class reviewerInfo:
 	
@@ -13,11 +14,11 @@ class reviewerInfo:
 		self.reviewDate 	= datetime.datetime.now()
 		self.reviewComment 	= ""
 
-	def getReviewerInfo(self, reviewer_id, dbHost, dbUserName, dbUserPass, dbName):
+	def getReviewerInfo(self, reviewer_id):
 		'''
 		gets reviewerInfo from database
 		'''
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 			sqlCommand = """SELECT * FROM reviewers WHERE id = ?"""
 			dbCursor.execute(sqlCommand, (reviewer_id))
 			
@@ -27,11 +28,11 @@ class reviewerInfo:
 			self.reviewDate		= queryReturn.reviewer_date
 			self.reviewComment	= queryReturn.reviewer_comment
 	
-	def insertReviewerInfo(self, spdx_doc_id, dbHost, dbUserName, dbUserPass, dbName):
+	def insertReviewerInfo(self, spdx_doc_id):
 		'''
 		inserts reviewerInfo into database
 		'''
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 			'''Get id of reviewer'''
 			sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
 			dbCursor.execute(sqlCommand)
@@ -50,6 +51,14 @@ class reviewerInfo:
 		if self.reviewer != "":
 			print "Reviewer: " + self.reviewer
 		if self.reviewer != "" and self.reviewDate != "":
-			print "ReviewDate: " + self.reviewDate
+			print "ReviewDate: " + str(self.reviewDate)
 		if self.reviewComment != "":
 			print "ReviewComment: <text>" + self.reviewComment + "</text>"
+	
+	def outputReviewerInfo_RDF(self):
+		print '<reviewer>' + self.reviewer + '</reviewer>'
+		if self.reviewer != "" and self.reviewDate != "":
+                        print '<reviewDate>' + str(self.reviewDate) + '</reviewDate>'
+                if self.reviewComment != "":
+                        print '<rdfs:comment>' + self.reviewComment + '</rdfs:comment>'
+

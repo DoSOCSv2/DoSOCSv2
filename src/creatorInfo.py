@@ -5,6 +5,7 @@ Defines the creator info section of an spdx object.
 '''
 import MySQLdb
 import datetime
+import settings
 
 class creatorInfo:
 	def __init__(self, packagePath, creator = "", creatorComment = "", licenseListVersion = ""):	
@@ -14,14 +15,14 @@ class creatorInfo:
 		self.licenseListVersion = licenseListVersion
 		
 			
-	def insertCreatorInfo(self, spdx_doc_id, dbHost, dbUserName, dbUserPass, dbName):
+	def insertCreatorInfo(self, spdx_doc_id):
 		'''
 		inserts creatorInfo into the database
 		'''
 
 		creatorId = None
         
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 		
 			'''Get next auto incriment value'''
 			sqlCommand = 	"SHOW TABLE STATUS LIKE 'creators'"
@@ -47,15 +48,22 @@ class creatorInfo:
 		if self.licenseListVersion != "":
 			print "LicenseListVersion: " + self.licenseListVersion
 		
+	def outputCreatorInfo_RDF(self):		
+		print '<creator>' + self.creator + '</creator>'
+		print '<created>' + str(self.created) + '</created>'
+		if self.creatorComment != "":
+			print '<rdfs:comment>' + self.creatorComment + '</rdfs:comment>'
+		if self.licenseListVersion != "":
+			print '<licenseListVersion>' + self.licenseListVersion + '</licenseListVersion>'
 		
-	def getCreatorInfo(self, creator_id, dbHost, dbUserName, dbUserPass, dbName):
+	def getCreatorInfo(self, creator_id):
 		'''
 		generates the creator structure from the database.
 		'''
 
 		'''Create connection'''
 			
-		with MySQLdb.connect(host = dbHost, user = dbUserName, passwd = dbUserPass, db = dbName) as dbCursor:
+		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 			'''get creator info'''
 			sqlCommand = 	"""SELECT id AS creator_id,
 		      	  	  		  generated_at,
