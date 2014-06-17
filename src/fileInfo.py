@@ -15,12 +15,12 @@ from mimetypes import MimeTypes
 
 class fileInfo:
 	
-	def __init__(self, filePath):
+	def __init__(self, filePath = ""):
 		self.filePath 				= filePath
 		self.fileName 				= os.path.split(filePath)[1]
 		self.fileType 				= ""
 		self.fileChecksum 			= ""
-		self.fileChecksumAlgoritm  		= "SHA1"
+		self.fileChecksumAlgorithm  		= "SHA1"
 		self.licenseConcluded 			= "NO ASSERTION"
 		self.licenseInfoInFile			= []
 		self.licenseComments			= ""
@@ -33,50 +33,48 @@ class fileInfo:
 		self.fileContributor			= ""
 		self.fileDependency			= ""
 		self.fileRealativePath			= ""
-		self.getChecksum()
+		if self.filePath != "":
+			self.getChecksum()	
 
-	def getFileInfo(self, package_file_id):
+	def getFileInfo(self, package_file_id, dbCursor):
 		'''
 		populates fileInfo from database
 		'''
-
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-
-			sqlCommand = """SELECT file_name,
-					       file_type,
-					       file_checksum,
-					       license_concluded,
-					       license_info_in_file,
-					       license_comments,
-					       file_copyright_text,
-					       artifact_of_project_name,
-					       artifact_of_project_homepage,
-					       artifact_of_project_uri,
-					       file_comment,
-					       file_notice,
-					       file_contributor,
-					       file_dependency,
-					       relative_path,
-					       file_checksum_algorithm
-					FROM package_files WHERE id = %s"""
-			dbCursor.execute(sqlCommand, package_file_id)
-			queryResult = dbCursor.fetchone()
-			self.fileName 			= queryResult[0]
-			self.fileType 			= queryResult[1]
-			self.fileChecksum 		= queryResult[2]
-			self.fileChecksumAlgorithm	= queryResult[15]
-			self.licenseConcluded 		= queryResult[3]
-			self.licenseInfoInFile		= queryResult[4].split()
-			self.licenseComments		= queryResult[5]
-			self.fileCopyRightText		= queryResult[6]
-			self.artifactOfProjectName	= queryResult[7]
-			self.artifactOfProjectHomePage	= queryResult[8]
-			self.artifactOfProjectURI 	= queryResult[9]
-			self.fileComment		= queryResult[10]
-			self.fileNotice			= queryResult[11]
-			self.fileContributor		= queryResult[12]
-			self.fileDependency		= queryResult[13]
-			self.fileRealativePath		= queryResult[14]
+		sqlCommand = """SELECT file_name,
+				       file_type,
+				       file_checksum,
+				       license_concluded,
+				       license_info_in_file,
+				       license_comments,
+				       file_copyright_text,
+				       artifact_of_project_name,
+				       artifact_of_project_homepage,
+				       artifact_of_project_uri,
+				       file_comment,
+				       file_notice,
+				       file_contributor,
+				       file_dependency,
+				       relative_path,
+				       file_checksum_algorithm
+				FROM package_files WHERE id = %s"""
+		dbCursor.execute(sqlCommand, package_file_id)
+		queryResult = dbCursor.fetchone()
+		self.fileName 			= queryResult[0]
+		self.fileType 			= queryResult[1]
+		self.fileChecksum 		= queryResult[2]
+		self.fileChecksumAlgorithm	= queryResult[15]
+		self.licenseConcluded 		= queryResult[3]
+		self.licenseInfoInFile		= queryResult[4].split()
+		self.licenseComments		= queryResult[5]
+		self.fileCopyRightText		= queryResult[6]
+		self.artifactOfProjectName	= queryResult[7]
+		self.artifactOfProjectHomePage	= queryResult[8]
+		self.artifactOfProjectURI 	= queryResult[9]
+		self.fileComment		= queryResult[10]
+		self.fileNotice			= queryResult[11]
+		self.fileContributor		= queryResult[12]
+		self.fileDependency		= queryResult[13]
+		self.fileRealativePath		= queryResult[14]
 	
 	def insertFileInfo(self, spdx_doc_id, package_id):
 		'''
@@ -138,7 +136,12 @@ class fileInfo:
 
 			
 			dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId))
+			
+			for license in self.licenseInfoInFile:
+				sqlCommand = """INSERT INTO package_license_info_from_files (package_id, package_license_info_from_files, created_at, updated_at)
+						VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
 
+				dbCursor.execute(sqlCommand, (package_id, license))
 		return fileId
 
 	def outputFileInfo_TAG(self):
@@ -248,6 +251,9 @@ class fileInfo:
 		mime = MimeTypes()
 		self.fileType = mime.guess_type(self.filePath)[0]		
 
+		if self.fileType == None:
+			self.fileType = 'Unknown'
+		
 		cached = self.isCached()
 		
 		if cached == -1:

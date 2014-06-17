@@ -14,19 +14,18 @@ class reviewerInfo:
 		self.reviewDate 	= datetime.datetime.now()
 		self.reviewComment 	= ""
 
-	def getReviewerInfo(self, reviewer_id):
+	def getReviewerInfo(self, reviewer_id, dbCursor):
 		'''
 		gets reviewerInfo from database
 		'''
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-			sqlCommand = """SELECT * FROM reviewers WHERE id = ?"""
-			dbCursor.execute(sqlCommand, (reviewer_id))
-			
-			queryReturn = dbCursor.fetchone()
+		sqlCommand = """SELECT * FROM reviewers WHERE id = ?"""
+		dbCursor.execute(sqlCommand, (reviewer_id))
+		
+		queryReturn = dbCursor.fetchone()
 
-			self.reviewer		= queryReturn.reviewer
-			self.reviewDate		= queryReturn.reviewer_date
-			self.reviewComment	= queryReturn.reviewer_comment
+		self.reviewer		= queryReturn.reviewer
+		self.reviewDate		= queryReturn.reviewer_date
+		self.reviewComment	= queryReturn.reviewer_comment
 	
 	def insertReviewerInfo(self, spdx_doc_id):
 		'''

@@ -25,7 +25,7 @@ class packageInfo:
 		self.packageName 				= os.path.split(packagePath)[1]
 		self.packageVersion 			 	= packageVersion
 		self.packageFileName			 	= os.path.split(packagePath)[1]
-		self.fileSize				 	= os.path.getsize(packagePath)
+		self.fileSize				 	= ""
 		self.packageSupplier			 	= packageSupplier
 		self.packageOriginator			 	= packageOriginator
 		self.packageDownloadLocation			= packageDownloadLocation
@@ -41,8 +41,10 @@ class packageInfo:
 		self.packageCopyrightText		 	= ""
 		self.packageSummary			 	= ""
 		self.packageDescription			 	= packageDescription
-		self.packageVerificationCodeExcludedFile 	= ""
-		self.getChecksum()
+		self.packageVerificationCodeExcludedFile 	= "None"
+		if packagePath != "":
+			self.getChecksum()
+			self.fileSize = os.path.getsize(packagePath)
 		
 	def insertPackageInfo(self):
 		'''
@@ -212,49 +214,49 @@ class packageInfo:
                 if self.packageDescription != "":
                         print '<description>' + self.packageDescription + '</description>'
 		
-	def getPackageInformation(self, package_id):
+	def getPackageInfo(self, package_id, dbCursor):
 		'''
 		gets package information from database
 		'''
 		
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-			sqlCommand = """SELECT package_name,
-					     package_version,
-					     package_file_name,
-					     package_supplier,
-					     package_originator,
-					     package_download_location,
-					     package_verification_code,
-					     package_checksum,
-					     package_home_page,
-					     package_source_info,
-					     package_license_concluded,
-					     package_license_declared,
-					     package_license_comments,
-					     package_copyright_text,
-					     package_description,
-					     package_summary
-				       FROM packages 
-				       WHERE id = %s"""
-			dbCursor.execute(sqlCommand, (package_id))	
-			queryReturn = dbCursor.fetchone()
+		sqlCommand = """SELECT package_name,
+				     package_version,
+				     package_file_name,
+				     package_supplier,
+				     package_originator,
+				     package_download_location,
+				     package_verification_code,
+				     package_checksum,
+				     package_home_page,
+				     package_source_info,
+				     package_license_concluded,
+				     package_license_declared,
+				     package_license_comments,
+				     package_copyright_text,
+				     package_description,
+				     package_summary
+			       FROM packages 
+			       WHERE id = %s"""
+		dbCursor.execute(sqlCommand, (package_id))	
+		queryReturn = dbCursor.fetchone()
+			
+		self.packageName 			= queryReturn[0]
+		self.packageVersion 			= queryReturn[1]
+		self.packageFileName			= queryReturn[2]
+		self.packageSupplier			= queryReturn[3]
+		self.packageOriginator			= queryReturn[4]
+		self.packageDownloadLocation		= queryReturn[5]
+		self.packageVerificationCode		= queryReturn[6]
+		self.packageChecksum			= queryReturn[7]
+		self.packageHomePage			= queryReturn[8]
+		self.packageSourceInfo			= queryReturn[9]
+		self.packageLicenseConcluded		= queryReturn[10]
+		self.packageLicenseDeclared		= queryReturn[11]
+		self.packageLicenseComments		= queryReturn[12]
+		self.packageCopyrightText		= queryReturn[13]
+		self.packageDescription			= queryReturn[14]
+		self.packageSummary			= queryReturn[15]
 
-			self.packageName 			= queryReturn[0]
-			self.packageVersion 			= queryReturn[1]
-			self.packageFileName			= queryReturn[2]
-			self.packageSupplier			= queryReturn[3]
-			self.packageOriginator			= queryReturn[4]
-			self.packageDownloadLocation		= queryReturn[5]
-			self.packageVerificationCode		= queryReturn[6]
-			self.packageChecksum			= queryReturn[7]
-			self.packageHomePage			= queryReturn[8]
-			self.packageSourceInfo			= queryReturn[9]
-			self.packageLicenseConcluded		= queryReturn[10]
-			self.packageLicenseDeclared		= queryReturn[11]
-			self.packageLicenseComments		= queryReturn[12]
-			self.packageCopyrightText		= queryReturn[13]
-			self.packageDescription			= queryReturn[14]
-			self.packageSummary			= queryReturn[15]
 	def getChecksum(self):
                 with open(self.packagePath, 'rb') as fileIn:
                         self.packageChecksum = hashlib.sha1(fileIn.read()).hexdigest()

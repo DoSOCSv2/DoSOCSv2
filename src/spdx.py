@@ -15,6 +15,7 @@ import settings
 import tarfile
 import zipfile
 import sets
+import shutil
 
 '''
 This contains the definition for the SPDX object.
@@ -83,19 +84,20 @@ class SPDX:
 
 			dbCursor.execute(sqlCommand, (self.version, self.dataLicense, self.packageInfo.packageName, 'SQL', self.packageInfo.fileSize, self.documentComment))
 			
-		''' Insert Creator Information '''
-		creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId)
-		''' Insert Package Information '''
-		packageId = self.packageInfo.insertPackageInfo()
-		''' Insert File Information '''
-		for files in self.fileInfo:
-			files.insertFileInfo(spdxDocId, packageId)
-		''' Insert License Information '''
-		for licenses in self.licensingInfo:
-			licenses.insertLicensingInfo(spdxDocId)
-		''' Insert Reviewer Information '''
-		for reviewer in self.reviewerInfo:
-			reviewer.insertReviewerInfo(spdxDocId)
+			''' Insert Creator Information '''
+			creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId)
+			''' Insert Package Information '''
+			packageId = self.packageInfo.insertPackageInfo()
+			''' Insert File Information '''
+			for files in self.fileInfo:
+				files.insertFileInfo(spdxDocId, packageId)
+		
+			for license in self.licensingInfo:
+				license.insertLicensingInfo(spdxDocId)
+
+			''' Insert Reviewer Information '''
+		 	for reviewer in self.reviewerInfo:
+				reviewer.insertReviewerInfo(spdxDocId)
 
 	def outputSPDX_TAG(self):
 		
@@ -167,19 +169,55 @@ class SPDX:
 		
 	        with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
 
-			sqlCommand = """SELECT spdx_version,data_license,document_comment FROM spdx_docs WHERE spdx_doc_id = ?"""
+			sqlCommand = """SELECT  spdx_version, 
+					        data_license,
+						document_comment 
+					FROM spdx_docs 
+					WHERE id = %s"""
 			dbCursor.execute(sqlCommand, spdx_doc_id)
 			rows = dbCursor.fetchone()
 			if rows:
-				self.version = rows.spdx_version
-				self.dataLicense = rows.data_license
-				self.documentComment = rows.document_comment
+				self.version 		= rows[0]
+				self.dataLicense 	= rows[0]
+				self.documentComment 	= rows[0]
 
-			self.creatorInfo.getCreatorInfo(spdx_doc_id)
-			self.packageInfo.getPackageInfo(spdx_doc_id)
-			self.licensingInfo = getLicenseInfo(spdx_doc_id)
-			self.fileInfo = getFileInfo(spdx_doc_id)
-			self.reviewInfo = getReviewerInfo(spdx_doc_id)
+			self.creatorInfo.getCreatorInfo(spdx_doc_id, dbCursor)
+			self.packageInfo.getPackageInfo(spdx_doc_id, dbCursor)
+			
+			'''Get File Info'''
+			sqlCommand = """SELECT dfpa.package_file_id,
+					       pf.file_checksum 
+					FROM doc_file_package_associations AS dfpa
+					     LEFT OUTER JOIN package_files AS pf ON pf.id = dfpa.package_file_id
+					WHERE spdx_doc_id = %s"""
+                        dbCursor.execute(sqlCommand, spdx_doc_id)
+
+                        numRows = dbCursor.rowcount
+                        for x in xrange(0, numRows):
+                                row = dbCursor.fetchone()
+                                tempFileInfo = fileInfo.fileInfo()
+                                tempFileInfo.getFileInfo(row[0], dbCursor)
+                                self.fileInfo.append(tempFileInfo)
+
+				'''Get the license information for this file'''
+				sqlCommand = """SELECT dla.license_id
+						FROM   licensings AS l 
+						       LEFT OUTER JOIN doc_license_associations AS dla ON l.doc_license_association_id = dla.id
+						WHERE  l.package_file_id = %s"""
+
+				dbCursor.execute(sqlCommand, row[0])
+				for y in xrange(0, dbCursor.rowcount):
+					tempLicensingInfo = licenseingInfo.licensingInfo()
+					tempLicensingInfo.getLicensingInfo(dbCursorfetchone()[0], dbCursor)
+					self.licensingInfo.append(tempLicensingInfo)
+					
+			'''Get Reviewer Info'''
+			sqlCommand = """SELECT id FROM reviewers WHERE spdx_doc_id = %s"""
+			dbCursor.execute(sqlCommand, spdx_doc_id)
+			for x in xrange(0, dbCursor.rowcount):
+				tempReviewerInfo = reviewerInfo.reviewerInfo()
+				tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
+				self.reviewerInfo.append(tempReviewerInfo)
 
 	def generateSPDXDoc(self):
 		'''
@@ -200,12 +238,11 @@ class SPDX:
 				if os.path.isfile(os.path.join(extractTo, fileName)):
 					tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName))
 					tempFileInfo.populateFileInfo()
-					tempLicenseInfo = licensingInfo.licensingInfo("LicenseRef-" + str(licenseCounter), "", tempFileInfo.licenseInfoInFile[0], "", tempFileInfo.licenseComments)
+					tempLicenseInfo = licensingInfo.licensingInfo("LicenseRef-" + str(licenseCounter), "", tempFileInfo.licenseInfoInFile[0], "", tempFileInfo.licenseComments, tempFileInfo.fileChecksum)
 					if tempLicenseInfo not in self.licensingInfo:
 						self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
 						self.licensingInfo.append(tempLicenseInfo)
 						licenseCounter += 1
-
 					sha1Checksums.append(tempFileInfo.fileChecksum)
 					self.fileInfo.append(tempFileInfo)
 											
@@ -218,3 +255,4 @@ class SPDX:
 		self.packageInfo.generatePackageInfo(sha1Checksums)
 		ninka_out.close()
 		foss_out.close()
+		shutil.rmtree(extractTo)

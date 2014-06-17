@@ -9,8 +9,22 @@ import licensingInfo
 import reviewerInfo
 
 def main(argv):
-	opts, args = getopt.getopt(argv, "hp:s", ["help", "packagePath=", "documentComment=", "creator=", "creatorComment=", "packageVersion=", "packageSupplier=", "packageDownloadLocation=", "packageOriginator=", 
-						  "packageHomePage=", "packageSourceInfo=", "packageLicenseComments=", "packageDescription=", "print=", "scan"])
+	opts, args = getopt.getopt(argv, "hp:s", [	"help", 
+							"packagePath=", 
+							"documentComment=", 
+							"creator=", 
+							"creatorComment=", 
+							"packageVersion=", 
+							"packageSupplier=", 
+							"packageDownloadLocation=", 
+							"packageOriginator=", 
+						  	"packageHomePage=", 
+							"packageSourceInfo=", 
+							"packageLicenseComments=", 
+							"packageDescription=", 
+							"print=", 
+							"spdxDocId=",
+							"scan"])
 	
 	
 	documentComment 	= ""
@@ -28,6 +42,7 @@ def main(argv):
 	packageDescription	= ""
 	output 			= ""
 	scan			= False
+	spdxDocId		= ""
 
 	for opt, arg in opts:
 		if opt == '-h':
@@ -58,9 +73,14 @@ def main(argv):
 			packageDescription = arg
 		elif opt == '--print':
 			output = arg
-		elif opt == '--scan':
+		elif opt in ('--scan','-s'):
 			scan = True
-	
+		elif opt == '--spdxDocId':
+			spdxDocId = arg
+
+	if scan and (packagePath == "" or not os.path.isfile(packagePath)):	
+		raise Exception('Invalid Package path')
+
 	spdxDoc = spdx.SPDX(	documentComment 	= documentComment,
 				packagePath             = packagePath,
       	               		creator                 = creator,
@@ -75,16 +95,15 @@ def main(argv):
                         	packageLicenseComments  = packageLicenseComments,
                         	packageDescription      = packageDescription)	
 
-	if scan and packagePath == "" or not os.path.isfile(packagepath):
-		raise Exception('Invalid package path.')
-				
+	if spdxDocId != "":
+		spdxDoc.getSPDX(spdxDocId)
 
-	if scan:
+	if scan == True:
         	spdxDoc.generateSPDXDoc()
                 spdxDoc.insertSPDX()
 
 	if output.lower() == 'tag':
-		spdxDoc.ouputSPDX_TAG()
+		spdxDoc.outputSPDX_TAG()
 	elif output.lower() == 'rdf':
 		spdxDoc.outputSPDX_RDF()
 	elif output.lower() == 'json':

@@ -56,33 +56,31 @@ class creatorInfo:
 		if self.licenseListVersion != "":
 			print '<licenseListVersion>' + self.licenseListVersion + '</licenseListVersion>'
 		
-	def getCreatorInfo(self, creator_id):
+	def getCreatorInfo(self, creator_id, dbCursor):
 		'''
 		generates the creator structure from the database.
 		'''
 
-		'''Create connection'''
+		'''get creator info'''
+		sqlCommand = 	"""SELECT id AS creator_id,
+		     	  	  	  generated_at,
+				          creator_comments,					
+			  		  license_list_version,
+				   	  spdx_doc_id,
+					  creator,
+		 	  		  created_at,
+			  		  updated_at
+			  	   FROM creators
+			  	   WHERE id = %s"""
+
+		dbCursor.execute(sqlCommand,(creator_id))
 			
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-			'''get creator info'''
-			sqlCommand = 	"""SELECT id AS creator_id,
-		      	  	  		  generated_at,
-				     		  creator_comments,					
-			  			  license_list_version,
-						  spdx_doc_id,
-						  creator,
-		 	  			  created_at,
-			  			  updated_at
-			  		   FROM creators
-			  		   WHERE id = %s"""
-			dbCursor.execute(sqlCommand,(creator_id))
-			
-			'''Get row of information'''
-			creatorRow = dbCursor.fetchone()
-			if creatorRow is not None:
-				self.creatorComment 	= creatorRow.creator_comments
-				self.licenseListVersion = creatorRow.license_list_version
-				self.creator			= creatorRow.creator
-				self.created			= creatorRow.generated_at
+		'''Get row of information'''
+		creatorRow = dbCursor.fetchone()
+		if creatorRow is not None:
+			self.creatorComment 		= creatorRow[2]
+			self.licenseListVersion 	= creatorRow[3]
+			self.creator			= creatorRow[5]
+			self.created			= creatorRow[6]
 		
 	
