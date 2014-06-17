@@ -15,7 +15,7 @@ System Overview
 
 Current Version
 ---------------
-Version 1.0
+<a href="https://github.com/zwmcfarland/DoSPDX/blob/master/ChangeLog.md">Version 1.0</a>
 
 License
 -------
