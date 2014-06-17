@@ -86,5 +86,7 @@ Usage
   - ***Example:*** `./DoSPDX.py --packageLicenseComments "Apache"`
  
 
-<h5>Code Contributions</h5>
+
+Code Contributions
+------------------
 All contributions to DoSPDX will be subject to review by the owner of the repo before being merged.
