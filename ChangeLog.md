@@ -4,7 +4,7 @@ Change Log
 Version 1.0 06/17/2014
 ----------------------
 
-#Features
+####Features
 - Scans software packages to create SPDX documents.
   - Uses both FOSSology and Ninka Scanners to produce a higher defenintion document.
 - Print SPDX documents in TAG and/or RDF formats.
