@@ -9,10 +9,10 @@ import settings
 
 class reviewerInfo:
 	
-	def __init__( self):
-		self.reviewer 		= ""
+	def __init__(self):
+		self.reviewer 		= None
 		self.reviewDate 	= datetime.datetime.now()
-		self.reviewComment 	= ""
+		self.reviewComment 	= None
 
 	def getReviewerInfo(self, reviewer_id, dbCursor):
 		'''
@@ -22,24 +22,23 @@ class reviewerInfo:
 		dbCursor.execute(sqlCommand, (reviewer_id))
 		
 		queryReturn = dbCursor.fetchone()
-
-		self.reviewer		= queryReturn.reviewer
-		self.reviewDate		= queryReturn.reviewer_date
-		self.reviewComment	= queryReturn.reviewer_comment
+		if queryReturn is not None:
+			self.reviewer		= queryReturn.reviewer
+			self.reviewDate		= queryReturn.reviewer_date
+			self.reviewComment	= queryReturn.reviewer_comment
 	
-	def insertReviewerInfo(self, spdx_doc_id):
+	def insertReviewerInfo(self, spdx_doc_id, dbCursor):
 		'''
 		inserts reviewerInfo into database
 		'''
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-			'''Get id of reviewer'''
-			sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
-			dbCursor.execute(sqlCommand)
-			reviewerId = dbCursor.fetchone()[10]
+		'''Get id of reviewer'''
+		sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
+		dbCursor.execute(sqlCommand)
+		reviewerId = dbCursor.fetchone()[10]
 
-			sqlCommand   = """INSERT INTO reviewers (reviewer, reviewer_date, reviewer_comment, spdx_doc_id, created_at, updated_at)
- 					  VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
-			dbCursor.execute(sqlCommand, (self.reviewer, self.reviewDate, self.reviewComment, spdx_doc_id))
+		sqlCommand   = """INSERT INTO reviewers (reviewer, reviewer_date, reviewer_comment, spdx_doc_id, created_at, updated_at)
+					  	  VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+		dbCursor.execute(sqlCommand, (self.reviewer, self.reviewDate, self.reviewComment, spdx_doc_id))
 		
 		return reviewerId
 			
@@ -47,17 +46,23 @@ class reviewerInfo:
 		'''
 		outputs reviewerInfo to stdout
 		'''
-		if self.reviewer != "":
-			print "Reviewer: " + self.reviewer
-		if self.reviewer != "" and self.reviewDate != "":
-			print "ReviewDate: " + str(self.reviewDate)
-		if self.reviewComment != "":
-			print "ReviewComment: <text>" + self.reviewComment + "</text>"
+		output = None
+		if self.reviewer != None:
+			output += "Reviewer: " + self.reviewer + '\n'
+		if self.reviewer != None and self.reviewDate != None:
+			output += "ReviewDate: " + str(self.reviewDate) + '\n'
+		if self.reviewComment != None:
+			output += "ReviewComment: <text>" + self.reviewComment + "</text>\n"
+			
+		return output
 	
 	def outputReviewerInfo_RDF(self):
-		print '<reviewer>' + self.reviewer + '</reviewer>'
-		if self.reviewer != "" and self.reviewDate != "":
-                        print '<reviewDate>' + str(self.reviewDate) + '</reviewDate>'
-                if self.reviewComment != "":
-                        print '<rdfs:comment>' + self.reviewComment + '</rdfs:comment>'
+		output = None
+		output += '\t\t<reviewer>' + self.reviewer + '</reviewer>\n'
+		if self.reviewer != None and self.reviewDate != None:
+			output += '\t\t<reviewDate>' + str(self.reviewDate) + '</reviewDate>\n'
+		if self.reviewComment != None:
+			output += '\t\t<rdfs:comment>' + self.reviewComment + '</rdfs:comment>\n'
+		
+		return output
 

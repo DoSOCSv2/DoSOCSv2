@@ -9,40 +9,40 @@ import licensingInfo
 import reviewerInfo
 
 def main(argv):
-	opts, args = getopt.getopt(argv, "hp:s", [	"help", 
-							"packagePath=", 
-							"documentComment=", 
-							"creator=", 
-							"creatorComment=", 
-							"packageVersion=", 
-							"packageSupplier=", 
-							"packageDownloadLocation=", 
-							"packageOriginator=", 
-						  	"packageHomePage=", 
-							"packageSourceInfo=", 
-							"packageLicenseComments=", 
-							"packageDescription=", 
-							"print=", 
-							"spdxDocId=",
-							"scan"])
+	opts, args = getopt.getopt(argv, "hp:", [	"help", 
+											"packagePath=", 
+											"documentComment=", 
+											"creator=", 
+											"creatorComment=", 
+											"packageVersion=", 
+											"packageSupplier=", 
+											"packageDownloadLocation=", 
+											"packageOriginator=", 
+											"packageHomePage=", 
+											"packageSourceInfo=", 
+											"packageLicenseComments=", 
+											"packageDescription=", 
+											"print=", 
+											"spdxDocId=",
+											"scan"])
 	
 	
-	documentComment 	= ""
-	packagePath     	= ""
-	creator         	= ""
-	creatorComment  	= ""
-	licenseListVersion 	= ""
-	packageVersion		= ""
-	packageSupplier		= ""
-	packageOriginator	= ""
+	documentComment 		= ""
+	packagePath     		= None
+	creator         		= ""
+	creatorComment  		= ""
+	licenseListVersion 		= ""
+	packageVersion			= ""
+	packageSupplier			= ""
+	packageOriginator		= ""
 	packageDownloadLocation = ""
-	packageHomePage		= ""
-	packageSourceInfo	= ""
+	packageHomePage			= ""
+	packageSourceInfo		= ""
 	packageLicenseComments  = ""
-	packageDescription	= ""
-	output 			= ""
-	scan			= False
-	spdxDocId		= ""
+	packageDescription		= ""
+	output 					= ""
+	scan					= False
+	spdxDocId				= None
 
 	for opt, arg in opts:
 		if opt == '-h':
@@ -73,39 +73,42 @@ def main(argv):
 			packageDescription = arg
 		elif opt == '--print':
 			output = arg
-		elif opt in ('--scan','-s'):
+		elif opt in ('--scan'):
 			scan = True
 		elif opt == '--spdxDocId':
 			spdxDocId = arg
 
-	if scan and (packagePath == "" or not os.path.isfile(packagePath)):	
+	if scan and (packagePath == None or not os.path.isfile(packagePath)):	
 		raise Exception('Invalid Package path')
 
-	spdxDoc = spdx.SPDX(	documentComment 	= documentComment,
-				packagePath             = packagePath,
-      	               		creator                 = creator,
-       	               		creatorComment          = creatorComment,
+	spdxDoc = spdx.SPDX(documentComment 		= documentComment,
+						packagePath             = packagePath,
+						creator                 = creator,
+       	               	creatorComment          = creatorComment,
 		                licenseListVersion      = "1.19",
-       	                	packageVersion          = packageVersion,
-       	               		packageSupplier         = packageSupplier,
-       	                	packageOriginator       = packageOriginator,
-                       		packageDownloadLocation = packageDownloadLocation,
-                        	packageHomePage         = packageHomePage,
-                        	packageSourceInfo       = packageSourceInfo,
-                        	packageLicenseComments  = packageLicenseComments,
-                        	packageDescription      = packageDescription)	
+       	                packageVersion          = packageVersion,
+       	               	packageSupplier         = packageSupplier,
+       	                packageOriginator       = packageOriginator,
+                       	packageDownloadLocation = packageDownloadLocation,
+                        packageHomePage         = packageHomePage,
+                        packageSourceInfo       = packageSourceInfo,
+                        packageLicenseComments  = packageLicenseComments,
+                        packageDescription      = packageDescription)	
 
-	if spdxDocId != "":
-		spdxDoc.getSPDX(spdxDocId)
+	if spdxDocId != None:
+		result = spdxDoc.getSPDX(spdxDocId)
 
+	if result == False:
+		sys.exit()
+		
 	if scan == True:
-        	spdxDoc.generateSPDXDoc()
-                spdxDoc.insertSPDX()
+		spdxDoc.generateSPDXDoc()
+		spdxDoc.insertSPDX()
 
 	if output.lower() == 'tag':
-		spdxDoc.outputSPDX_TAG()
+		print spdxDoc.outputSPDX_TAG()
 	elif output.lower() == 'rdf':
-		spdxDoc.outputSPDX_RDF()
+		print spdxDoc.outputSPDX_RDF()
 	elif output.lower() == 'json':
 		spdxDoc.outputSPDX_JSON()
 

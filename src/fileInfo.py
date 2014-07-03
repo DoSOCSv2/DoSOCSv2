@@ -14,220 +14,199 @@ from signal import signal, SIGPIPE, SIG_DFL
 from mimetypes import MimeTypes
 
 class fileInfo:
-	
-	def __init__(self, filePath = ""):
-		self.filePath 				= filePath
-		self.fileName 				= os.path.split(filePath)[1]
-		self.fileType 				= ""
-		self.fileChecksum 			= ""
-		self.fileChecksumAlgorithm  		= "SHA1"
-		self.licenseConcluded 			= "NO ASSERTION"
-		self.licenseInfoInFile			= []
-		self.licenseComments			= ""
-		self.fileCopyRightText			= ""
-		self.artifactOfProjectName		= ""
-		self.artifactOfProjectHomePage		= ""
-		self.artifactOfProjectURI 		= ""
-		self.fileComment			= ""
-		self.fileNotice				= ""
-		self.fileContributor			= ""
-		self.fileDependency			= ""
-		self.fileRealativePath			= ""
-		if self.filePath != "":
-			self.getChecksum()	
+	def __init__(self, filePath = None):
+		self.filePath 		 	   		= filePath
+		self.fileType 		 	   		= None
+		self.fileChecksum 	       		= None
+		self.fileChecksumAlgorithm 		= "SHA1"
+		self.licenseConcluded 	   		= "NO ASSERTION"
+		self.licenseInfoInFile	   		= []
+		self.licenseComments	   		= ""
+		self.fileCopyRightText	   		= ""
+		self.artifactOfProjectName	 	= ""
+		self.artifactOfProjectHomePage 	= ""
+		self.artifactOfProjectURI 	 	= ""
+		self.fileComment		 		= ""
+		self.fileNotice		 			= ""
+		self.fileContributor		 	= ""
+		self.fileDependency		 		= ""
+		self.fileRealativePath	 		= ""
+		
+		if self.filePath != None:
+			self.getChecksum()
+			self.fileName 		 	   	= os.path.split(filePath)[1]
 
 	def getFileInfo(self, package_file_id, dbCursor):
 		'''
 		populates fileInfo from database
 		'''
-		sqlCommand = """SELECT file_name,
-				       file_type,
-				       file_checksum,
-				       license_concluded,
-				       license_info_in_file,
-				       license_comments,
-				       file_copyright_text,
-				       artifact_of_project_name,
-				       artifact_of_project_homepage,
-				       artifact_of_project_uri,
-				       file_comment,
-				       file_notice,
-				       file_contributor,
-				       file_dependency,
-				       relative_path,
-				       file_checksum_algorithm
-				FROM package_files WHERE id = %s"""
+		
+		sqlCommand = """SELECT  file_name,
+								file_type,
+								file_checksum,
+								license_concluded,
+								license_info_in_file,
+								license_comments,
+								file_copyright_text,
+								artifact_of_project_name,
+								artifact_of_project_homepage,
+								artifact_of_project_uri,
+								file_comment,
+								file_notice,
+								file_contributor,
+								file_dependency,
+								relative_path,
+								file_checksum_algorithm
+						FROM package_files WHERE id = %s"""
 		dbCursor.execute(sqlCommand, package_file_id)
 		queryResult = dbCursor.fetchone()
-		self.fileName 			= queryResult[0]
-		self.fileType 			= queryResult[1]
-		self.fileChecksum 		= queryResult[2]
-		self.fileChecksumAlgorithm	= queryResult[15]
-		self.licenseConcluded 		= queryResult[3]
-		self.licenseInfoInFile		= queryResult[4].split()
-		self.licenseComments		= queryResult[5]
-		self.fileCopyRightText		= queryResult[6]
-		self.artifactOfProjectName	= queryResult[7]
-		self.artifactOfProjectHomePage	= queryResult[8]
-		self.artifactOfProjectURI 	= queryResult[9]
-		self.fileComment		= queryResult[10]
-		self.fileNotice			= queryResult[11]
-		self.fileContributor		= queryResult[12]
-		self.fileDependency		= queryResult[13]
-		self.fileRealativePath		= queryResult[14]
-	
-	def insertFileInfo(self, spdx_doc_id, package_id):
+		
+		if queryResult != None:
+			self.fileName 					= queryResult[0]
+			self.fileType 					= queryResult[1]
+			self.fileChecksum 				= queryResult[2]
+			self.fileChecksumAlgorithm		= queryResult[15]
+			self.licenseConcluded 			= queryResult[3]
+			self.licenseInfoInFile			= queryResult[4].split()
+			self.licenseComments			= queryResult[5]
+			self.fileCopyRightText			= queryResult[6]
+			self.artifactOfProjectName		= queryResult[7]
+			self.artifactOfProjectHomePage	= queryResult[8]
+			self.artifactOfProjectURI 		= queryResult[9]
+			self.fileComment				= queryResult[10]
+			self.fileNotice					= queryResult[11]
+			self.fileContributor			= queryResult[12]
+			self.fileDependency				= queryResult[13]
+			self.fileRealativePath			= queryResult[14]
+			
+	def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
 		'''
 		inserts fileInfo into database.
 		'''
-		with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
-			'''Get id of next file'''
-			cached = self.isCached()
+		'''Get id of next file'''
+		fileId = self.isCached()
+		
+		if fileId == -1:
+			sqlCommand = "SHOW TABLE STATUS LIKE 'package_files'"
+			dbCursor.execute(sqlCommand)
+			fileId = dbCursor.fetchone()[10]
 			
-			fileId = cached
-			if cached == -1:
-				sqlCommand = "SHOW TABLE STATUS LIKE 'package_files'"
-	                        dbCursor.execute(sqlCommand)
-        	                fileId = dbCursor.fetchone()[10]
-
-				sqlCommand = """INSERT INTO package_files (file_name, 
-									  file_type, 
-									  file_copyright_text, 
-									  artifact_of_project_name, 
-									  artifact_of_project_homepage, 
-									  artifact_of_project_uri, 
-									  license_concluded, 
-									  license_info_in_file, 
-									  file_checksum, 
-									  file_checksum_algorithm, 
-									  relative_path, 
-									  license_comments, 
-									  file_notice, 
-									  file_contributor, 
-								          file_dependency, 
-									  file_comment, 
-									  created_at, 
-									  updated_at)
-					  		VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
-	
-				dbCursor.execute( sqlCommand, 
-						       	(
-								self.fileName, 
-								self.fileType, 
-								self.fileCopyRightText, 
-								self.artifactOfProjectName, 
-								self.artifactOfProjectHomePage, 
-								self.artifactOfProjectURI, 
-								self.licenseConcluded, 
-								','.join(self.licenseInfoInFile), 
-								self.fileChecksum, 
-								self.fileChecksumAlgorithm, 
-								self.fileRealativePath, 
-								self.licenseComments, 
-								self.fileNotice, 
-								self.fileContributor, 
-								self.fileDependency, 
-								self.fileComment
-							)
-						)
-	
-			sqlCommand = """INSERT INTO doc_file_package_associations (spdx_doc_id, package_id, package_file_id, created_at, updated_at)
-  				        VALUES (%s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
-
+			sqlCommand = """INSERT INTO package_files (file_name, file_type,file_copyright_text,artifact_of_project_name,artifact_of_project_homepage,artifact_of_project_uri,license_concluded,license_info_in_file,file_checksum,
+													   file_checksum_algorithm,relative_path,license_comments,file_notice,file_contributor,file_dependency,file_comment,created_at,updated_at)
+							VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+							
+			dbCursor.execute(sqlCommand,(self.fileName,self.fileType,self.fileCopyRightText,self.artifactOfProjectName,self.artifactOfProjectHomePage,self.artifactOfProjectURI,self.licenseConcluded,','.join(self.licenseInfoInFile),self.fileChecksum,
+										self.fileChecksumAlgorithm,self.fileRealativePath,self.licenseComments,self.fileNotice,self.fileContributor,self.fileDependency,self.fileComment))
 			
-			dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId))
-			
-			for license in self.licenseInfoInFile:
-				sqlCommand = """INSERT INTO package_license_info_from_files (package_id, package_license_info_from_files, created_at, updated_at)
+		sqlCommand = """INSERT INTO doc_file_package_associations (spdx_doc_id, package_id, package_file_id, created_at, updated_at)
+						VALUES (%s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
+						
+		dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId))
+		
+		sqlCommand = """INSERT INTO package_license_info_from_files (package_id, package_license_info_from_files, created_at, updated_at)
 						VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"""
-
-				dbCursor.execute(sqlCommand, (package_id, license))
+						
+		for license in self.licenseInfoInFile:
+			dbCursor.execute(sqlCommand, (package_id, license))
+			
 		return fileId
-
+	
 	def outputFileInfo_TAG(self):
 		'''
 		outputs fileInfo to stdout
 		'''
-		print "FileName: " + self.fileName
+		output = ""
+		output += "FileName: " + str(self.fileName) + '\n'
 		
-		if self.fileType != "":
-			print "FileType: " + self.fileType
-		
-		print "FileChecksum: " + self.fileChecksum
-		print "LicenseConcluded: " + self.licenseConcluded
-		
-		for license in self.licenseInfoInFile:
-			print "LicenseInfoInFile: " + license
-		
-		if self.licenseComments != "":
-			print "LicenseComments: <text>" + self.licenseComments + "</text>"
-		
-		print "FileCopyrightText: <text>" + self.fileCopyRightText + "</text>"
-				
-		for projectName in self.artifactOfProjectName:
-			print "ArtifactOfProjectName: " + projectName
-		for homePage in self.artifactOfProjectHomePage:
-			print "ArtifactOfProjectHomePage: " + homePage
-		for uri in self.artifactOfProjectURI:
-			print "ArtifactOfProjectURI: " + uri
-
-		if self.fileComment != "":
-			print "FileComment: <text>" + self.fileComment + "</text>"
-		if self.fileNotice != "":
-			print "FileNotice: <text>" + self.fileNotice + "</text>"
-
-		for contributor in self.fileContributor:
-			print "FileContributor: " + contributor
-		for dependency in self.fileDependency:
-			print "FileDependency: " + dependency		
+		if self.fileType != None:
+			output += "FileType: " + str(self.fileType) + '\n'
 			
-	def outputFileInfo_RDF(self):
-		print '<fileName>' + self.fileName + '</fileName>'
-
-		if self.fileType != "":
-			print '<fileType rdf:resource="' + self.fileType + '"/>'
-
-		print '<checksum>'
-		print '<Checksum>'
-		print '<algorithm>' + self.fileChecksumAlgorithm + '</algorithm>'
-		print '<checksumValue>' + self.fileChecksum + '</checksumValue>'
-		print '</Checksum>'
-		print '</checksum>'
-		print '<licenseConcluded>'
-		print '<DisjunctiveLicenseSet>'
-		print '<member rdf:resource="' + self.licenseConcluded + '"/>'
-		print '</DisjunctiveLicenseSet>'
-		print '</licenseConcluded>'
-
-		for license in self.licenseInfoInFile:
-			print '<licenseInfoInFile rdf:resource="' + license + '/>'
-				
-		if self.licenseComments != "":
- 			print '<licenseComments>' + self.licenseComments + '</licenseComments>'
+		output += "FileChecksum: " + str(self.fileChecksum) + '\n'
+		output += "LicenseConcluded: " + str(self.licenseConcluded) + '\n'
 		
-		print '<copyrightText>' + self.fileCopyRightText + '</copyrightText>'
+		for license in self.licenseInfoInFile:
+			output += "LicenseInfoInFile: " + str(license) + '\n'
+			
+		if self.licenseComments != None:
+			output += "LicenseComments: <text>" + str(self.licenseComments) + "</text>\n"
+			
+		output += "FileCopyrightText: <text>" + str(self.fileCopyRightText) + "</text>\n"
+		
+		for projectName in self.artifactOfProjectName:
+			output += "ArtifactOfProjectName: " + str(projectName) + '\n'
+			
+		for homePage in self.artifactOfProjectHomePage:
+			output += "ArtifactOfProjectHomePage: " + str(homePage)
+			
+		for uri in self.artifactOfProjectURI:
+			output += "ArtifactOfProjectURI: " + str(uri)
+			
+		if self.fileComment != None:
+			output += "FileComment: <text>" + str(self.fileComment) + "</text>\n"
+			
+		if self.fileNotice != None:
+			output += "FileNotice: <text>" + str(self.fileNotice) + "</text>"
+			
+		for contributor in self.fileContributor:
+			output += "FileContributor: " + str(contributor)
+			
+		for dependency in self.fileDependency:
+			output += "FileDependency: " + str(dependency)
+			
+		return output
+	
+	def outputFileInfo_RDF(self):
+		output = ""
+		output += '\t\t<fileName>' + str(self.fileName) + '</fileName>\n'
+		
+		if self.fileType != None:
+			output +=  '\t\t<fileType rdf:resource="' + str(self.fileType) + '"/>\n'
+			
+		output += '\t\t<checksum>\n'
+		output += '\t\t\t<Checksum>\n'
+		output += '\t\t\t\t<algorithm>' + str(self.fileChecksumAlgorithm) + '</algorithm>\n'
+		output += '\t\t\t\t<checksumValue>' + str(self.fileChecksum) + '</checksumValue>\n'
+		output += '\t\t\t</Checksum>\n'
+		output += '\t\t</checksum>\n'
+		output += '\t\t<licenseConcluded>\n'
+		output += '\t\t\t<DisjunctiveLicenseSet>\n'
+		output += '\t\t\t\t<member rdf:resource="' + str(self.licenseConcluded) + '"/>\n'
+		output += '\t\t\t</DisjunctiveLicenseSet>\n'
+		output += '\t\t</licenseConcluded>\n'
+		
+		for license in self.licenseInfoInFile:
+			output += '\t\t<licenseInfoInFile rdf:resource="' + str(license) + '/>\n'
+			
+		if self.licenseComments != None:
+			output += '\t\t<licenseComments>' + str(self.licenseComments) + '</licenseComments>\n'
+			
+		output += '\t\t<copyrightText>' + str(self.fileCopyRightText) + '</copyrightText>\n'
 		
 		if len(self.artifactOfProjectName):
-			print '<artifactOf>'
+			output += '\t\t<artifactOf>\n'
 			counter = 0
 			for projectName in self.artifactOfProjectName:
-				print '<' + projectName + ':Project>'
-				print '<doap:homepage rdf:resource="' + self.artifactOfProjectHomePage[counter] + '" />'
-				print '<artifactOf rdf:resource="' + self.artifactOfProjectURI[counter] + '" />'		
-				print '</' + projectName + ':Project>'
+				output += '\t\t\t<' + str(projectName) + ':Project>\n'
+				output += '\t\t\t\t<doap:homepage rdf:resource="' + str(self.artifactOfProjectHomePage[counter]) + '" />\n'
+				output += '\t\t\t\t<artifactOf rdf:resource="' + str(self.artifactOfProjectURI[counter]) + '" />\n'
+				output += '\t\t\t</' + str(projectName) + ':Project>\n'
 				counter = counter + 1
-			print '</artifactOf>'
-		if self.fileComment != "":
-			print 	'<rdfs:comment>' + self.fileComment + '</rdfs:comment>'
-		
-		if self.fileNotice != "":
-			print '<noticeText>' + self.fileNotice + '</noticeText>'
-		
+			output += '\t\t</artifactOf>\n'
+			
+		if self.fileComment != None:
+			output += 	'\t\t<rdfs:comment>' + str(self.fileComment) + '</rdfs:comment>\n'
+			
+		if self.fileNotice != None:
+			output += '\t\t<noticeText>' + str(self.fileNotice) + '</noticeText>\n'
+			
 		for contributor in self.fileContributor:
-                        print '<fileContributor>' + contributor + '</fileContributor>'
-                for dependency in self.fileDependency:
-                        print '<fileDependency rdf:nodeID="' + dependency + '"/>'
-
+			output += '\t\t<fileContributor>' + str(contributor) + '</fileContributor>\n'
+			
+		for dependency in self.fileDependency:
+			output += '\t\t<fileDependency rdf:nodeID="' + str(dependency) + '"/>\n'
+	
+		return output
+	
 	def isCached(self):
 		'''
 		checks whether or not file is in database
@@ -281,6 +260,7 @@ class fileInfo:
 				self.licenseInfoInFile.append("NO ASSERTION")
 				self.licenseComments  = "#FOSSology " + fossLicense + " #Ninka " + ninkaLicense 
  		else:
-			self.getFileInfo(cached)
+ 			with MySQLdb.connect(host = settings.database_host, user = settings.database_user, passwd = settings.database_pass, db = settings.database_name) as dbCursor:
+			 	self.getFileInfo(cached, dbCursor)
 
 	
