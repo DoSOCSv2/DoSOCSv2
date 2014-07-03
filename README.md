@@ -42,7 +42,7 @@ Usage
 
 #####Options
 
-- `-p [Path to archive]` or `--packagePath [Path to archive]` Allows user to specify which package to run DoSPDX against.
+- `--packagePath [Path to archive]` Allows user to specify which package to run DoSPDX against.
   - Conditonaly optional, Required if used with `-s` or `--scan`
   - ***Example:*** `./DoSPDX.py -p archive.tar.bz2`
 - `-s` or `--scan` Runs a scan on the package specified in package path argument.
