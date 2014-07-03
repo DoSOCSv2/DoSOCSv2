@@ -40,33 +40,33 @@ Non_Licenses = [
 """Kept separate for now for sorting purposes"""
 
 License_Approximations = [
-    ("BSD-style", "BSD3", False), ("BSD-style", "spdxBSD3", False), 
-    ("BSD-style", "spdxBSD4", False), ("BSD", "BSD3", False), 
+    ("BSD-style", "BSD3", False), ("BSD-style", "spdxBSD3", False),
+    ("BSD-style", "spdxBSD4", False), ("BSD", "BSD3", False),
     ("BSD", "spdxBSD4", False), ("MIT-style", "MITX11", False),
     (False, "SameAsPerl", False),
     ("Public-domain-claim", "publicDomain", False),
-    (False, "DoWhatTheFuckYouWantv2", "WTFPL"), 
+    (False, "DoWhatTheFuckYouWantv2", "WTFPL"),
     ("LGPL_v2.1+", "LesserGPLv2.1+", "LGPL-2.1+"),
     ]
 """
-Fossology and Ninka are vague on some license output.  
-Because these are not explicit matches, we cannot confirm 
-their meaning.  However I put "approximations" and other 
+Fossology and Ninka are vague on some license output.
+Because these are not explicit matches, we cannot confirm
+their meaning.  However I put "approximations" and other
 recorded instances here for future development.
 """
 
 Licenses = [
-    ("None", "NONE", "NONE"), #This is confirmation of no license
+    ("None", "NONE", "NONE"),  # This is confirmation of no license
     ("GPL_v2", "GPLv2", "GPL-2.0"),
     ("GPL_v2+", "GPLv2+", "GPL-2.0+"),
     (False, "LesserGPLv2.1+", "LGPL-2.1+"),
     #Not sure if fossology LGPL is "Lesser" or "Library"
-    ("RSA-Security", False, False), 
+    ("RSA-Security", False, False),
     (False, "BeerWareVer42", False),
-    ("GPL", "GPLnoVersion", False), 
+    ("GPL", "GPLnoVersion", False),
     ("Free-SW", False, False),
-    ("Affero_v3+", "AGPLv3+", False), 
-    ("GPL_v3", "GPLv3", "GPL-3.0"), 
+    ("Affero_v3+", "AGPLv3+", False),
+    ("GPL_v3", "GPLv3", "GPL-3.0"),
     ("GPL_v3+", "GPLv3+", "GPL-3.0+"),
     (False, False, "BSD-2-Clause"),
     (False, False, "BSD-2-Clause-FreeBSD"),
@@ -78,28 +78,28 @@ Licenses = [
     #Fossology only has BSD, BSD-Style, and BSD(non-commercial)
     #Ninka has many BSD variants, but I don't know which maps to what
     ("AFL_v1.1", False, "AFL-1.1"),
-    ("AFL_v1.2", False, "AFL-1.2"), 
+    ("AFL_v1.2", False, "AFL-1.2"),
     ("AFL_v2.0", False, "AFL-2.0"),
-    ("AFL_v2.1", False, "AFL-2.1"), 
+    ("AFL_v2.1", False, "AFL-2.1"),
     ("AFL_v3.0", False, "AFL-3.0"),
-    ("AFL_v3.0", False, "AFL-3.0"), 
+    ("AFL_v3.0", False, "AFL-3.0"),
     (False, False, "Aladdin"),
-    (False, False, "ANTLR-PD"), 
-    ("Apache_v1.0","Apachev1.0","Apache-1.0"),
-    ("Apache_v1.1","Apachev1.1","Apache-1.1"),
-    ("Apache_v2.0","Apachev2","Apache-2.0"),
-    ("APSL_v1.0", False, "APSL-1.0"), 
+    (False, False, "ANTLR-PD"),
+    ("Apache_v1.0", "Apachev1.0", "Apache-1.0"),
+    ("Apache_v1.1", "Apachev1.1", "Apache-1.1"),
+    ("Apache_v2.0", "Apachev2", "Apache-2.0"),
+    ("APSL_v1.0", False, "APSL-1.0"),
     ("APSL_v1.1", False, "APSL-1.1"),
-    ("APSL_v1.2", False, "APSL-1.2"), 
+    ("APSL_v1.2", False, "APSL-1.2"),
     ("APSL_v2.0", False, "APSL-2.0"),
     ("Artistic", "ArtisticLicensev1", "Artistic-1.0"),
     ("Artistic_v2.0", False, "Artistic-2.0"),
     ("Attribution-Assurance", False, "AAL"),
     ("BitTorrent_v1.0", False, "BitTorrent-1.0"),
     ("BitTorrent_v1.1", False, "BitTorrent-1.1"),
-    ("Boost_v1.0", "boostV1", "BSL-1.0"), 
+    ("Boost_v1.0", "boostV1", "BSL-1.0"),
     ("CeCILL_v1", False, "CECILL-1.0"),
-    ("CeCILL_v1.1", False, "CECILL-1.1"), 
+    ("CeCILL_v1.1", False, "CECILL-1.1"),
     ("CeCILL_v2.0", False, "CECILL-2.0"),
     ("CeCILL-B", False, "CECILL-B"),
     ("CeCILL-C", False, "CECILL-C"),
@@ -112,7 +112,7 @@ Licenses = [
     ("CPAL_v1.0", False, "CPAL-1.0"),
     ("CPL_v1.0", "CPLv1", "CPL-1.0"),
     (False, False, "CATSOL-1.1"),
-    (False, False, "Condor-1.1"), #Fossology has condor, but no version
+    (False, False, "Condor-1.1"),  # Fossology has condor, but no version
     ("CCA_v1.0", False, "CC-BY-1.0"),
     (False, False, "CC-BY-2.0"),
     ("CCA_v2.5", False, "CC-BY-2.5"),
@@ -140,30 +140,30 @@ Licenses = [
     (False, False, "CC0-1.0"),
     ("CUA_v1.0", False, "CUA-OPL-1.0"),
     (False, False, "D-FSL-1.0"),
-    (False, False, "WTFPL"), #Ninka has a "v2" verison of this
+    (False, False, "WTFPL"),  # Ninka has a "v2" verison of this
     ("Eclipse_v1.0", False, "EPL-1.0"),
     #Ninka has an EPLv1, but I don't know if it's Eclipse or Erlang
     (False, False, "eCos-2.0"),
-    (False, False, "ECL-1.0"), #Fossolgoy has ECL, but no version
+    (False, False, "ECL-1.0"),  # Fossolgoy has ECL, but no version
     (False, False, "ECL-2.0"),
     ("Eiffel_v1", False, "EFL-1.0"),
     ("Entessa", False, "Entessa"),
     (False, False, "ErlPL-1.1"),
-    (False, False, "EUPL-1.0"), 
+    (False, False, "EUPL-1.0"),
     (False, False, "EUPL-1.1"),
     ("Fair", False, "Fair"),
     ("Frameworx_v1.0", False, "Frameworx-1.0"),
     ("Affero_v1", False, "AGPL-1.0"),
-    ("Affero_v3", False, "AGPL-3.0"), #Ninka can only detect AGPLv3+
+    ("Affero_v3", False, "AGPL-3.0"),  # Ninka can only detect AGPLv3+
     ("Freetype", "FreeType", "FTL"),
     ("GFDL_v1.1", False, "GFDL-1.1"),
     ("GFDL_v1.2", False, "GFDL-1.2"),
     (False, False, "GFDL-1.3"),
     (False, False, "GPL-2.0-with-autoconf-exception"),
-    (False, False,"GPL-2.0-with-bison-exception"), 
+    (False, False, "GPL-2.0-with-bison-exception"),
     #ninka has "BisonException", but doesn't specify the license
     #Fossology has GPL-Bison Exception, but no version is specified
-    (False,"ClassPathExceptionGPLv2", "GPL-2.0-with-classpath-exception"),
+    (False, "ClassPathExceptionGPLv2", "GPL-2.0-with-classpath-exception"),
     #Fossology has GPL-classpath-exception, but no version is specified
     (False, False, "GPL-2.0-with-font-exception"),
     (False, False, "GPL-2.0-with-GCC-exception"),
@@ -200,9 +200,9 @@ Licenses = [
     ("MIT", False, "MIT"),
     #Ninka has many MIT variants, I assume MITModern is the closest
     (False, False, "Motosoto"),
-    ("MPL_v1.0","MPLv1_0","MPL-1.0"),
-    ("MPL_v1.1","MPLv1_1","MPL-1.1"),
-    ("MPL_v2.0","MPLv2","MPL-2.0"),
+    ("MPL_v1.0", "MPLv1_0", "MPL-1.0"),
+    ("MPL_v1.1", "MPLv1_1", "MPL-1.1"),
+    ("MPL_v2.0", "MPLv2", "MPL-2.0"),
     (False, False, "MPL-2.0-no-copyleft-exception"),
     (False, False, "Multics"),
     ("NASA_v1.3", False, "NASA-1.3"),
@@ -248,7 +248,7 @@ Licenses = [
     (False, "postgresql", "PostgreSQL"),
     ("Python_v2", False, "Python-2.0"),
     ("QPL_v1.0", False, "QPL-1.0"),
-    ("RPSL_v1.0", False ,"RPSL-1.0"),
+    ("RPSL_v1.0", False, "RPSL-1.0"),
     ("RPL_v1.1", False, "RPL-1.1"),
     ("RPL_v1.5", False, "RPL-1.5"),
     (False, False, "RHeCos-1.1"),
@@ -265,14 +265,14 @@ Licenses = [
     (False, False, "OFL-1.1"),
     (False, False, "SimPL-2.0"),
     #Ninka had SimpleLic, but it didn't specify a version
-    ("Sleepycat","SleepyCat","Sleepycat"),
+    ("Sleepycat", "SleepyCat", "Sleepycat"),
     #Fossology and Ninka had several derivatives of Sleepycat
     (False, False, "SMLNJ"),
     (False, False, "SugarCRM-1.1.3"),
     #Fossology has SugarCRM(attribution)
     ("SISSL_v1.1", False, "SISSL"),
     (False, False, "SISSL-1.2"),
-    ("Sun-PL_v1.0",False, "SPL-1.0"),
+    ("Sun-PL_v1.0", False, "SPL-1.0"),
     (False, False, "Watcom-1.0"),
     #Fossology had a licesne called Sybase, not sure if it's the same
     (False, False, "NCSA"),
@@ -281,14 +281,14 @@ Licenses = [
     ("W3C", "W3CLic", "W3C"),
     ("wxWindows-LGPL", False, "WXwindows"),
     (False, False, "Xnet"),
-    ("X11","X11","X11"),
+    ("X11", "X11", "X11"),
     #Ninka also has many X11 derivatives (mostly MIT based)
     (False, False, "XFree86-1.1"),
     (False, False, "YPL-1.0"),
     (False, False, "YPL-1.1"),
     #Fossology had Yahoo, but no version number
     (False, False, "Zimbra-1.3"),
-    ("zlib/libpng", False ,"Zlib"),
+    ("zlib/libpng", False, "Zlib"),
     (False, False, "ZPL-1.1"),
     ("Zope-PL_v2.0", False, "ZPL-2.0"),
     (False, False, "ZPL-2.1"),
