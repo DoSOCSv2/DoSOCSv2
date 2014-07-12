@@ -84,6 +84,9 @@ Usage
 - `--packageLicenseComments [Comments]` Allows for comments to be made about the license of a pacakge.
   - Optional
   - ***Example:*** `./DoSPDX.py --packageLicenseComments "Apache"`
+- `--packageDescription [Description]` Allows user to enter a description of the package.
+  - Optional
+  - ***Example:*** `./DoSPDX.py --packageDescription "This package allows for hosting local content to the web."`
  
 
 
