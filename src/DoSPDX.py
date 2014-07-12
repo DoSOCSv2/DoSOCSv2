@@ -94,7 +94,7 @@ def main(argv):
                         packageSourceInfo=packageSourceInfo,
                         packageLicenseComments=packageLicenseComments,
                         packageDescription=packageDescription)
-
+    result = True;
     if spdxDocId != None:
         result = spdxDoc.getSPDX(spdxDocId)
 

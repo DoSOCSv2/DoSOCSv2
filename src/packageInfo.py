@@ -116,7 +116,7 @@ class packageInfo:
                            self.packageVerificationCodeExcludedFile)
                         )
 
-        sqlCommand = """INSERT INTO package_license_info_from_file
+        sqlCommand = """INSERT INTO package_license_info_from_files
                                             (package_id,
                                             package_license_info_from_files,
                                             created_at,
