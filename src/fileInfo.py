@@ -12,7 +12,7 @@ from mimetypes import MimeTypes
 
 
 class fileInfo:
-    def __init__(self, filePath=None):
+    def __init__(self, filePath=None, fileRealativePath = ""):
         self.filePath = filePath
         self.fileType = None
         self.fileChecksum = None
@@ -28,7 +28,7 @@ class fileInfo:
         self.fileNotice = ""
         self.fileContributor = ""
         self.fileDependency = ""
-        self.fileRealativePath = ""
+        self.fileRealativePath = fileRealativePath
 
         if self.filePath != None:
             self.getChecksum()

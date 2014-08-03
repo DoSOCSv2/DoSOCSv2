@@ -266,13 +266,14 @@ class SPDX:
         scanners = []
         licensesFromFiles = []
         sha1Checksums = []
-
+        path = ""
+        
         if tarfile.is_tarfile(self.packagePath):
             archive = tarfile.open(self.packagePath)
             archive.extractall(extractTo)
             for fileName in archive.getnames():
                 if os.path.isfile(os.path.join(extractTo, fileName)):
-                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName))
+                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
                     tempFileInfo.populateFileInfo()
                     tempLicenseInfo = licensingInfo.licensingInfo(
                                                     "LicenseRef-" + str(licenseCounter),
@@ -289,13 +290,16 @@ class SPDX:
                         licenseCounter += 1
                         sha1Checksums.append(tempFileInfo.fileChecksum)
                     self.fileInfo.append(tempFileInfo)
+                    path = ""
+                else:
+                    path = os.path.join(path, fileName)
 
         elif zipfile.is_zipfile(self.packagePath):
             archive = zipfile.ZipFile(self.packagePath, "r")
             archive.extractall(extractTo)
             for fileName in archive.namelist():
                 if os.path.isfile(os.path.join(extractTo, fileName)):
-                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName))
+                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
                     tempFileInfo.populateFileInfo()
                     tempLicenseInfo = licensingInfo.licensingInfo(
                                                     "LicenseRef-" + str(licenseCounter),
@@ -312,6 +316,9 @@ class SPDX:
                         licenseCounter += 1
                         sha1Checksums.append(tempFileInfo.fileChecksum)
                     self.fileInfo.append(tempFileInfo)
+                    path = ""
+                else:
+                    path = os.path.join(path, fileName)
 
         self.packageInfo.generatePackageInfo(sha1Checksums)
         ninka_out.close()
