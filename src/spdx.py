@@ -1,4 +1,4 @@
-#!/user/bin/python
+#!/usr/bin/python
 
 import errno
 import creatorInfo
@@ -21,33 +21,32 @@ import shutil
 This contains the definition for the SPDX object.
 '''
 
-
 class SPDX:
-    def __init__(    self,
-                    packagePath,
-                    version="1.2",
-                    dataLicense="CC-1.0",
-                    documentComment=None,
-                    creator=None,
-                    creatorComment=None,
-                    licenseListVersion=None,
-                    packageVersion=None,
-                    packageSupplier=None,
-                    packageOriginator=None,
-                    packageDownloadLocation="",
-                    packageHomePage=None,
-                    packageSourceInfo=None,
-                    packageLicenseComments=None,
-                    packageDescription=None):
+    def __init__(self,
+                 packagePath,
+                 version="1.2",
+                 dataLicense="CC-1.0",
+                 documentComment=None,
+                 creator=None,
+                 creatorComment=None,
+                 licenseListVersion=None,
+                 packageVersion=None,
+                 packageSupplier=None,
+                 packageOriginator=None,
+                 packageDownloadLocation="",
+                 packageHomePage=None,
+                 packageSourceInfo=None,
+                 packageLicenseComments=None,
+                 packageDescription=None):
         self.packagePath = packagePath
         self.version = version
         self.dataLicense = dataLicense
         self.documentComment = documentComment
-        self.creatorInfo = creatorInfo.creatorInfo(    packagePath,
+        self.creatorInfo = creatorInfo.creatorInfo( packagePath,
                                                     creator,
                                                     creatorComment,
                                                     licenseListVersion)
-        self.packageInfo = packageInfo.packageInfo(    packagePath,
+        self.packageInfo = packageInfo.packageInfo( packagePath,
                                                     packageVersion,
                                                     packageSupplier,
                                                     packageOriginator,
@@ -64,10 +63,10 @@ class SPDX:
         '''insert SPDX doc into db'''
         spdxDocId = None
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(host=settings.database_host,
+                             user=settings.database_user,
+                             passwd=settings.database_pass,
+                             db=settings.database_name) as dbCursor:
             '''get spdx doc id'''
             sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
             dbCursor.execute(sqlCommand)
@@ -92,13 +91,13 @@ class SPDX:
                                     CURRENT_TIMESTAMP,
                                     CURRENT_TIMESTAMP)"""
 
-            dbCursor.execute(sqlCommand, (    self.version,
-                                            self.dataLicense,
-                                            self.packageInfo.packageName,
-                                            'SQL',
-                                            self.packageInfo.fileSize,
-                                            self.documentComment
-                                        )
+            dbCursor.execute(sqlCommand,(self.version,
+                                         self.dataLicense,
+                                         self.packageInfo.packageName,
+                                         'SQL',
+                                         self.packageInfo.fileSize,
+                                         self.documentComment
+                                         )
                             )
 
             ''' Insert Creator Information '''
@@ -107,10 +106,10 @@ class SPDX:
             packageId = self.packageInfo.insertPackageInfo(dbCursor)
             ''' Insert File Information '''
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(host=settings.database_host,
+                             user=settings.database_user,
+                             passwd=settings.database_pass,
+                             db=settings.database_name) as dbCursor:
             for files in self.fileInfo:
                 files.insertFileInfo(spdxDocId, packageId, dbCursor)
 
@@ -128,7 +127,8 @@ class SPDX:
             ''' Insert Reviewer Information '''
             for reviewer in self.reviewerInfo:
                 reviewer.insertReviewerInfo(spdxDocId, dbCursor)
-
+        return spdxDocId
+    
     def outputSPDX_TAG(self):
         '''output SPDX doc to stdout'''
         output = ""
@@ -190,9 +190,10 @@ class SPDX:
         output += '</SpdxDocument>\n'
 
         return output
-
+    '''
     def outputSPDX_JSON(self):
         print json.dumps(self)
+    '''
 
     def getSPDX(self, spdx_doc_id):
         '''Generates the entire structure from the database.'''
