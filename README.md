@@ -30,7 +30,14 @@ Copyright © 2014 Zachary McFarland
 
 System Requirements
 -------------------
-Coming soon.
+In general, your system should meet <a href="http://www.fossology.org/projects/fossology/wiki/SysConfig">FOSSology's performance recommendations</a>, which depend on the maximum file or package size you intend to scan.
+
+Prerequisites
+-----------------
+- Python 2.7
+- A php environment
+- <a href="http://www.fossology.org/">FOSSology</a>
+- <a href="http://ninka.turingmachine.org/#sec-3">Ninka</a>
 
 Installation
 ------------
