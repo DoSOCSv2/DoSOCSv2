@@ -35,6 +35,7 @@ In general, your system should meet <a href="http://www.fossology.org/projects/f
 Prerequisites
 -----------------
 - Python 2.7
+- MySQL
 - A php environment
 - <a href="http://www.fossology.org/">FOSSology</a>
 - <a href="http://ninka.turingmachine.org/#sec-3">Ninka</a>
