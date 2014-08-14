@@ -42,7 +42,11 @@ Prerequisites
 
 Installation
 ------------
-Comming soon.
+- Install Prerequisites
+- Download and run <a href="https://github.com/zwmcfarland/DoSPDX/blob/master/install.sh">install.sh</a> to the directory you want DoSPDX installed (Note: you may need to change the user name and password fields in install.sh)
+- Update settings.py with database connection information, and install locations of ninka and fossology.
+
+This will install <a href="https://github.com/zwmcfarland/DoSPDX">DoSPDX</a>, <a href="https://github.com/zwmcfarland/SPDXDash">SPDXDash</a>, and <a href="https://github.com/spdx-tools/Database">SPDX Database</a>. Also ensure you have execute rights on ninka and fossology.
 
 Usage
 -----
