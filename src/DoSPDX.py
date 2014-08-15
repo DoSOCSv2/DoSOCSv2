@@ -1,4 +1,24 @@
 #!/usr/bin/python
+'''
+<SPDX-License-Identifier: Apache-2.0>
+Copyright 2014 Zac McFarland
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
+'''
+Command line interface for spdx object
+'''
 
 import sys
 import os
@@ -10,6 +30,7 @@ import reviewerInfo
 
 
 def main(argv):
+    '''Command line arguments.'''
     opts, args = getopt.getopt(argv, "hp:", ["help",
                                             "packagePath=",
                                             "documentComment=",
@@ -78,9 +99,11 @@ def main(argv):
         elif opt == '--spdxDocId':
             spdxDocId = arg
 
+    '''Validate package path'''
     if scan and (packagePath == None or not os.path.isfile(packagePath)):
         raise Exception('Invalid Package path')
 
+    '''Create spdx object'''
     spdxDoc = spdx.SPDX(documentComment=documentComment,
                         packagePath=packagePath,
                         creator=creator,
@@ -94,6 +117,8 @@ def main(argv):
                         packageSourceInfo=packageSourceInfo,
                         packageLicenseComments=packageLicenseComments,
                         packageDescription=packageDescription)
+
+    '''Execute requested commands'''
     result = True;
     if spdxDocId != None:
         result = spdxDoc.getSPDX(spdxDocId)

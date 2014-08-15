@@ -1,4 +1,20 @@
 #!/usr/bin/python
+'''
+<SPDX-License-Identifier: Apache-2.0>
+Copyright 2014 Zac McFarland
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 
 import errno
 import creatorInfo
@@ -130,7 +146,7 @@ class SPDX:
         return spdxDocId
     
     def outputSPDX_TAG(self):
-        '''output SPDX doc to stdout'''
+        '''output SPDX in tag format'''
         output = ""
         output += "SPDXVersion: " + str(self.version) + '\n'
         output += "DataLicense: " + str(self.dataLicense) + '\n'
@@ -162,6 +178,7 @@ class SPDX:
         return output
 
     def outputSPDX_RDF(self):
+        '''Render the spdx object in rdf format'''
         output = ""
         output += '<SpdxDocument rdf:about="">\n'
         output += '\t<specVersion>' + str(self.version) + '</specVersion>\n'
@@ -196,7 +213,7 @@ class SPDX:
     '''
 
     def getSPDX(self, spdx_doc_id):
-        '''Generates the entire structure from the database.'''
+        '''Generates the entire object from the database.'''
 
         with MySQLdb.connect(    host=settings.database_host,
                                 user=settings.database_user,
@@ -268,8 +285,9 @@ class SPDX:
         licensesFromFiles = []
         sha1Checksums = []
         path = ""
-        
+
         if tarfile.is_tarfile(self.packagePath):
+            '''If it is a tar file, use tarfile component'''
             archive = tarfile.open(self.packagePath)
             archive.extractall(extractTo)
             for fileName in archive.getnames():
@@ -296,6 +314,7 @@ class SPDX:
                     path = os.path.join(path, fileName)
 
         elif zipfile.is_zipfile(self.packagePath):
+            '''If it is a zip file, use zipfile component'''
             archive = zipfile.ZipFile(self.packagePath, "r")
             archive.extractall(extractTo)
             for fileName in archive.namelist():

@@ -1,4 +1,21 @@
 #!/usr/bin/python
+'''
+<SPDX-License-Identifier: Apache-2.0>
+Copyright 2014 Zac McFarland
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
 '''Defines the file level information in an spdx object.'''
 import MySQLdb
 import settings
@@ -77,10 +94,13 @@ class fileInfo:
 
     def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
         '''inserts fileInfo into database.'''
-        '''Get id of next file'''
+
+        '''Check if file is already in database'''
         fileId = self.isCached()
 
+        '''If the file is not already in database then insert it'''
         if fileId == -1:
+            '''Get id of next file'''
             sqlCommand = "SHOW TABLE STATUS LIKE 'package_files'"
             dbCursor.execute(sqlCommand)
             fileId = dbCursor.fetchone()[10]
@@ -165,13 +185,14 @@ class fileInfo:
                                 CURRENT_TIMESTAMP,
                                 CURRENT_TIMESTAMP)"""
 
+        '''Foreach license in the file, insert'''
         for license in self.licenseInfoInFile:
             dbCursor.execute(sqlCommand, (package_id, license))
 
         return fileId
 
     def outputFileInfo_TAG(self):
-        '''outputs fileInfo to stdout'''
+        '''generates the file info in tag format'''
         output = ""
         output += "FileName: " + str(self.fileName) + '\n'
 
@@ -309,10 +330,13 @@ class fileInfo:
                 return queryResult[0]
 
     def getChecksum(self):
+        '''Generates the Sha1 checksum of a file'''
         with open(self.filePath, 'rb') as fileIn:
             self.fileChecksum = hashlib.sha1(fileIn.read()).hexdigest()
 
     def populateFileInfo(self):
+        '''Runs the two scanners and parses their output into the fileInfo object''' 
+
         ''' Get File Type'''
         mime = MimeTypes()
         self.fileType = mime.guess_type(self.filePath)[0]
@@ -320,28 +344,35 @@ class fileInfo:
         if self.fileType == None:
             self.fileType = 'Unknown'
 
+        '''Check to see if file is cached.'''
         cached = self.isCached()
 
+        '''If it isn't cached, run scans, else get file from database.'''
         if cached == -1:
             '''Scan to find licenses'''
+            '''Run Ninka'''
             ninkaOutput = subprocess.check_output(
                                             [settings.NINKA_PATH,
                                             '-d', self.filePath],
                                     preexec_fn=lambda: signal(SIGPIPE, SIG_DFL)
                                 )
+            '''Run fossology'''
+            '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
             try:
                 fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
                                                     self.filePath])
             except Exception as e:
                 fossOutput = str(e.output)
 
+            '''Parse outputs'''
             (fileName, fossLicense) = output_parser.ninka_parser(ninkaOutput)
             (fileName, ninkaLicense) = output_parser.foss_parser(fossOutput)
 
+            '''License merging logic.'''
             fossLicense = fossLicense.upper().strip()
             ninkaLicense = ninkaLicense.upper().strip()
             match = output_parser.lic_compare(fossLicense, ninkaLicense)
-
+            
             if match and fossLicense != 'ERROR':
                 self.licenseInfoInFile.append(fossLicense)
             elif match and fossLicense == 'ERROR':
