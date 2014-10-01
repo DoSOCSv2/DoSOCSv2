@@ -1,7 +1,7 @@
 #!/user/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 Zac McFarland
+Copyright 2014 University of Nebraska at Omaha (UNO)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
