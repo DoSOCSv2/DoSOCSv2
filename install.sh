@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#Copyright 2014 University of Nebraska at Omaha (UNO)
 #Setup User Name and Password for MySql
 u=$USER
 p=$PWD
