@@ -1,4 +1,4 @@
-DoSPDX
+DoSOCS
 ======
 
 System Overview
@@ -9,7 +9,7 @@ System Overview
   </p>
   
   <p>
-  DoSPDX is aimed at processing software packages into SPDX documents. This utility will scan, store, and print spdx documents. DoSPDX Stores SPDX docs in a MySQL database, the same that is documented <a href="https://github.com/spdx-tools/Database">here</a>.
+  DoSPDX is aimed at processing software packages into SPDX documents. This utility will scan, store, and print spdx documents. DoSOCS Stores SPDX docs in a MySQL database, the same that is documented <a href="https://github.com/spdx-tools/Database">here</a>.
   </p>
 </div>
 
@@ -104,4 +104,4 @@ Usage
 
 Code Contributions
 ------------------
-All contributions to DoSPDX will be subject to review by the owner of the repo before being merged.
+All contributions to DoSOCS will be subject to review by the owner of the repo before being merged.
