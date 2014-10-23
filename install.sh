@@ -5,9 +5,9 @@ u=$USER
 p=$PWD
 
 #Clone Repos
-git clone https://github.com/spdx-tools/Database
-git clone https://github.com/zwmcfarland/DoSPDX
-git clone https://github.com/zwmcfarland/SPDXDash
+git clone https://github.com/socs-dev-env/SOCSDatabase
+git clone https://github.com/socs-dev-env/DoSOCS
+git clone https://github.com/socs-dev-env/SOCSDashboard
 
 #Install Database
 echo "Install SPDX Database..."
