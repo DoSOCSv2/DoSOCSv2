@@ -9,19 +9,19 @@ System Overview
   </p>
   
   <p>
-  DoSPDX is aimed at processing software packages into SPDX documents. This utility will scan, store, and print spdx documents. DoSOCS Stores SPDX docs in a MySQL database, the same that is documented <a href="https://github.com/spdx-tools/Database">here</a>.
+  DoSOCS is aimed at processing software packages into SPDX documents. This utility will scan, store, and print spdx documents. DoSOCS Stores SPDX docs in a MySQL database, the same that is documented <a href="https://github.com/socs-dev-env/SOCSDatabase">here</a>.
   </p>
 </div>
 
 Current Version
 ---------------
-<a href="https://github.com/zwmcfarland/DoSPDX/blob/master/ChangeLog.md">Version 1.0</a>
+<a href="https://github.com/socs-dev-env/DoSOCS/blob/master/ChangeLog.md">Version 1.0</a>
 
 License
 -------
 <ul>
-  <li>Source Code: <a href="https://github.com/zwmcfarland/DoSPDX/blob/master/src/ApacheLicense.txt">Apache 2.0</a></li>
-  <li>Documentation: <a href="https://github.com/zwmcfarland/DoSPDX/blob/master/CCLicense.txt">Creative Commmons BY-SA-3.0</a></li>
+  <li>Source Code: <a href="https://github.com/socs-dev-env/DoSOCS/blob/master/src/ApacheLicense.txt">Apache 2.0</a></li>
+  <li>Documentation: <a href="https://github.com/socs-dev-env/DoSOCS/blob/master/CCLicense.txt">Creative Commmons BY-SA-3.0</a></li>
 </ul>
 
 Copyright
@@ -43,10 +43,10 @@ Prerequisites
 Installation
 ------------
 - Install Prerequisites
-- Download and run <a href="https://github.com/zwmcfarland/DoSPDX/blob/master/install.sh">install.sh</a> to the directory you want DoSPDX installed (Note: you may need to change the user name and password fields in install.sh)
+- Download and run <a href="https://github.com/socs-dev-env/DoSOCS/blob/master/install.sh">install.sh</a> to the directory you want DoSOCS installed (Note: you may need to change the user name and password fields in install.sh)
 - Update settings.py with database connection information, and install locations of ninka and fossology.
 
-This will install <a href="https://github.com/zwmcfarland/DoSPDX">DoSPDX</a>, <a href="https://github.com/zwmcfarland/SPDXDash">SPDXDash</a>, and <a href="https://github.com/spdx-tools/Database">SPDX Database</a>. Also ensure you have execute rights on ninka and fossology.
+This will install <a href="https://github.com/socs-dev-env/DoSOCS">DoSOCS</a>, <a href="https://github.com/socs-dev-env/SOCSDashboard">SOCSDashboard</a>, and <a href="https://github.com/socs-dev-env/SOCSDatabase">SOCSDatabase</a>. Also ensure you have execute rights on ninka and fossology.
 
 Usage
 -----
