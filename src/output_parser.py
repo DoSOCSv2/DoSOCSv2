@@ -79,8 +79,8 @@ def lic_compare(foss_out, ninka_out):
             for relation in license_compare.Licenses:
                     final = len(relation) - 1
                     #The SPDX license name is ALWAYS last
-                    if foss_out == str(relation[0]):
-                        if ninka_out.rstrip() == str(relation[1]):
+                    if foss_out == str(relation[0]).upper():
+                        if ninka_out.rstrip() == str(relation[1]).upper():
                             return True
     else:
         return False

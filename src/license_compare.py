@@ -57,7 +57,7 @@ recorded instances here for future development.
 
 Licenses = [
     ("None", "NONE", "NONE"),  # This is confirmation of no license
-    ("None", "NO_LICENSE_FOUND", "NONE"),  # This is confirmation of no license
+    ("None", "NO_LICENSE_FOUND", "NONE"),
     ("GPL_v2", "GPLv2", "GPL-2.0"),
     ("GPL_v2+", "GPLv2+", "GPL-2.0+"),
     (False, "LesserGPLv2.1+", "LGPL-2.1+"),
@@ -88,7 +88,7 @@ Licenses = [
     (False, False, "ANTLR-PD"),
     ("Apache_v1.0", "Apachev1.0", "Apache-1.0"),
     ("Apache_v1.1", "Apachev1.1", "Apache-1.1"),
-    ("Apache_v2.0", "Apachev2", "Apache-2.0"),
+    ("Apache_v2.0", "APACHEV2", "Apache-2.0"),
     ("APSL_v1.0", False, "APSL-1.0"),
     ("APSL_v1.1", False, "APSL-1.1"),
     ("APSL_v1.2", False, "APSL-1.2"),

@@ -365,8 +365,8 @@ class fileInfo:
                 fossOutput = str(e.output)
 
             '''Parse outputs'''
-            (fileName, fossLicense) = output_parser.ninka_parser(ninkaOutput)
-            (fileName, ninkaLicense) = output_parser.foss_parser(fossOutput)
+            (fileName, ninkaLicense) = output_parser.ninka_parser(ninkaOutput)
+            (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
 
             '''License merging logic.'''
             fossLicense = fossLicense.upper().strip()
@@ -376,16 +376,19 @@ class fileInfo:
             if match and fossLicense != 'ERROR':
                 self.licenseInfoInFile.append(fossLicense)
             elif match and fossLicense == 'ERROR':
-                self.licenseInfoInFile.append("NO ASSERTION")
+                self.licenseInfoInFile.append(ninkaLicense)
             elif not match and fossLicense == 'UNKNOWN':
                 self.licenseInfoInFile.append(ninkaLicense)
             else:
                 self.licenseInfoInFile.append("NO ASSERTION")
-                self.licenseComments = "#FOSSology "
-                self.licenseComments += fossLicense
-                self.licenseComments += " #Ninka "
-                self.licenseComments += ninkaLicense
+
+            self.licenseComments = "#FOSSology "
+            self.licenseComments += fossLicense
+            self.licenseComments += " #Ninka "
+            self.licenseComments += ninkaLicense
+            print "Scraped"
         else:
+            print "Cached"
             with MySQLdb.connect(host=settings.database_host,
                                 user=settings.database_user,
                                 passwd=settings.database_pass,
