@@ -69,6 +69,7 @@ Licenses = [
     ("Affero_v3+", "AGPLv3+", False),
     ("GPL_v3", "GPLv3", "GPL-3.0"),
     ("GPL_v3+", "GPLv3+", "GPL-3.0+"),
+    ("GPLV3+", "GPL-3.0+", "GPL-3.0+"),
     (False, False, "BSD-2-Clause"),
     (False, False, "BSD-2-Clause-FreeBSD"),
     (False, False, "BSD-2-Clause-NetBSD"),
