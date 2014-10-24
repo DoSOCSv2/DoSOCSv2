@@ -57,6 +57,7 @@ recorded instances here for future development.
 
 Licenses = [
     ("None", "NONE", "NONE"),  # This is confirmation of no license
+    ("None", "NO_LICENSE_FOUND", "NONE"),  # This is confirmation of no license
     ("GPL_v2", "GPLv2", "GPL-2.0"),
     ("GPL_v2+", "GPLv2+", "GPL-2.0+"),
     (False, "LesserGPLv2.1+", "LGPL-2.1+"),
