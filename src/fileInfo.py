@@ -116,7 +116,6 @@ class fileInfo:
                                     license_info_in_file,
                                     file_checksum,
                                     file_checksum_algorithm,
-                                    relative_path,
                                     license_comments,
                                     file_notice,
                                     file_contributor,
@@ -125,7 +124,6 @@ class fileInfo:
                                     created_at,
                                     updated_at)
                             VALUES (%s,
-                                    %s,
                                     %s,
                                     %s,
                                     %s,
@@ -153,7 +151,6 @@ class fileInfo:
                                         ','.join(self.licenseInfoInFile),
                                         self.fileChecksum,
                                         self.fileChecksumAlgorithm,
-                                        self.fileRealativePath,
                                         self.licenseComments,
                                         self.fileNotice,
                                         self.fileContributor,
@@ -165,15 +162,17 @@ class fileInfo:
                                     ( spdx_doc_id,
                                     package_id,
                                     package_file_id,
+                                    relative_path,
                                     created_at,
                                     updated_at)
                         VALUES (%s,
                                 %s,
                                 %s,
+                                %s,
                                 CURRENT_TIMESTAMP,
                                 CURRENT_TIMESTAMP)"""
 
-        dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId))
+        dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId, self.fileRealativePath))
 
         sqlCommand = """INSERT INTO package_license_info_from_files
                                         (package_id,
