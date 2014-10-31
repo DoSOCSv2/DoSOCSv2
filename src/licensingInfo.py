@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 University of Nebraska at Omaha (UNO)
+Copyright 2014 Zac McFarland
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -183,3 +183,12 @@ class licensingInfo:
             self.licenseComment = queryReturn[2]
             self.extractedText = queryReturn[3]
             self.licenseCrossReference = queryReturn[4]
+
+    def compareLicensingInfo(self, altLicensingInfoList):
+        for altLicensingInfo in altLicensingInfoList:
+            if(self.extractedText == altLicensingInfo.extractedText):
+                if(self.licenseName == altLicensingInfo.licenseName):
+                    if(self.licenseCrossReference == altLicensingInfo.licenseCrossReference):
+                        if(self.licenseComment == altLicensingInfo.licenseComment):
+                            return self;
+        return None;

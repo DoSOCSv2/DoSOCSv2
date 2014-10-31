@@ -87,7 +87,6 @@ def lic_compare(foss_out, ninka_out):
 
     return False
 
-
 def lic_join(lic_list):
     """
     Takes multiple conjunctive licenses and concatenates them with AND (the

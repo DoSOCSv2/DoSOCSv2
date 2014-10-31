@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 University of Nebraska at Omaha (UNO)
+Copyright 2014 Zac McFarland
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -286,59 +286,77 @@ class SPDX:
         sha1Checksums = []
         path = ""
 
-        if tarfile.is_tarfile(self.packagePath):
-            '''If it is a tar file, use tarfile component'''
-            archive = tarfile.open(self.packagePath)
-            archive.extractall(extractTo)
-            for fileName in archive.getnames():
-                if os.path.isfile(os.path.join(extractTo, fileName)):
-                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                    tempFileInfo.populateFileInfo()
-                    tempLicenseInfo = licensingInfo.licensingInfo(
-                                                    "LicenseRef-" + str(licenseCounter),
-                                                    "",
-                                                    tempFileInfo.licenseInfoInFile[0],
-                                                    "",
-                                                    tempFileInfo.licenseComments,
-                                                    tempFileInfo.fileChecksum
+        with MySQLdb.connect(    host=settings.database_host,
+                                user=settings.database_user,
+                                passwd=settings.database_pass,
+                                db=settings.database_name) as dbCursor:
+            if tarfile.is_tarfile(self.packagePath):
+                '''If it is a tar file, use tarfile component'''
+                archive = tarfile.open(self.packagePath)
+                archive.extractall(extractTo)
+                for fileName in archive.getnames():
+                    if os.path.isfile(os.path.join(extractTo, fileName)):
+                        tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
+                        tempFileInfo.populateFileInfo(dbCursor)
+                        tempLicenseInfo = licensingInfo.licensingInfo(
+                                                        "LicenseRef-" + str(licenseCounter),
+                                                        "",
+                                                        tempFileInfo.licenseInfoInFile[0],
+                                                        "",
+                                                        tempFileInfo.licenseComments,
+                                                        tempFileInfo.fileChecksum
+                                            )
+                        existingLicense = tempLicenseInfo.compareLicensingInfo(self.licensingInfo)
+                        if existingLicense == None:
+                            self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
+                            licenseCounter += 1
+                        else:
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                                                                          existingLicense.extractedText,
+                                                                          existingLicense.licenseName,
+                                                                          existingLicense.licenseCrossReference,
+                                                                          existingLicense.licenseComment,
+                                                                          tempFileInfo.fileChecksum)
+                        self.licensingInfo.append(tempLicenseInfo)
+                        sha1Checksums.append(tempFileInfo.fileChecksum)
+                        self.fileInfo.append(tempFileInfo)
+                        path = ""
+                    else:
+                        path = os.path.join(path, fileName)
+    
+            elif zipfile.is_zipfile(self.packagePath):
+                '''If it is a zip file, use zipfile component'''
+                archive = zipfile.ZipFile(self.packagePath, "r")
+                archive.extractall(extractTo)
+                for fileName in archive.namelist():
+                    if os.path.isfile(os.path.join(extractTo, fileName)):
+                        tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
+                        tempFileInfo.populateFileInfo(dbCursor)
+                        tempLicenseInfo = licensingInfo.licensingInfo(
+                                                        "LicenseRef-" + str(licenseCounter),
+                                                        "",
+                                                        tempFileInfo.licenseInfoInFile[0],
+                                                        "",
+                                                        tempFileInfo.licenseComments,
+                                                        tempFileInfo.fileChecksum
                                         )
-                    if tempLicenseInfo not in self.licensingInfo:
-                        self.packageInfo.packageLicenseInfoFromFiles.append(
-                                    tempLicenseInfo.licenseId)
+                        existingLicense = tempLicenseInfo.compareLicensingInfo(self.licensingInfo)
+                        if existingLicense == None:
+                            self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
+                            licenseCounter += 1
+                        else:
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                                                                          existingLicense.extractedText,
+                                                                          existingLicense.licenseName,
+                                                                          existingLicense.licenseCrossReference,
+                                                                          existingLicense.licenseComment,
+                                                                          tempFileInfo.fileChecksum)
                         self.licensingInfo.append(tempLicenseInfo)
-                        licenseCounter += 1
                         sha1Checksums.append(tempFileInfo.fileChecksum)
-                    self.fileInfo.append(tempFileInfo)
-                    path = ""
-                else:
-                    path = os.path.join(path, fileName)
-
-        elif zipfile.is_zipfile(self.packagePath):
-            '''If it is a zip file, use zipfile component'''
-            archive = zipfile.ZipFile(self.packagePath, "r")
-            archive.extractall(extractTo)
-            for fileName in archive.namelist():
-                if os.path.isfile(os.path.join(extractTo, fileName)):
-                    tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                    tempFileInfo.populateFileInfo()
-                    tempLicenseInfo = licensingInfo.licensingInfo(
-                                                    "LicenseRef-" + str(licenseCounter),
-                                                    "",
-                                                    tempFileInfo.licenseInfoInFile[0],
-                                                    "",
-                                                    tempFileInfo.licenseComments,
-                                                    tempFileInfo.fileChecksum
-                                    )
-                    if tempLicenseInfo not in self.licensingInfo:
-                        self.packageInfo.packageLicenseInfoFromFiles.append(
-                                        tempLicenseInfo.licenseId)
-                        self.licensingInfo.append(tempLicenseInfo)
-                        licenseCounter += 1
-                        sha1Checksums.append(tempFileInfo.fileChecksum)
-                    self.fileInfo.append(tempFileInfo)
-                    path = ""
-                else:
-                    path = os.path.join(path, fileName)
+                        self.fileInfo.append(tempFileInfo)
+                        path = ""
+                    else:
+                        path = os.path.join(path, fileName)
 
         self.packageInfo.generatePackageInfo(sha1Checksums)
         ninka_out.close()
