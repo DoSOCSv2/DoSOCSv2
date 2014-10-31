@@ -29,7 +29,7 @@ from mimetypes import MimeTypes
 
 
 class fileInfo:
-    def __init__(self, filePath=None, fileRealativePath = ""):
+    def __init__(self, filePath=None, fileRelativePath = ""):
         self.filePath = filePath
         self.fileType = None
         self.fileChecksum = None
@@ -45,33 +45,35 @@ class fileInfo:
         self.fileNotice = ""
         self.fileContributor = ""
         self.fileDependency = ""
-        self.fileRealativePath = fileRealativePath
+        self.fileRelativePath = fileRelativePath
 
         if self.filePath != None:
             self.getChecksum()
             self.fileName = os.path.split(filePath)[1]
 
-    def getFileInfo(self, package_file_id, dbCursor):
+    def getFileInfo(self, package_file_id, package_id, dbCursor):
         '''populates fileInfo from database'''
 
-        sqlCommand = """SELECT  file_name,
-                                file_type,
-                                file_checksum,
-                                license_concluded,
-                                license_info_in_file,
-                                license_comments,
-                                file_copyright_text,
-                                artifact_of_project_name,
-                                artifact_of_project_homepage,
-                                artifact_of_project_uri,
-                                file_comment,
-                                file_notice,
-                                file_contributor,
-                                file_dependency,
-                                relative_path,
-                                file_checksum_algorithm
-                        FROM package_files WHERE id = %s"""
-        dbCursor.execute(sqlCommand, package_file_id)
+        sqlCommand = """SELECT  pf.file_name,
+                                pf.file_type,
+                                pf.file_checksum,
+                                pf.license_concluded,
+                                pf.license_info_in_file,
+                                pf.license_comments,
+                                pf.file_copyright_text,
+                                pf.artifact_of_project_name,
+                                pf.artifact_of_project_homepage,
+                                pf.artifact_of_project_uri,
+                                pf.file_comment,
+                                pf.file_notice,
+                                pf.file_contributor,
+                                pf.file_dependency,
+                                dfpa.relative_path,
+                                pf.file_checksum_algorithm
+                        FROM package_files AS pf
+                             LEFT OUTER JOIN doc_file_package_associations AS dfpa ON pf.id = dfpa.package_file_id AND dfpa.package_id = %s 
+                        WHERE pf.id = %s"""
+        dbCursor.execute(sqlCommand, (package_id, package_file_id))
         queryResult = dbCursor.fetchone()
 
         if queryResult != None:
@@ -90,7 +92,7 @@ class fileInfo:
             self.fileNotice = queryResult[11]
             self.fileContributor = queryResult[12]
             self.fileDependency = queryResult[13]
-            self.fileRealativePath = queryResult[14]
+            self.fileRelativePath = queryResult[14]
 
     def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
         '''inserts fileInfo into database.'''
@@ -172,7 +174,7 @@ class fileInfo:
                                 CURRENT_TIMESTAMP,
                                 CURRENT_TIMESTAMP)"""
 
-        dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId, self.fileRealativePath))
+        dbCursor.execute(sqlCommand, (spdx_doc_id, package_id, fileId, self.fileRelativePath))
 
         sqlCommand = """INSERT INTO package_license_info_from_files
                                         (package_id,

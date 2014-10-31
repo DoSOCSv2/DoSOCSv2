@@ -378,6 +378,7 @@ class packageInfo:
             self.packageCopyrightText = queryReturn[13]
             self.packageDescription = queryReturn[14]
             self.packageSummary = queryReturn[15]
+            self.packageId = package_id
 
     def getChecksum(self):
         with open(self.packagePath, 'rb') as fileIn:

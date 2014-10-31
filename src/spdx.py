@@ -275,7 +275,7 @@ class SPDX:
             for row in dbCursor:
                 if row != None:
                     tempFileInfo = fileInfo.fileInfo()
-                    tempFileInfo.getFileInfo(row[0], dbCursor)
+                    tempFileInfo.getFileInfo(row[0], self.packageInfo.packageId, dbCursor)
                     self.fileInfo.append(tempFileInfo)
 
                     '''Get the license information for this file'''
