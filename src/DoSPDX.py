@@ -135,7 +135,7 @@ def main(argv):
     elif output.lower() == 'rdf':
         print spdxDoc.outputSPDX_RDF()
     elif output.lower() == 'json':
-        spdxDoc.outputSPDX_JSON()
+        print spdxDoc.outputSPDX_JSON()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

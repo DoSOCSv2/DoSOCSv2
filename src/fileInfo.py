@@ -310,6 +310,61 @@ class fileInfo:
             output += str(dependency) + '"/>\n'
 
         return output
+    
+    def outputFileInfo_JSON(self):
+        output = "{\n"
+        output += '\t\t\t\t"fileName" : "' + str(self.fileName) + '",\n'
+        output += '\t\t\t\t"fileType" : "' + str(self.fileType) + '",\n'
+        output += '\t\t\t\t"checksum" : {\n'
+        output += '\t\t\t\t\t"algorithm" : "' + str(self.fileChecksumAlgorithm) + '",\n'
+        output += '\t\t\t\t\t"checksumValue" : "' + str(self.fileChecksum) + '"\n'
+        output += '\t\t\t\t},\n'
+        output += '\t\t\t\t"licenseConcluded" : "' + str(self.licenseConcluded) +'",\n'
+
+        output += '\t\t\t\t"licenseInfoInFile" : [\n'
+        count = 1
+        for license in self.licenseInfoInFile:
+            output += '\t\t\t\t\t"' + str(license) + '"'
+            if count != len(self.licenseInfoInFile):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t\t\t],\n'
+
+        output += '\t\t\t\t"licenseComments": "' + str(self.licenseComments) + '",\n'
+        output += '\t\t\t\t"copyrightText": "' + str(self.fileCopyRightText) + '",\n'
+
+        output += '\t\t\t\t"artifactOf" : [\n'
+        count = 1
+        for projectName in self.artifactOfProjectName:
+            output += '\t\t\t\t\t{\n'
+            output += '\t\t\t\t\t\t"project" : "' + str(projectName) + '",\n'
+            output += '\t\t\t\t\t\t"homepage" : "' + str(self.artifactOfProjectHomePage[count]) + '",\n'
+            output += '\t\t\t\t\t\t"artifactOf" : "' + str(self.artifactOfProjectURI[counter]) +'"\n'
+            output += '\t\t\t\t\t}'
+            if count != len(self.artifactOfProjectName):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t\t\t],\n'
+
+        output += '\t\t\t\t"comment" : "' + str(self.fileComment) + '",\n' 
+        output += '\t\t\t\t"noticeText" : "' + str(self.fileNotice) + '",\n'
+        output += '\t\t\t\t"contributor" : "' + str(self.fileContributor) + '",\n'
+
+        output += '\t\t\t\t"fileDependency" : [\n'
+        count = 1
+        for dependency in self.fileDependency:
+            output += '\t\t\t\t\t"' + str(dependency) + '"'
+            if count != len(self.fileDependency):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t\t\t]\n'
+
+        output += '\t\t\t}'
+        
+        return output
 
     def isCached(self):
         '''checks whether or not file is in database'''
@@ -385,9 +440,7 @@ class fileInfo:
             self.licenseComments += fossLicense
             self.licenseComments += " #Ninka "
             self.licenseComments += ninkaLicense
-            print "Scraped"
         else:
-            print "Cached"
             with MySQLdb.connect(host=settings.database_host,
                                 user=settings.database_user,
                                 passwd=settings.database_pass,

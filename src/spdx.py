@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 Zac McFarland
+Copyright 2014 University of Nebraska at Omaha (UNO)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import licensingInfo
 import fileInfo
 import reviewerInfo
 import os
-import json
 import MySQLdb
 import tempfile
 import shutil
@@ -207,10 +206,38 @@ class SPDX:
         output += '</SpdxDocument>\n'
 
         return output
-    '''
+
     def outputSPDX_JSON(self):
-        print json.dumps(self)
-    '''
+        '''Render the spdx object in json format'''
+        output =  '{\n'
+        output += '\t"spdxDocument" : {\n'
+        output += '\t\t"specVersion" : "' + str(self.version) + '",\n'
+        output += '\t\t"dataLicense" : "' + str(self.dataLicense) + '",\n'
+        output += '\t\t"comment" : "' + str(self.documentComment) + '",\n'
+        output += '\t\t"creationInfo" :' + self.creatorInfo.outputCreatorInfo_JSON() + ',\n'
+        output += '\t\t"packageInfo" :' + self.packageInfo.outputPackageInfo_JSON() + ',\n'
+        output += '\t\t"fileInfo" : [\t'
+        count = 1
+        for files in self.fileInfo:
+            output += '\t\t\t' + files.outputFileInfo_JSON()
+            if count != len(self.fileInfo):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t],\n'
+        output += '\t\t"licensingInfo" : [\t'
+        count = 1
+        for licenses in self.licensingInfo:
+            output += '\t\t\t' + licenses.outputLicensingInfo_JSON()
+            if count != len(self.licensingInfo):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t]\n'
+        output += '\t}\n'
+        output += '}\n'
+
+        return output
 
     def getSPDX(self, spdx_doc_id):
         '''Generates the entire object from the database.'''
@@ -297,7 +324,7 @@ class SPDX:
                 for fileName in archive.getnames():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(dbCursor)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         "",
@@ -331,7 +358,7 @@ class SPDX:
                 for fileName in archive.namelist():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(dbCursor)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         "",

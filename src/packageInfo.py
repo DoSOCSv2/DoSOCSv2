@@ -295,6 +295,48 @@ class packageInfo:
 
         return output
 
+    def outputPackageInfo_JSON(self):
+        output = "{\n"
+        output += '\t\t\t"name" : "' + str(self.packageName) + '",\n'
+        output += '\t\t\t"versioninfo" : "' + str(self.packageVersion) + '",\n'
+        output += '\t\t\t"PackageFileName" : "' + str(self.packageFileName) + '",\n'
+        output += '\t\t\t"supplier" : "' + str(self.packageSupplier) + '",\n'
+        output += '\t\t\t"originator" : "' + str(self.packageOriginator) + '",\n'
+        output += '\t\t\t"downloadLocation" : "' + str(self.packageDownloadLocation) + '",\n'
+
+        output += '\t\t\t"packageVerificationCode" : {\n'
+        output += '\t\t\t\t"pacakgeVerificationCodeValue" : "' + str(self.packageVerificationCode) + '",\n'
+        output += '\t\t\t\t"packageVerificationCodeExcludedFile" : "' + str(self.packageVerificationCodeExcludedFile) + '"\n'
+        output += '\t\t\t},\n'
+        
+        output += '\t\t\t"checksum" : {\n'
+        output += '\t\t\t\t"algorithm" : "' + str(self.packageChecksumAlgorithm) + '",\n'
+        output += '\t\t\t\t"checksumValue" : "' + str(self.packageChecksum) + '"\n'
+        output += '\t\t\t},\n'
+
+        output += '\t\t\t"homepage" : "' + str(self.packageHomePage) + '",\n'
+        output += '\t\t\t"sourceInfo" : "' + str(self.packageSourceInfo) + '",\n'
+        output += '\t\t\t"licenseConcluded" : "' + str(self.packageLicenseConcluded) + '",\n'
+        output += '\t\t\t"licenseDeclared" : "' + str(self.packageLicenseDeclared) + '",\n'
+
+        output += '\t\t\t"licenseInfoFromFiles" : [\n'
+        count = 1
+        for license in self.packageLicenseInfoFromFiles:
+            output += '\t\t\t\t"' + str(license) + '"'
+            if count != len(self.packageLicenseInfoFromFiles):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t\t],\n'
+
+        output += '\t\t\t"licenseComments" : "' + str(self.packageLicenseComments) + '",\n'
+        output += '\t\t\t"copyrightText" : "' + str(self.packageCopyrightText) + '",\n'
+        output += '\t\t\t"summary" : "' + str(self.packageSummary) + '",\n'
+        output += '\t\t\t"description" : "' + str(self.packageDescription) + '"\n'
+        output += '\t\t}\n'
+
+        return output
+
     def getPackageInfo(self, package_id, dbCursor):
         '''gets package information from database'''
 

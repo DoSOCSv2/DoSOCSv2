@@ -1,7 +1,7 @@
 #!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 Zac McFarland
+Copyright 2014 University of Nebraska at Omaha (UNO)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -161,6 +161,28 @@ class licensingInfo:
             output += '\t\t<rdfs:comment>'
             output += str(self.licenseComment)
             output += '</rdfs:comment>\n'
+
+        return output
+
+    def outputLicensingInfo_JSON(self):
+        '''generates licenseing info object in json format'''
+        output =  '{\n'
+        output += '\t\t\t\t"licenseId" : "' + str(self.licenseId) + '",\n'
+        output += '\t\t\t\t"licenseName" : "' + str(self.licenseName) + '",\n'
+        output += '\t\t\t\t"extractedText" : "' + str(self.extractedText) + '",\n'
+
+        output += '\t\t\t\t"licenseCrossReference" : [\n'
+        count = 1
+        for reference in self.licenseCrossReference:
+            output += '\t\t\t\t\t"' + str(self.reference) + '"'
+            if count != len(self.licenseCrossReference):
+                output += ','
+            output += '\n'
+            count += 1
+        output += '\t\t\t\t],\n'
+
+        output += '\t\t\t\t"comment" : "' + str(self.licenseComment) + '"\n'
+        output += '\t\t\t}'
 
         return output
 

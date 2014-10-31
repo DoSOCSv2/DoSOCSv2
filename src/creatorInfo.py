@@ -97,6 +97,15 @@ class creatorInfo:
 
         return output
 
+    def outputCreatorInfo_JSON(self):
+        output =  '{\n'
+        output += '\t\t\t"creator": "' + str(self.creator) + '",\n'
+        output += '\t\t\t"created": "' + str(self.created) + '",\n'
+        output += '\t\t\t"comment": "' + str(self.creatorComment) + '",\n'
+        output += '\t\t\t"licenseListVersion": "' + str(self.licenseListVersion) + '"\n'
+        output += '\t\t}'
+        return output
+
     def getCreatorInfo(self, creator_id, dbCursor):
         '''generates the creator structure from the database.'''
 

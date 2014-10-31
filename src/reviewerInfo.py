@@ -93,3 +93,13 @@ class reviewerInfo:
             output += '</rdfs:comment>\n'
 
         return output
+
+    def outputReviewerInfo_JSON(self):
+        '''outputs reviewerInfo in json format'''
+        output =  '{\n'
+        output += '\t\t\t"reviewer" : "' + str(self.reviewer) + '",\n'
+        output += '\t\t\t"reviewDate" : "' + str(self.reviewDate) + '",\n'
+        output += '\t\t\t"comment" : "' + str(self.reviewComment) + '"\n'
+        output += '\t\t}'
+
+        return output
