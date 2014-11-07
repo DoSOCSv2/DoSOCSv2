@@ -327,7 +327,7 @@ class SPDX:
                         tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
-                                                        "",
+                                                        tempFileInfo.extractedText,
                                                         tempFileInfo.licenseInfoInFile[0],
                                                         "",
                                                         tempFileInfo.licenseComments,
@@ -361,7 +361,7 @@ class SPDX:
                         tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
-                                                        "",
+                                                        tempFileInfo.extractedText,
                                                         tempFileInfo.licenseInfoInFile[0],
                                                         "",
                                                         tempFileInfo.licenseComments,
@@ -388,4 +388,5 @@ class SPDX:
         self.packageInfo.generatePackageInfo(sha1Checksums)
         ninka_out.close()
         foss_out.close()
+        '''Delete the temporary files.'''
         shutil.rmtree(extractTo)

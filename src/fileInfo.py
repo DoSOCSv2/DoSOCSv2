@@ -46,6 +46,7 @@ class fileInfo:
         self.fileContributor = ""
         self.fileDependency = ""
         self.fileRelativePath = fileRelativePath
+        self.extractedText = ""
 
         if self.filePath != None:
             self.getChecksum()
@@ -76,7 +77,7 @@ class fileInfo:
         dbCursor.execute(sqlCommand, (package_id, package_file_id))
         queryResult = dbCursor.fetchone()
 
-        if queryResult != None:
+        if queryResult != None: 
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
             self.fileChecksum = queryResult[2]
@@ -93,6 +94,7 @@ class fileInfo:
             self.fileContributor = queryResult[12]
             self.fileDependency = queryResult[13]
             self.fileRelativePath = queryResult[14]
+            
 
     def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
         '''inserts fileInfo into database.'''
@@ -408,10 +410,10 @@ class fileInfo:
             '''Scan to find licenses'''
             '''Run Ninka'''
             ninkaOutput = subprocess.check_output(
-                                            [settings.NINKA_PATH,
-                                            '-d', self.filePath],
+                                            [settings.NINKA_PATH, self.filePath],
                                     preexec_fn=lambda: signal(SIGPIPE, SIG_DFL)
                                 )
+
             '''Run fossology'''
             '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
             try:
@@ -423,6 +425,17 @@ class fileInfo:
             '''Parse outputs'''
             (fileName, ninkaLicense) = output_parser.ninka_parser(ninkaOutput)
             (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
+
+            '''Get extracted text from ninka "senttok" file'''
+            try:
+                with open(self.filePath + ".senttok", 'r') as f:
+                    for line in f:
+                        if ninkaLicense in line:
+                            line_tok = line.split(';')
+                            self.extractedText +=  line_tok[3] + "\n"
+                            self.extractedText +=  line_tok[4]
+            except Exception as e:
+                '''Do nothing, we just wont have extracted text for this license.'''
 
             '''License merging logic.'''
             fossLicense = fossLicense.upper().strip()
