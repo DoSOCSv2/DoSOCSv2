@@ -52,7 +52,9 @@ class SPDX:
                  packageHomePage=None,
                  packageSourceInfo=None,
                  packageLicenseComments=None,
-                 packageDescription=None):
+                 packageDescription=None),
+                 scanOption=None):
+        self.scanOption = scanOption
         self.packagePath = packagePath
         self.version = version
         self.dataLicense = dataLicense
@@ -324,7 +326,7 @@ class SPDX:
                 for fileName in archive.getnames():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo()
+                        tempFileInfo.populateFileInfo(scanOption)
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
