@@ -44,6 +44,7 @@ def main(argv):
                                             "packageSourceInfo=",
                                             "packageLicenseComments=",
                                             "packageDescription=",
+                                            "scanOption=",
                                             "print=",
                                             "spdxDocId=",
                                             "scan"])
@@ -61,6 +62,7 @@ def main(argv):
     packageSourceInfo = ""
     packageLicenseComments = ""
     packageDescription = ""
+    scanOption = ""
     output = ""
     scan = False
     spdxDocId = None
@@ -92,6 +94,8 @@ def main(argv):
             packageLicenseComments = arg
         elif opt == '--packageDescription':
             packageDescription = arg
+        elif opt == '--scanOption':
+            scanOption = arg
         elif opt == '--print':
             output = arg
         elif opt in ('--scan'):
@@ -127,7 +131,7 @@ def main(argv):
         sys.exit()
 
     if scan == True:
-        spdxDoc.generateSPDXDoc()
+        spdxDoc.generateSPDXDoc(scanOption)
         spdxDoc.insertSPDX()
 
     if output.lower() == 'tag':
