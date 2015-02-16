@@ -55,10 +55,10 @@ Usage
 #####Options
 
 - `--packagePath [Path to archive]` Allows user to specify which package to run DoSPDX against.
-  - Conditonaly optional, Required if used with `-s` or `--scan`
+  - Conditionally optional, Required if used with `-s` or `--scan`
   - ***Example:*** `./DoSPDX.py -p archive.tar.bz2`
 - `-s` or `--scan` Runs a scan on the package specified in package path argument.
-  - Conditonaly optional, Required if used with `-s` or `--scan`
+  - Conditionally optional, Required if used with `-s` or `--scan`
   - ***Example:*** `./DoSPDX.py -p archive.tar.bz2 -s`
 - `--print [format]` Prints out SPDX document in specified format.
   - Optional
@@ -67,7 +67,7 @@ Usage
   - Optional 
   - ***Example:*** `./DoSPDX.py --documentComment "Scanned as part of the Yocto build process."`
 - `--spdxDocId [SPDX Doc Id]` Used to generate the spdx document object from the MySql Database.
-  - Conditonaly optional, Required if `-s` or `--scan` is not used.
+  - Conditionally optional, Required if `-s` or `--scan` is not used.
   - ***Example:*** `./DoSPDX.py --spdxDocId 37` 
 - `--creator [Creator]` Specifies who is creating the SPDX document.
   - Optional
