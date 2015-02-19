@@ -111,5 +111,5 @@ Code Contributions
 All contributions to DoSOCS will be subject to review by the owner of the repo before being merged. The following methods are acceptable ways to request changes:
 - Pull requests
 - Submitting issues
-- 
+
 If you have any questions about this application feel free to send the repo admins an email.
