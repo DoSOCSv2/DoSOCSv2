@@ -276,6 +276,7 @@ class SPDX:
 
             for row in dbCursor:
                 if row != None:
+		    print "Looks like it is working sort of."
                     tempFileInfo = fileInfo.fileInfo()
                     tempFileInfo.getFileInfo(row[0], self.packageInfo.packageId, dbCursor)
                     self.fileInfo.append(tempFileInfo)
@@ -360,7 +361,8 @@ class SPDX:
                 for fileName in archive.namelist():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo()
+                        tempFileInfo.populateFileInfo(self.scanOption)
+			print tempFileInfo.licenseInfoInFile
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
