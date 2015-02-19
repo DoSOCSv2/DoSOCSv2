@@ -16,27 +16,27 @@ mysql --user=$u --password=$p < Database/SQL/SPDX.sql
 
 #Create Upload Directory
 echo "Creating Upload Directory..."
-sudo mkdir SPDXDash/uploads
-sudo chmod 777 SPDXDash/uploads
+sudo mkdir SOCSDashboard/uploads
+sudo chmod 777 SOCSDashboard/uploads
 
 
 #Move source to base directorie
 echo "Reconfigure Repo Folder Structure"
-sudo mv DoSPDX/src/* DoSPDX/
-sudo mv SPDXDash/src/* SPDXDash/
-sudo chmod 777 DoSPDX/ -R
+sudo mv DoSOCS/src/* DoSOCS/
+sudo mv SOCSDashboard/src/* SOCSDashboard/
+sudo chmod 777 DoSOCS/ -R
 
 #Remove src directories
 echo "Removing old Repo Directories"
-sudo rm DoSPDX/src -R
-sudo rm SPDXDash/src -R
+sudo rm DoSOCS/src -R
+sudo rm SOCSDashboard/src -R
 
 #Delete Database Repo
 echo "Remove Database Repo"
 sudo rm Database -R
 
 echo "Install Complete"
-echo "Don't forget to update the setting files ('DoSPDX/settings.py' AND 'SPDXDash/function/Data_Source.php') with the database"
+echo "Don't forget to update the setting files ('DoSOCS/settings.py' AND 'SOCSDashboard/function/Data_Source.php') with the database"
 echo "connection information, and with the paths to Ninka and FOSSology."
 
 
