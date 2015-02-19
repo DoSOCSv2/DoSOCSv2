@@ -32,7 +32,7 @@ class fileInfo:
     def __init__(self, filePath=None, fileRelativePath = ""):
         self.filePath = filePath
         self.fileType = None
-        self.fileChecksum = None
+        self.fileChecksum = self.getChecksum()
         self.fileChecksumAlgorithm = "SHA1"
         self.licenseConcluded = "NO ASSERTION"
         self.licenseInfoInFile = []
@@ -52,7 +52,7 @@ class fileInfo:
             self.getChecksum()
             self.fileName = os.path.split(filePath)[1]
 
-    def getFileInfoFromChecksum(self, fileChecksum, dbCursor):
+    def getFileInfoFromChecksum(self, dbCursor):
         '''populates fileInfo from database'''
 
         sqlCommand = """SELECT  pf.file_name,
@@ -71,14 +71,13 @@ class fileInfo:
                                 pf.file_dependency,
                                 pf.file_checksum_algorithm 
                         FROM package_files AS pf
-                        WHERE pf.file_checksum = '%s'"""
-        dbCursor.execute(sqlCommand, fileChecksum)
+                        WHERE pf.file_checksum = %s"""
+        dbCursor.execute(sqlCommand, self.fileChecksum)
         queryResult = dbCursor.fetchone()
 
         if queryResult != None:
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
-            self.fileChecksum = queryResult[2]
             self.licenseConcluded = queryResult[3]
             self.licenseInfoInFile = queryResult[4].split(",")
             self.licenseComments = queryResult[5]
@@ -457,6 +456,7 @@ class fileInfo:
                                                         self.filePath])
                except Exception as e:
                   fossOutput = str(e.output)
+
                '''Parse outputs'''
                (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
                self.licenseInfoInFile.append(fossLicense)
@@ -497,7 +497,7 @@ class fileInfo:
                fossLicense = fossLicense.upper().strip()
                ninkaLicense = ninkaLicense.upper().strip()
                match = output_parser.lic_compare(fossLicense, ninkaLicense)
-	       print "Looking for matcch"            
+               
                if match and fossLicense != 'ERROR':
                    self.licenseInfoInFile.append(fossLicense)
                elif match and fossLicense == 'ERROR':
@@ -516,4 +516,4 @@ class fileInfo:
                                  user=settings.database_user,
                                  passwd=settings.database_pass,
                                  db=settings.database_name) as dbCursor:
-                self.getFileInfoFromChecksum(self.getChecksum(), dbCursor)
+                self.getFileInfoFromChecksum( dbCursor)
