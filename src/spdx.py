@@ -52,7 +52,7 @@ class SPDX:
                  packageHomePage=None,
                  packageSourceInfo=None,
                  packageLicenseComments=None,
-                 packageDescription=None),
+                 packageDescription=None,
                  scanOption=None):
         self.scanOption = scanOption
         self.packagePath = packagePath
