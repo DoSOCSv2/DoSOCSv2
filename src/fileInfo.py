@@ -408,7 +408,6 @@ class fileInfo:
         '''If it isn't cached, run scans, else get file from database.'''
         if cached == -1:
            if (scanOption == 'fossology'):
-            print "inside if condition";             
             '''Run fossology'''
             '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
             try:
