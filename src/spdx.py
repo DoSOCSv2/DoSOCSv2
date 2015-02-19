@@ -304,7 +304,7 @@ class SPDX:
                 tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
                 self.reviewerInfo.append(tempReviewerInfo)
 
-    def generateSPDXDoc(self):
+    def generateSPDXDoc(self,scanOption):
         '''Generates the entire structure by querying and scanning the files.'''
         extractTo = tempfile.mkdtemp()
         ninka_out = tempfile.NamedTemporaryFile()
