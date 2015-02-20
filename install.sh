@@ -11,7 +11,7 @@ git clone https://github.com/socs-dev-env/SOCSDashboard
 
 #Install Database
 echo "Install SPDX Database..."
-mysql --user=$u --password=$p < Database/SQL/SPDX.sql
+mysql --user=$u --password=$p < SOCSDatabase/SQL/SPDX.sql
 #Exit mySql
 
 #Create Upload Directory
@@ -33,7 +33,7 @@ sudo rm SOCSDashboard/src -R
 
 #Delete Database Repo
 echo "Remove Database Repo"
-sudo rm Database -R
+sudo rm SOCSDatabase -R
 
 echo "Install Complete"
 echo "Don't forget to update the setting files ('DoSOCS/settings.py' AND 'SOCSDashboard/function/Data_Source.php') with the database"
