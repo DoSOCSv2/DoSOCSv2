@@ -276,7 +276,6 @@ class SPDX:
 
             for row in dbCursor:
                 if row != None:
-		    print "Looks like it is working sort of."
                     tempFileInfo = fileInfo.fileInfo()
                     tempFileInfo.getFileInfo(row[0], self.packageInfo.packageId, dbCursor)
                     self.fileInfo.append(tempFileInfo)
