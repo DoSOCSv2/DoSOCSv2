@@ -112,4 +112,9 @@ All contributions to DoSOCS will be subject to review by the owner of the repo b
 - Pull requests
 - Submitting issues
 
-If you have any questions about this application feel free to send the repo <a href="https://github.com/orgs/socs-dev-env/teams/developers">developers</a> an email.
+If you have any questions about this application feel free to send the developers an email.
+
+Developers
+----------
+- <a href="https://github.com/zwmcfarland">Zachary McFarland</a>
+- <a href="https://github.com/vpenmatsa">Venkata Krishana Penmastsa</a>
