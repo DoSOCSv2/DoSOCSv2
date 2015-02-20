@@ -63,6 +63,7 @@ Usage
 - `--print [format]` Prints out SPDX document in specified format.
   - Optional
   - ***Example:*** `./DoSPDX.py --print TAG` or `./DoSPDX.py --print RDF`
+  - Note: Currently supported print formats are "TAG","RDF", and "JSON"
 - `--documentComment [Document Comment]` Specifies SPDX document Comment section.
   - Optional 
   - ***Example:*** `./DoSPDX.py --documentComment "Scanned as part of the Yocto build process."`
@@ -99,9 +100,16 @@ Usage
 - `--packageDescription [Description]` Allows user to enter a description of the package.
   - Optional
   - ***Example:*** `./DoSPDX.py --packageDescription "This package allows for hosting local content to the web."`
- 
+- `--scanOption [scanner]` Allows for user to specify which scanner they would like to use.
+  - Optional
+  - ***Example:*** `./DoSPDX.py --scanOption fossology --scan` 
+  - Note: if not specified Ninka and fossology will be used. The only supported scanOption is "fossology"
 
 
 Code Contributions
 ------------------
-All contributions to DoSOCS will be subject to review by the owner of the repo before being merged.
+All contributions to DoSOCS will be subject to review by the owner of the repo before being merged. The following methods are acceptable ways to request changes:
+- Pull requests
+- Submitting issues
+
+If you have any questions about this application feel free to send the repo <a href="https://github.com/orgs/socs-dev-env/teams/developers">developers</a> an email.
