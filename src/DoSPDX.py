@@ -41,7 +41,7 @@ Options:
   --documentComment=TEXT      Specify SPDX document comment section
   --spdxDocId=ID              Generate SPDX document from database
                                 (required if `-s' not specified)
-  --creator=CREATOR           Specify SPDX creator field
+  --creator=TEXT              Specify SPDX creator field
   --creatorComment=TEXT       Specify SPDX creator comment field
   --packageVersion=TEXT       Specify package version
   --packageDownloadLocation=TEXT
