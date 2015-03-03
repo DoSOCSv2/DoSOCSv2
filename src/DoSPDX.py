@@ -29,26 +29,63 @@ import licensingInfo
 import reviewerInfo
 
 
-def main(argv):
-    '''Command line arguments.'''
-    opts, args = getopt.getopt(argv, "hp:", ["help",
-                                            "packagePath=",
-                                            "documentComment=",
-                                            "creator=",
-                                            "creatorComment=",
-                                            "packageVersion=",
-                                            "packageSupplier=",
-                                            "packageDownloadLocation=",
-                                            "packageOriginator=",
-                                            "packageHomePage=",
-                                            "packageSourceInfo=",
-                                            "packageLicenseComments=",
-                                            "packageDescription=",
-                                            "scanOption=",
-                                            "print=",
-                                            "spdxDocId=",
-                                            "scan"])
+def usage():
+   print '''\
+Usage: DoSPDX.py [OPTION]...
 
+Options:
+  -p, --packagePath=PATH      Package to run DoSOCS against
+  --scan                      Scan the package specified by `-p'
+  --print=FORMAT              Print SPDX document in specified format
+                                (`tag', `json' or `rdf')
+  --documentComment=TEXT      Specify SPDX document comment section
+  --spdxDocId=ID              Generate SPDX document from database
+                                (required if `-s' not specified)
+  --creator=TEXT              Specify SPDX creator field
+  --creatorComment=TEXT       Specify SPDX creator comment field
+  --packageVersion=TEXT       Specify package version
+  --packageDownloadLocation=TEXT
+                              Specify package download location field
+  --packageOriginator=TEXT    Specify package originator field
+  --packageHomePage=TEXT      Specify package home page field
+  --packageSourceInfo=TEXT    Specify package source information field
+  --packageLicenseComments=TEXT
+                              Specify license comments field
+  --packageDescription=TEXT   Specify package description field
+  --scanOption=SCANNER        Specify what scanner to use
+                                (`fossology' to use FOSSology only)
+
+Options taking a TEXT argument require double quotes around the argument.\
+'''
+
+def main(argv):
+    progname = os.path.basename(sys.argv[0])
+    '''Command line arguments.'''
+    longopts = [
+        "help",
+        "packagePath=",
+        "documentComment=",
+        "creator=",
+        "creatorComment=",
+        "packageVersion=",
+        "packageSupplier=",
+        "packageDownloadLocation=",
+        "packageOriginator=",
+        "packageHomePage=",
+        "packageSourceInfo=",
+        "packageLicenseComments=",
+        "packageDescription=",
+        "scanOption=",
+        "print=",
+        "spdxDocId=",
+        "scan"
+    ]
+    try:
+        opts, args = getopt.getopt(argv, "hp:", longopts)
+    except getopt.GetoptError as inst:
+        print progname + ": " + inst.msg
+        print progname + ": Try `" + progname + " --help' for more information."
+        sys.exit(1)
     documentComment = ""
     packagePath = None
     creator = ""
@@ -68,8 +105,9 @@ def main(argv):
     spdxDocId = None
 
     for opt, arg in opts:
-        if opt == '-h':
-            print "Help Documentation"
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit()
         elif opt in ('-p', '--packagePath'):
             packagePath = arg
         elif opt == '--documentComment':
@@ -105,7 +143,9 @@ def main(argv):
 
     '''Validate package path'''
     if scan and (packagePath == None or not os.path.isfile(packagePath)):
-        raise Exception('Invalid Package path')
+        print progname + ": You must specify a valid package path"
+        print progname + ": Try `" + progname + " --help' for more information."
+        sys.exit(1)
 
     '''Create spdx object'''
     spdxDoc = spdx.SPDX(documentComment=documentComment,
@@ -140,6 +180,10 @@ def main(argv):
         print spdxDoc.outputSPDX_RDF()
     elif output.lower() == 'json':
         print spdxDoc.outputSPDX_JSON()
+
+    if not opts:
+        print progname + ": You must specify one of (`--scan', `--spdxDocId')"
+        print progname + ": Try `" + progname + " --help' for more information."
 
 if __name__ == "__main__":
     main(sys.argv[1:])
