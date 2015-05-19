@@ -52,8 +52,6 @@ Options:
   --packageLicenseComments=TEXT
                               Specify license comments field
   --packageDescription=TEXT   Specify package description field
-  --scanOption=SCANNER        Specify what scanner to use
-                                (`fossology' to use FOSSology only)
 
 Options taking a TEXT argument require double quotes around the argument.\
 '''
@@ -75,7 +73,6 @@ def main(argv):
         "packageSourceInfo=",
         "packageLicenseComments=",
         "packageDescription=",
-        "scanOption=",
         "print=",
         "spdxDocId=",
         "scan"
@@ -99,7 +96,6 @@ def main(argv):
     packageSourceInfo = ""
     packageLicenseComments = ""
     packageDescription = ""
-    scanOption = ""
     output = ""
     scan = False
     spdxDocId = None
@@ -132,8 +128,6 @@ def main(argv):
             packageLicenseComments = arg
         elif opt == '--packageDescription':
             packageDescription = arg
-        elif opt == '--scanOption':
-            scanOption = arg
         elif opt == '--print':
             output = arg
         elif opt in ('--scan'):
@@ -171,7 +165,7 @@ def main(argv):
         sys.exit()
 
     if scan == True:
-        spdxDoc.generateSPDXDoc(scanOption)
+        spdxDoc.generateSPDXDoc()
         spdxDoc.insertSPDX()
 
     if output.lower() == 'tag':

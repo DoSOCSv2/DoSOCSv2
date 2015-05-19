@@ -52,9 +52,7 @@ class SPDX:
                  packageHomePage=None,
                  packageSourceInfo=None,
                  packageLicenseComments=None,
-                 packageDescription=None,
-                 scanOption=None):
-        self.scanOption = scanOption
+                 packageDescription=None):
         self.packagePath = packagePath
         self.version = version
         self.dataLicense = dataLicense
@@ -304,11 +302,9 @@ class SPDX:
                 tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
                 self.reviewerInfo.append(tempReviewerInfo)
 
-    def generateSPDXDoc(self,scanOption):
+    def generateSPDXDoc(self):
         '''Generates the entire structure by querying and scanning the files.'''
         extractTo = tempfile.mkdtemp()
-        ninka_out = tempfile.NamedTemporaryFile()
-        foss_out = tempfile.NamedTemporaryFile()
         licenseCounter = 0
         scanners = []
         licensesFromFiles = []
@@ -326,7 +322,7 @@ class SPDX:
                 for fileName in archive.getnames():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(scanOption)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
@@ -360,7 +356,7 @@ class SPDX:
                 for fileName in archive.namelist():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(scanOption)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
@@ -388,7 +384,5 @@ class SPDX:
                         path = os.path.join(path, fileName)
 
         self.packageInfo.generatePackageInfo(sha1Checksums)
-        ninka_out.close()
-        foss_out.close()
         '''Delete the temporary files.'''
         shutil.rmtree(extractTo)

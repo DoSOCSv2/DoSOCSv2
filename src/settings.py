@@ -16,17 +16,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-'''
-Paths to scanners
-'''
-NINKA_PATH = "/usr/share/ninka/ninka.pl"
-FOSSOLOGY_PATH = "/usr/lib/fossology/agents/nomos"
-
-'''
-Database connection settings
-'''
-database_user = "root"
-database_pass = "star1234%"
+FOSSOLOGY_PATH = "/usr/share/fossology/nomos/agent/nomos"
+database_user = "spdx"
+database_pass = "spdx"
 database_host = "localhost"
 database_port = "3306"
 database_name = "SPDX"

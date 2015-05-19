@@ -1,4 +1,3 @@
-#!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
 Copyright 2014 University of Nebraska at Omaha (UNO)
@@ -23,7 +22,7 @@ import hashlib
 import subprocess
 import sys
 import os
-import output_parser
+import nomosparse
 from signal import signal, SIGPIPE, SIG_DFL
 from mimetypes import MimeTypes
 
@@ -432,14 +431,14 @@ class fileInfo:
         with open(self.filePath, 'rb') as fileIn:
             self.fileChecksum = hashlib.sha1(fileIn.read()).hexdigest()
 
-    def populateFileInfo(self,scanOption):
-        '''Runs the two scanners and parses their output into the fileInfo object''' 
+    def populateFileInfo(self):
+        '''Run nomos and populate fileInfo object with its output''' 
 
         ''' Get File Type'''
         mime = MimeTypes()
         self.fileType = mime.guess_type(self.filePath)[0]
 
-        if self.fileType == None:
+        if self.fileType is None:
             self.fileType = 'Unknown'
 
         '''Check to see if file is cached.'''
@@ -447,77 +446,25 @@ class fileInfo:
 
         '''If it isn't cached, run scans, else get file from database.'''
         if cached == -1:
-           if scanOption == 'fossology':
-               '''Run fossology'''
-               '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
-               try:
-                   fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
-                                                        self.filePath])
-               except OSError as ose:
-                   print "Error running FOSSology nomos, check your path to nomos in settings.py"
-               except Exception as e:
-                  fossOutput = str(e.output)
+            # Run nomos. It doesn't return an exit code of 0 so we must always
+            # catch the output.
+            try:
+                fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
+                                                      self.filePath])
+            except OSError as ose:
+                print "Error running FOSSology nomos, check your path to nomos in settings.py"
+            except Exception as e:
+                fossOutput = str(e.output)
 
-               '''Parse outputs'''
-               (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
-               self.licenseInfoInFile.append(fossLicense)
-               self.licenseComments = "#FOSSology "
-               self.licenseComments += fossLicense
-           else:
-               '''Scan to find licenses'''
-               '''Run Ninka'''
-               ninkaOutput = subprocess.check_output(
-                                                     [settings.NINKA_PATH, self.filePath],
-                                                     preexec_fn=lambda: signal(SIGPIPE, SIG_DFL)
-                                                    )
-
-               '''Run fossology'''
-               '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
-               try:
-                   fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
-                                                       self.filePath])
-               except OSError as ose:
-                   print "Error running FOSSology nomos, check your path to nomos in settings.py"
-               except Exception as e:
-                   fossOutput = str(e.output)
-
-               '''Parse outputs'''
-               (fileName, ninkaLicense) = output_parser.ninka_parser(ninkaOutput)
-               (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
-
-               '''Get extracted text from ninka "senttok" file'''
-               try:
-                   with open(self.filePath + ".senttok", 'r') as f:
-                       for line in f:
-                           if ninkaLicense in line:
-                               line_tok = line.split(';')
-                               self.extractedText +=  line_tok[3] + "\n"
-                               self.extractedText +=  line_tok[4]
-               except Exception as e:
-                   '''Do nothing, we just wont have extracted text for this license.'''
-
-               '''License merging logic.'''
-               fossLicense = fossLicense.upper().strip()
-               ninkaLicense = ninkaLicense.upper().strip()
-               match = output_parser.lic_compare(fossLicense, ninkaLicense)
-               
-               if match and fossLicense != 'ERROR':
-                   self.licenseInfoInFile.append(fossLicense)
-               elif match and fossLicense == 'ERROR':
-                   self.licenseInfoInFile.append(ninkaLicense)
-               elif not match and fossLicense == 'UNKNOWN':
-                   self.licenseInfoInFile.append(ninkaLicense)
-               else:
-                   self.licenseInfoInFile.append("NO ASSERTION")
-
-               self.licenseComments = "#FOSSology "
-               self.licenseComments += fossLicense
-               self.licenseComments += " #Ninka "
-               self.licenseComments += ninkaLicense
+            '''Parse outputs'''
+            fileName, fossLicense = nomosparse.parse_one(fossOutput)
+            self.licenseInfoInFile.append(fossLicense)
+            self.licenseComments = "#FOSSology "
+            self.licenseComments += fossLicense
         else:
             with MySQLdb.connect(host=settings.database_host,
                                  user=settings.database_user,
                                  passwd=settings.database_pass,
                                  db=settings.database_name) as dbCursor:
                 self.getChecksum()
-                self.getFileInfoFromChecksum( dbCursor)
+                self.getFileInfoFromChecksum(dbCursor)
