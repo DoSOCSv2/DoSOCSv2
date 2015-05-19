@@ -78,10 +78,7 @@ class SPDX:
         '''insert SPDX doc into db'''
         spdxDocId = None
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             '''get spdx doc id'''
             sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
             dbCursor.execute(sqlCommand)
@@ -121,29 +118,20 @@ class SPDX:
             packageId = self.packageInfo.insertPackageInfo(dbCursor)
             ''' Insert File Information '''
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             for files in self.fileInfo:
                 files.insertFileInfo(spdxDocId, packageId, dbCursor)
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             for license in self.licensingInfo:
                 license.insertLicensingInfo(spdxDocId, dbCursor)
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             ''' Insert Reviewer Information '''
             for reviewer in self.reviewerInfo:
                 reviewer.insertReviewerInfo(spdxDocId, dbCursor)
         return spdxDocId
-    
+
     def outputSPDX_TAG(self):
         '''output SPDX in tag format'''
         output = ""
@@ -242,10 +230,7 @@ class SPDX:
     def getSPDX(self, spdx_doc_id):
         '''Generates the entire object from the database.'''
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = """SELECT     spdx_version,
                                     data_license,
                                     document_comment
@@ -281,7 +266,7 @@ class SPDX:
                     '''Get the license information for this file'''
                     sqlCommand = """SELECT dla.license_id
                                     FROM licensings AS l
-                                    LEFT OUTER JOIN doc_license_associations AS dla 
+                                    LEFT OUTER JOIN doc_license_associations AS dla
                                             ON l.doc_license_association_id = dla.id
                                     WHERE l.package_file_id = %s"""
 
@@ -311,10 +296,7 @@ class SPDX:
         sha1Checksums = []
         path = ""
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             if tarfile.is_tarfile(self.packagePath):
                 '''If it is a tar file, use tarfile component'''
                 archive = tarfile.open(self.packagePath)
@@ -336,7 +318,7 @@ class SPDX:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:
-                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId,
                                                                           existingLicense.extractedText,
                                                                           existingLicense.licenseName,
                                                                           existingLicense.licenseCrossReference,
@@ -348,7 +330,7 @@ class SPDX:
                         path = ""
                     else:
                         path = os.path.join(path, fileName)
-    
+
             elif zipfile.is_zipfile(self.packagePath):
                 '''If it is a zip file, use zipfile component'''
                 archive = zipfile.ZipFile(self.packagePath, "r")
@@ -370,7 +352,7 @@ class SPDX:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:
-                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId,
                                                                           existingLicense.extractedText,
                                                                           existingLicense.licenseName,
                                                                           existingLicense.licenseCrossReference,

@@ -411,10 +411,7 @@ class fileInfo:
 
     def isCached(self):
         '''checks whether or not file is in database'''
-        with MySQLdb.connect(host=settings.database_host,
-                            user=settings.database_user,
-                            passwd=settings.database_pass,
-                            db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = """SELECT id
                             FROM package_files
                             WHERE file_checksum = %s"""
@@ -462,9 +459,6 @@ class fileInfo:
             self.licenseComments = "#FOSSology "
             self.licenseComments += fossLicense
         else:
-            with MySQLdb.connect(host=settings.database_host,
-                                 user=settings.database_user,
-                                 passwd=settings.database_pass,
-                                 db=settings.database_name) as dbCursor:
+            with MySQLdb.connect(**settings.database) as dbCursor:
                 self.getChecksum()
                 self.getFileInfoFromChecksum(dbCursor)

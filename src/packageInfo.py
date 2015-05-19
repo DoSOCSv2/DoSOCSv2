@@ -387,10 +387,7 @@ class packageInfo:
     def isCached(self):
         '''checks database to see if package is cached'''
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = "SELECT id FROM packages WHERE package_checksum = %s"
             dbCursor.execute(sqlCommand, (self.packageChecksum))
 
@@ -410,8 +407,5 @@ class packageInfo:
 
         cached = self.isCached()
         if cached != -1:
-            with MySQLdb.connect(host=settings.database_host,
-                                 user=settings.database_user,
-                                 passwd=settings.database_pass,
-                                 db=settings.database_name) as dbCursor:
+            with MySQLdb.connect(**settings.database) as dbCursor:
                 self.getPackageInfo(cached, dbCursor)

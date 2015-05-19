@@ -17,8 +17,10 @@ limitations under the License.
 '''
 
 FOSSOLOGY_PATH = "/usr/share/fossology/nomos/agent/nomos"
-database_user = "spdx"
-database_pass = "spdx"
-database_host = "localhost"
-database_port = "3306"
-database_name = "SPDX"
+database = {
+    'user': 'spdx',
+    'passwd': 'spdx',
+    'host': 'localhost',
+    'db': 'SPDX',
+#    'port': '3306'
+}
