@@ -98,7 +98,7 @@ class creatorInfo:
         return output
 
     def outputCreatorInfo_JSON(self):
-        output =  '{\n'
+        output = '{\n'
         output += '\t\t\t"creator": "' + str(self.creator) + '",\n'
         output += '\t\t\t"created": "' + str(self.created) + '",\n'
         output += '\t\t\t"comment": "' + str(self.creatorComment) + '",\n'

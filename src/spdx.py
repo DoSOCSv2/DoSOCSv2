@@ -16,7 +16,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import errno
 import creatorInfo
 import packageInfo
 import licensingInfo
@@ -29,12 +28,12 @@ import shutil
 import settings
 import tarfile
 import zipfile
-import sets
-import shutil
+
 
 '''
-This contains the definition for the SPDX object.
+Definition for the SPDX object.
 '''
+
 
 class SPDX:
     def __init__(self,
@@ -57,19 +56,19 @@ class SPDX:
         self.version = version
         self.dataLicense = dataLicense
         self.documentComment = documentComment
-        self.creatorInfo = creatorInfo.creatorInfo( packagePath,
-                                                    creator,
-                                                    creatorComment,
-                                                    licenseListVersion)
-        self.packageInfo = packageInfo.packageInfo( packagePath,
-                                                    packageVersion,
-                                                    packageSupplier,
-                                                    packageOriginator,
-                                                    packageDownloadLocation,
-                                                    packageHomePage,
-                                                    packageSourceInfo,
-                                                    packageLicenseComments,
-                                                    packageDescription)
+        self.creatorInfo = creatorInfo.creatorInfo(packagePath,
+                                                   creator,
+                                                   creatorComment,
+                                                   licenseListVersion)
+        self.packageInfo = packageInfo.packageInfo(packagePath,
+                                                   packageVersion,
+                                                   packageSupplier,
+                                                   packageOriginator,
+                                                   packageDownloadLocation,
+                                                   packageHomePage,
+                                                   packageSourceInfo,
+                                                   packageLicenseComments,
+                                                   packageDescription)
         self.licensingInfo = []
         self.fileInfo = []
         self.reviewerInfo = []
@@ -103,7 +102,7 @@ class SPDX:
                                     CURRENT_TIMESTAMP,
                                     CURRENT_TIMESTAMP)"""
 
-            dbCursor.execute(sqlCommand,(self.version,
+            dbCursor.execute(sqlCommand, (self.version,
                                          self.dataLicense,
                                          self.packageInfo.packageName,
                                          'SQL',
@@ -197,7 +196,7 @@ class SPDX:
 
     def outputSPDX_JSON(self):
         '''Render the spdx object in json format'''
-        output =  '{\n'
+        output = '{\n'
         output += '\t"spdxDocument" : {\n'
         output += '\t\t"specVersion" : "' + str(self.version) + '",\n'
         output += '\t\t"dataLicense" : "' + str(self.dataLicense) + '",\n'

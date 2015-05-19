@@ -166,7 +166,7 @@ class licensingInfo:
 
     def outputLicensingInfo_JSON(self):
         '''generates licenseing info object in json format'''
-        output =  '{\n'
+        output = '{\n'
         output += '\t\t\t\t"licenseId" : "' + str(self.licenseId) + '",\n'
         output += '\t\t\t\t"licenseName" : "' + str(self.licenseName) + '",\n'
         output += '\t\t\t\t"extractedText" : "' + str(self.extractedText) + '",\n'
@@ -212,5 +212,5 @@ class licensingInfo:
                 if(self.licenseName == altLicensingInfo.licenseName):
                     if(self.licenseCrossReference == altLicensingInfo.licenseCrossReference):
                         if(self.licenseComment == altLicensingInfo.licenseComment):
-                            return self;
-        return None;
+                            return self
+        return None

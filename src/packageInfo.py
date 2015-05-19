@@ -57,7 +57,7 @@ class packageInfo:
         self.packageDescription = packageDescription
         self.packageVerificationCodeExcludedFile = "None"
 
-        '''If path is defined then run some of the procedures on it, 
+        '''If path is defined then run some of the procedures on it,
         such as get checksum and package size.'''
         if packagePath != None:
             self.packageName = os.path.split(packagePath)[1]
@@ -308,7 +308,7 @@ class packageInfo:
         output += '\t\t\t\t"pacakgeVerificationCodeValue" : "' + str(self.packageVerificationCode) + '",\n'
         output += '\t\t\t\t"packageVerificationCodeExcludedFile" : "' + str(self.packageVerificationCodeExcludedFile) + '"\n'
         output += '\t\t\t},\n'
-        
+
         output += '\t\t\t"checksum" : {\n'
         output += '\t\t\t\t"algorithm" : "' + str(self.packageChecksumAlgorithm) + '",\n'
         output += '\t\t\t\t"checksumValue" : "' + str(self.packageChecksum) + '"\n'

@@ -30,7 +30,7 @@ import reviewerInfo
 
 
 def usage():
-   print '''\
+    print '''\
 Usage: DoSPDX.py [OPTION]...
 
 Options:
@@ -55,6 +55,7 @@ Options:
 
 Options taking a TEXT argument require double quotes around the argument.\
 '''
+
 
 def main(argv):
     progname = os.path.basename(sys.argv[0])
@@ -157,7 +158,7 @@ def main(argv):
                         packageDescription=packageDescription)
 
     '''Execute requested commands'''
-    result = True;
+    result = True
     if spdxDocId != None:
         result = spdxDoc.getSPDX(spdxDocId)
 

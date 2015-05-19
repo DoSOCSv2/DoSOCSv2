@@ -28,7 +28,7 @@ from mimetypes import MimeTypes
 
 
 class fileInfo:
-    def __init__(self, filePath=None, fileRelativePath = ""):
+    def __init__(self, filePath=None, fileRelativePath=""):
         self.filePath = filePath
         self.fileType = None
         self.fileChecksum = ""
@@ -68,7 +68,7 @@ class fileInfo:
                                 pf.file_notice,
                                 pf.file_contributor,
                                 pf.file_dependency,
-                                pf.file_checksum_algorithm 
+                                pf.file_checksum_algorithm
                         FROM package_files AS pf
                         WHERE pf.file_checksum = %s"""
         dbCursor.execute(sqlCommand, self.fileChecksum)
@@ -90,7 +90,6 @@ class fileInfo:
             self.fileDependency = queryResult[13]
             self.fileChecksumAlgorithm = queryResult[14]
 
-
     def getFileInfo(self, package_file_id, package_id, dbCursor):
         '''populates fileInfo from database'''
 
@@ -111,12 +110,12 @@ class fileInfo:
                                 dfpa.relative_path,
                                 pf.file_checksum_algorithm
                         FROM package_files AS pf
-                             LEFT OUTER JOIN doc_file_package_associations AS dfpa ON pf.id = dfpa.package_file_id AND dfpa.package_id = %s 
+                             LEFT OUTER JOIN doc_file_package_associations AS dfpa ON pf.id = dfpa.package_file_id AND dfpa.package_id = %s
                         WHERE pf.id = %s"""
         dbCursor.execute(sqlCommand, (package_id, package_file_id))
         queryResult = dbCursor.fetchone()
 
-        if queryResult != None: 
+        if queryResult != None:
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
             self.fileChecksum = queryResult[2]
@@ -133,7 +132,6 @@ class fileInfo:
             self.fileContributor = queryResult[12]
             self.fileDependency = queryResult[13]
             self.fileRelativePath = queryResult[14]
-            
 
     def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
         '''inserts fileInfo into database.'''
@@ -353,7 +351,7 @@ class fileInfo:
             output += str(dependency) + '"/>\n'
 
         return output
-    
+
     def outputFileInfo_JSON(self):
         output = "{\n"
         output += '\t\t\t\t"fileName" : "' + str(self.fileName) + '",\n'
@@ -362,7 +360,7 @@ class fileInfo:
         output += '\t\t\t\t\t"algorithm" : "' + str(self.fileChecksumAlgorithm) + '",\n'
         output += '\t\t\t\t\t"checksumValue" : "' + str(self.fileChecksum) + '"\n'
         output += '\t\t\t\t},\n'
-        output += '\t\t\t\t"licenseConcluded" : "' + str(self.licenseConcluded) +'",\n'
+        output += '\t\t\t\t"licenseConcluded" : "' + str(self.licenseConcluded) + '",\n'
 
         output += '\t\t\t\t"licenseInfoInFile" : [\n'
         count = 1
@@ -383,7 +381,7 @@ class fileInfo:
             output += '\t\t\t\t\t{\n'
             output += '\t\t\t\t\t\t"project" : "' + str(projectName) + '",\n'
             output += '\t\t\t\t\t\t"homepage" : "' + str(self.artifactOfProjectHomePage[count]) + '",\n'
-            output += '\t\t\t\t\t\t"artifactOf" : "' + str(self.artifactOfProjectURI[counter]) +'"\n'
+            output += '\t\t\t\t\t\t"artifactOf" : "' + str(self.artifactOfProjectURI[counter]) + '"\n'
             output += '\t\t\t\t\t}'
             if count != len(self.artifactOfProjectName):
                 output += ','
@@ -391,7 +389,7 @@ class fileInfo:
             count += 1
         output += '\t\t\t\t],\n'
 
-        output += '\t\t\t\t"comment" : "' + str(self.fileComment) + '",\n' 
+        output += '\t\t\t\t"comment" : "' + str(self.fileComment) + '",\n'
         output += '\t\t\t\t"noticeText" : "' + str(self.fileNotice) + '",\n'
         output += '\t\t\t\t"contributor" : "' + str(self.fileContributor) + '",\n'
 
@@ -406,7 +404,7 @@ class fileInfo:
         output += '\t\t\t\t]\n'
 
         output += '\t\t\t}'
-        
+
         return output
 
     def isCached(self):
@@ -429,7 +427,7 @@ class fileInfo:
             self.fileChecksum = hashlib.sha1(fileIn.read()).hexdigest()
 
     def populateFileInfo(self):
-        '''Run nomos and populate fileInfo object with its output''' 
+        '''Run nomos and populate fileInfo object with its output'''
 
         ''' Get File Type'''
         mime = MimeTypes()
