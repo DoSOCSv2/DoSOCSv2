@@ -1,4 +1,3 @@
-#!/usr/bin/python
 '''
 <SPDX-License-Identifier: Apache-2.0>
 Copyright 2014 University of Nebraska at Omaha (UNO)

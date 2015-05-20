@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 '''
 <SPDX-License-Identifier: Apache-2.0>
 Copyright 2014 University of Nebraska at Omaha (UNO)
