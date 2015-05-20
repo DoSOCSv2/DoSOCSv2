@@ -71,7 +71,7 @@ def extract_fields(argv):
 
 def main():
     progname = os.path.basename(sys.argv[0])
-    argv = docopt.docopt(doc=__doc__, version='0.0.1-dev')
+    argv = docopt.docopt(doc=__doc__, version='2.0.0-dev')
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
         print progname + ": You must specify a file or document ID"
