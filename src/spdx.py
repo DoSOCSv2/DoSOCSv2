@@ -130,7 +130,19 @@ class SPDX:
                 reviewer.insertReviewerInfo(spdxDocId, dbCursor)
         return spdxDocId
 
-    def outputSPDX_TAG(self):
+    def __str__(self):
+        return self.as_string()
+
+    def as_string(self, output_format='json'):
+        assert output_format in ('tag', 'json', 'rdf')
+        if output_format == 'tag':
+            return self.as_tag()
+        if output_format == 'rdf':
+            return self.as_rdf()
+        if output_format == 'json':
+            return self.as_json()
+
+    def as_tag(self):
         '''output SPDX in tag format'''
         output = ""
         output += "SPDXVersion: " + str(self.version) + '\n'
@@ -162,7 +174,7 @@ class SPDX:
 
         return output
 
-    def outputSPDX_RDF(self):
+    def as_rdf(self):
         '''Render the spdx object in rdf format'''
         output = ""
         output += '<SpdxDocument rdf:about="">\n'
@@ -193,7 +205,7 @@ class SPDX:
 
         return output
 
-    def outputSPDX_JSON(self):
+    def as_json(self):
         '''Render the spdx object in json format'''
         output = '{\n'
         output += '\t"spdxDocument" : {\n'
