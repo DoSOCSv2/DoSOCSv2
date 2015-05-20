@@ -1,22 +1,19 @@
-#!/usr/bin/python
-'''
-<SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 University of Nebraska at Omaha (UNO)
+# <SPDX-License-Identifier: Apache-2.0>
+# Copyright (c) 2014-2015 University of Nebraska at Omaha (UNO) and other
+# contributors.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
-import errno
 import creatorInfo
 import packageInfo
 import licensingInfo
@@ -29,12 +26,10 @@ import shutil
 import settings
 import tarfile
 import zipfile
-import sets
-import shutil
 
-'''
-This contains the definition for the SPDX object.
-'''
+
+'''Definition for the SPDX object.'''
+
 
 class SPDX:
     def __init__(self,
@@ -52,26 +47,24 @@ class SPDX:
                  packageHomePage=None,
                  packageSourceInfo=None,
                  packageLicenseComments=None,
-                 packageDescription=None,
-                 scanOption=None):
-        self.scanOption = scanOption
+                 packageDescription=None):
         self.packagePath = packagePath
         self.version = version
         self.dataLicense = dataLicense
         self.documentComment = documentComment
-        self.creatorInfo = creatorInfo.creatorInfo( packagePath,
-                                                    creator,
-                                                    creatorComment,
-                                                    licenseListVersion)
-        self.packageInfo = packageInfo.packageInfo( packagePath,
-                                                    packageVersion,
-                                                    packageSupplier,
-                                                    packageOriginator,
-                                                    packageDownloadLocation,
-                                                    packageHomePage,
-                                                    packageSourceInfo,
-                                                    packageLicenseComments,
-                                                    packageDescription)
+        self.creatorInfo = creatorInfo.creatorInfo(packagePath,
+                                                   creator,
+                                                   creatorComment,
+                                                   licenseListVersion)
+        self.packageInfo = packageInfo.packageInfo(packagePath,
+                                                   packageVersion,
+                                                   packageSupplier,
+                                                   packageOriginator,
+                                                   packageDownloadLocation,
+                                                   packageHomePage,
+                                                   packageSourceInfo,
+                                                   packageLicenseComments,
+                                                   packageDescription)
         self.licensingInfo = []
         self.fileInfo = []
         self.reviewerInfo = []
@@ -80,10 +73,7 @@ class SPDX:
         '''insert SPDX doc into db'''
         spdxDocId = None
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             '''get spdx doc id'''
             sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
             dbCursor.execute(sqlCommand)
@@ -108,7 +98,7 @@ class SPDX:
                                     CURRENT_TIMESTAMP,
                                     CURRENT_TIMESTAMP)"""
 
-            dbCursor.execute(sqlCommand,(self.version,
+            dbCursor.execute(sqlCommand, (self.version,
                                          self.dataLicense,
                                          self.packageInfo.packageName,
                                          'SQL',
@@ -123,30 +113,33 @@ class SPDX:
             packageId = self.packageInfo.insertPackageInfo(dbCursor)
             ''' Insert File Information '''
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             for files in self.fileInfo:
                 files.insertFileInfo(spdxDocId, packageId, dbCursor)
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             for license in self.licensingInfo:
                 license.insertLicensingInfo(spdxDocId, dbCursor)
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             ''' Insert Reviewer Information '''
             for reviewer in self.reviewerInfo:
                 reviewer.insertReviewerInfo(spdxDocId, dbCursor)
         return spdxDocId
-    
-    def outputSPDX_TAG(self):
+
+    def __str__(self):
+        return self.as_string()
+
+    def as_string(self, output_format='json'):
+        assert output_format in ('tag', 'json', 'rdf')
+        if output_format == 'tag':
+            return self.as_tag()
+        if output_format == 'rdf':
+            return self.as_rdf()
+        if output_format == 'json':
+            return self.as_json()
+
+    def as_tag(self):
         '''output SPDX in tag format'''
         output = ""
         output += "SPDXVersion: " + str(self.version) + '\n'
@@ -178,7 +171,7 @@ class SPDX:
 
         return output
 
-    def outputSPDX_RDF(self):
+    def as_rdf(self):
         '''Render the spdx object in rdf format'''
         output = ""
         output += '<SpdxDocument rdf:about="">\n'
@@ -209,9 +202,9 @@ class SPDX:
 
         return output
 
-    def outputSPDX_JSON(self):
+    def as_json(self):
         '''Render the spdx object in json format'''
-        output =  '{\n'
+        output = '{\n'
         output += '\t"spdxDocument" : {\n'
         output += '\t\t"specVersion" : "' + str(self.version) + '",\n'
         output += '\t\t"dataLicense" : "' + str(self.dataLicense) + '",\n'
@@ -244,10 +237,7 @@ class SPDX:
     def getSPDX(self, spdx_doc_id):
         '''Generates the entire object from the database.'''
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = """SELECT     spdx_version,
                                     data_license,
                                     document_comment
@@ -283,7 +273,7 @@ class SPDX:
                     '''Get the license information for this file'''
                     sqlCommand = """SELECT dla.license_id
                                     FROM licensings AS l
-                                    LEFT OUTER JOIN doc_license_associations AS dla 
+                                    LEFT OUTER JOIN doc_license_associations AS dla
                                             ON l.doc_license_association_id = dla.id
                                     WHERE l.package_file_id = %s"""
 
@@ -304,21 +294,16 @@ class SPDX:
                 tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
                 self.reviewerInfo.append(tempReviewerInfo)
 
-    def generateSPDXDoc(self,scanOption):
+    def generateSPDXDoc(self):
         '''Generates the entire structure by querying and scanning the files.'''
         extractTo = tempfile.mkdtemp()
-        ninka_out = tempfile.NamedTemporaryFile()
-        foss_out = tempfile.NamedTemporaryFile()
         licenseCounter = 0
         scanners = []
         licensesFromFiles = []
         sha1Checksums = []
         path = ""
 
-        with MySQLdb.connect(    host=settings.database_host,
-                                user=settings.database_user,
-                                passwd=settings.database_pass,
-                                db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             if tarfile.is_tarfile(self.packagePath):
                 '''If it is a tar file, use tarfile component'''
                 archive = tarfile.open(self.packagePath)
@@ -326,7 +311,7 @@ class SPDX:
                 for fileName in archive.getnames():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(scanOption)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
@@ -340,7 +325,7 @@ class SPDX:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:
-                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId,
                                                                           existingLicense.extractedText,
                                                                           existingLicense.licenseName,
                                                                           existingLicense.licenseCrossReference,
@@ -352,7 +337,7 @@ class SPDX:
                         path = ""
                     else:
                         path = os.path.join(path, fileName)
-    
+
             elif zipfile.is_zipfile(self.packagePath):
                 '''If it is a zip file, use zipfile component'''
                 archive = zipfile.ZipFile(self.packagePath, "r")
@@ -360,7 +345,7 @@ class SPDX:
                 for fileName in archive.namelist():
                     if os.path.isfile(os.path.join(extractTo, fileName)):
                         tempFileInfo = fileInfo.fileInfo(os.path.join(extractTo, fileName), os.path.join(path, fileName))
-                        tempFileInfo.populateFileInfo(scanOption)
+                        tempFileInfo.populateFileInfo()
                         tempLicenseInfo = licensingInfo.licensingInfo(
                                                         "LicenseRef-" + str(licenseCounter),
                                                         tempFileInfo.extractedText,
@@ -374,7 +359,7 @@ class SPDX:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:
-                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId, 
+                            tempLicenseInfo = licensingInfo.licensingInfo(existingLicense.licenseId,
                                                                           existingLicense.extractedText,
                                                                           existingLicense.licenseName,
                                                                           existingLicense.licenseCrossReference,
@@ -388,7 +373,5 @@ class SPDX:
                         path = os.path.join(path, fileName)
 
         self.packageInfo.generatePackageInfo(sha1Checksums)
-        ninka_out.close()
-        foss_out.close()
         '''Delete the temporary files.'''
         shutil.rmtree(extractTo)

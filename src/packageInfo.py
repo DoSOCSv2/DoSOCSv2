@@ -1,22 +1,20 @@
-#!/user/bin/python
-'''
-<SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 University of Nebraska at Omaha (UNO)
+# <SPDX-License-Identifier: Apache-2.0>
+# Copyright (c) 2014-2015 University of Nebraska at Omaha (UNO) and other
+# contributors.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
-'''Defines the package level information for the spdx object.'''
+'''Package level information for the SPDX object.'''
 import MySQLdb
 import settings
 import os
@@ -57,7 +55,7 @@ class packageInfo:
         self.packageDescription = packageDescription
         self.packageVerificationCodeExcludedFile = "None"
 
-        '''If path is defined then run some of the procedures on it, 
+        '''If path is defined then run some of the procedures on it,
         such as get checksum and package size.'''
         if packagePath != None:
             self.packageName = os.path.split(packagePath)[1]
@@ -308,7 +306,7 @@ class packageInfo:
         output += '\t\t\t\t"pacakgeVerificationCodeValue" : "' + str(self.packageVerificationCode) + '",\n'
         output += '\t\t\t\t"packageVerificationCodeExcludedFile" : "' + str(self.packageVerificationCodeExcludedFile) + '"\n'
         output += '\t\t\t},\n'
-        
+
         output += '\t\t\t"checksum" : {\n'
         output += '\t\t\t\t"algorithm" : "' + str(self.packageChecksumAlgorithm) + '",\n'
         output += '\t\t\t\t"checksumValue" : "' + str(self.packageChecksum) + '"\n'
@@ -387,10 +385,7 @@ class packageInfo:
     def isCached(self):
         '''checks database to see if package is cached'''
 
-        with MySQLdb.connect(host=settings.database_host,
-                             user=settings.database_user,
-                             passwd=settings.database_pass,
-                             db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = "SELECT id FROM packages WHERE package_checksum = %s"
             dbCursor.execute(sqlCommand, (self.packageChecksum))
 
@@ -410,8 +405,5 @@ class packageInfo:
 
         cached = self.isCached()
         if cached != -1:
-            with MySQLdb.connect(host=settings.database_host,
-                                 user=settings.database_user,
-                                 passwd=settings.database_pass,
-                                 db=settings.database_name) as dbCursor:
+            with MySQLdb.connect(**settings.database) as dbCursor:
                 self.getPackageInfo(cached, dbCursor)

@@ -1,35 +1,33 @@
-#!/usr/bin/python
-'''
-<SPDX-License-Identifier: Apache-2.0>
-Copyright 2014 University of Nebraska at Omaha (UNO)
+# <SPDX-License-Identifier: Apache-2.0>
+# Copyright (c) 2014-2015 University of Nebraska at Omaha (UNO) and other
+# contributors.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
-'''Defines the file level information in an spdx object.'''
+'''File level information in an spdx object.'''
 import MySQLdb
 import settings
 import hashlib
 import subprocess
 import sys
 import os
-import output_parser
+import nomosparse
 from signal import signal, SIGPIPE, SIG_DFL
 from mimetypes import MimeTypes
 
 
 class fileInfo:
-    def __init__(self, filePath=None, fileRelativePath = ""):
+    def __init__(self, filePath=None, fileRelativePath=""):
         self.filePath = filePath
         self.fileType = None
         self.fileChecksum = ""
@@ -69,7 +67,7 @@ class fileInfo:
                                 pf.file_notice,
                                 pf.file_contributor,
                                 pf.file_dependency,
-                                pf.file_checksum_algorithm 
+                                pf.file_checksum_algorithm
                         FROM package_files AS pf
                         WHERE pf.file_checksum = %s"""
         dbCursor.execute(sqlCommand, self.fileChecksum)
@@ -91,7 +89,6 @@ class fileInfo:
             self.fileDependency = queryResult[13]
             self.fileChecksumAlgorithm = queryResult[14]
 
-
     def getFileInfo(self, package_file_id, package_id, dbCursor):
         '''populates fileInfo from database'''
 
@@ -112,12 +109,12 @@ class fileInfo:
                                 dfpa.relative_path,
                                 pf.file_checksum_algorithm
                         FROM package_files AS pf
-                             LEFT OUTER JOIN doc_file_package_associations AS dfpa ON pf.id = dfpa.package_file_id AND dfpa.package_id = %s 
+                             LEFT OUTER JOIN doc_file_package_associations AS dfpa ON pf.id = dfpa.package_file_id AND dfpa.package_id = %s
                         WHERE pf.id = %s"""
         dbCursor.execute(sqlCommand, (package_id, package_file_id))
         queryResult = dbCursor.fetchone()
 
-        if queryResult != None: 
+        if queryResult != None:
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
             self.fileChecksum = queryResult[2]
@@ -134,7 +131,6 @@ class fileInfo:
             self.fileContributor = queryResult[12]
             self.fileDependency = queryResult[13]
             self.fileRelativePath = queryResult[14]
-            
 
     def insertFileInfo(self, spdx_doc_id, package_id, dbCursor):
         '''inserts fileInfo into database.'''
@@ -354,7 +350,7 @@ class fileInfo:
             output += str(dependency) + '"/>\n'
 
         return output
-    
+
     def outputFileInfo_JSON(self):
         output = "{\n"
         output += '\t\t\t\t"fileName" : "' + str(self.fileName) + '",\n'
@@ -363,7 +359,7 @@ class fileInfo:
         output += '\t\t\t\t\t"algorithm" : "' + str(self.fileChecksumAlgorithm) + '",\n'
         output += '\t\t\t\t\t"checksumValue" : "' + str(self.fileChecksum) + '"\n'
         output += '\t\t\t\t},\n'
-        output += '\t\t\t\t"licenseConcluded" : "' + str(self.licenseConcluded) +'",\n'
+        output += '\t\t\t\t"licenseConcluded" : "' + str(self.licenseConcluded) + '",\n'
 
         output += '\t\t\t\t"licenseInfoInFile" : [\n'
         count = 1
@@ -384,7 +380,7 @@ class fileInfo:
             output += '\t\t\t\t\t{\n'
             output += '\t\t\t\t\t\t"project" : "' + str(projectName) + '",\n'
             output += '\t\t\t\t\t\t"homepage" : "' + str(self.artifactOfProjectHomePage[count]) + '",\n'
-            output += '\t\t\t\t\t\t"artifactOf" : "' + str(self.artifactOfProjectURI[counter]) +'"\n'
+            output += '\t\t\t\t\t\t"artifactOf" : "' + str(self.artifactOfProjectURI[counter]) + '"\n'
             output += '\t\t\t\t\t}'
             if count != len(self.artifactOfProjectName):
                 output += ','
@@ -392,7 +388,7 @@ class fileInfo:
             count += 1
         output += '\t\t\t\t],\n'
 
-        output += '\t\t\t\t"comment" : "' + str(self.fileComment) + '",\n' 
+        output += '\t\t\t\t"comment" : "' + str(self.fileComment) + '",\n'
         output += '\t\t\t\t"noticeText" : "' + str(self.fileNotice) + '",\n'
         output += '\t\t\t\t"contributor" : "' + str(self.fileContributor) + '",\n'
 
@@ -407,15 +403,12 @@ class fileInfo:
         output += '\t\t\t\t]\n'
 
         output += '\t\t\t}'
-        
+
         return output
 
     def isCached(self):
         '''checks whether or not file is in database'''
-        with MySQLdb.connect(host=settings.database_host,
-                            user=settings.database_user,
-                            passwd=settings.database_pass,
-                            db=settings.database_name) as dbCursor:
+        with MySQLdb.connect(**settings.database) as dbCursor:
             sqlCommand = """SELECT id
                             FROM package_files
                             WHERE file_checksum = %s"""
@@ -432,14 +425,14 @@ class fileInfo:
         with open(self.filePath, 'rb') as fileIn:
             self.fileChecksum = hashlib.sha1(fileIn.read()).hexdigest()
 
-    def populateFileInfo(self,scanOption):
-        '''Runs the two scanners and parses their output into the fileInfo object''' 
+    def populateFileInfo(self):
+        '''Run nomos and populate fileInfo object with its output'''
 
         ''' Get File Type'''
         mime = MimeTypes()
         self.fileType = mime.guess_type(self.filePath)[0]
 
-        if self.fileType == None:
+        if self.fileType is None:
             self.fileType = 'Unknown'
 
         '''Check to see if file is cached.'''
@@ -447,77 +440,22 @@ class fileInfo:
 
         '''If it isn't cached, run scans, else get file from database.'''
         if cached == -1:
-           if scanOption == 'fossology':
-               '''Run fossology'''
-               '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
-               try:
-                   fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
-                                                        self.filePath])
-               except OSError as ose:
-                   print "Error running FOSSology nomos, check your path to nomos in settings.py"
-               except Exception as e:
-                  fossOutput = str(e.output)
+            # Run nomos. It doesn't return an exit code of 0 so we must always
+            # catch the output.
+            try:
+                fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
+                                                      self.filePath])
+            except OSError as ose:
+                print "Error running FOSSology nomos, check your path to nomos in settings.py"
+            except Exception as e:
+                fossOutput = str(e.output)
 
-               '''Parse outputs'''
-               (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
-               self.licenseInfoInFile.append(fossLicense)
-               self.licenseComments = "#FOSSology "
-               self.licenseComments += fossLicense
-           else:
-               '''Scan to find licenses'''
-               '''Run Ninka'''
-               ninkaOutput = subprocess.check_output(
-                                                     [settings.NINKA_PATH, self.filePath],
-                                                     preexec_fn=lambda: signal(SIGPIPE, SIG_DFL)
-                                                    )
-
-               '''Run fossology'''
-               '''Fossology doesn't return an exit code of 0 so we must always catch the output.'''
-               try:
-                   fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
-                                                       self.filePath])
-               except OSError as ose:
-                   print "Error running FOSSology nomos, check your path to nomos in settings.py"
-               except Exception as e:
-                   fossOutput = str(e.output)
-
-               '''Parse outputs'''
-               (fileName, ninkaLicense) = output_parser.ninka_parser(ninkaOutput)
-               (fileName, fossLicense) = output_parser.foss_parser(fossOutput)
-
-               '''Get extracted text from ninka "senttok" file'''
-               try:
-                   with open(self.filePath + ".senttok", 'r') as f:
-                       for line in f:
-                           if ninkaLicense in line:
-                               line_tok = line.split(';')
-                               self.extractedText +=  line_tok[3] + "\n"
-                               self.extractedText +=  line_tok[4]
-               except Exception as e:
-                   '''Do nothing, we just wont have extracted text for this license.'''
-
-               '''License merging logic.'''
-               fossLicense = fossLicense.upper().strip()
-               ninkaLicense = ninkaLicense.upper().strip()
-               match = output_parser.lic_compare(fossLicense, ninkaLicense)
-               
-               if match and fossLicense != 'ERROR':
-                   self.licenseInfoInFile.append(fossLicense)
-               elif match and fossLicense == 'ERROR':
-                   self.licenseInfoInFile.append(ninkaLicense)
-               elif not match and fossLicense == 'UNKNOWN':
-                   self.licenseInfoInFile.append(ninkaLicense)
-               else:
-                   self.licenseInfoInFile.append("NO ASSERTION")
-
-               self.licenseComments = "#FOSSology "
-               self.licenseComments += fossLicense
-               self.licenseComments += " #Ninka "
-               self.licenseComments += ninkaLicense
+            '''Parse outputs'''
+            fileName, fossLicense = nomosparse.parse_one(fossOutput)
+            self.licenseInfoInFile.append(fossLicense)
+            self.licenseComments = "#FOSSology "
+            self.licenseComments += fossLicense
         else:
-            with MySQLdb.connect(host=settings.database_host,
-                                 user=settings.database_user,
-                                 passwd=settings.database_pass,
-                                 db=settings.database_name) as dbCursor:
+            with MySQLdb.connect(**settings.database) as dbCursor:
                 self.getChecksum()
-                self.getFileInfoFromChecksum( dbCursor)
+                self.getFileInfoFromChecksum(dbCursor)
