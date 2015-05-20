@@ -1,7 +1,8 @@
 #!/usr/bin/env python2
 
 # <SPDX-License-Identifier: Apache-2.0>
-# Copyright 2014 University of Nebraska at Omaha (UNO)
+# Copyright (c) 2014-2015 University of Nebraska at Omaha (UNO) and other
+# contributors.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
