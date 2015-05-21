@@ -45,7 +45,7 @@ class fileInfo:
         self.fileRelativePath = fileRelativePath
         self.extractedText = ""
 
-        if self.filePath != None:
+        if self.filePath is not None:
             self.getChecksum()
             self.fileName = os.path.split(filePath)[1]
 
@@ -72,7 +72,7 @@ class fileInfo:
         dbCursor.execute(sqlCommand, self.fileChecksum)
         queryResult = dbCursor.fetchone()
 
-        if queryResult != None:
+        if queryResult is not None:
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
             self.licenseConcluded = queryResult[3]
@@ -113,7 +113,7 @@ class fileInfo:
         dbCursor.execute(sqlCommand, (package_id, package_file_id))
         queryResult = dbCursor.fetchone()
 
-        if queryResult != None:
+        if queryResult is not None:
             self.fileName = queryResult[0]
             self.fileType = queryResult[1]
             self.fileChecksum = queryResult[2]
@@ -234,7 +234,7 @@ class fileInfo:
         output = ""
         output += "FileName: " + str(self.fileName) + '\n'
 
-        if self.fileType != None:
+        if self.fileType is not None:
             output += "FileType: "
             output += str(self.fileType) + '\n'
 
@@ -244,7 +244,7 @@ class fileInfo:
         for license in self.licenseInfoInFile:
             output += "LicenseInfoInFile: " + str(license) + '\n'
 
-        if self.licenseComments != None:
+        if self.licenseComments is not None:
             output += "LicenseComments: <text>"
             output += str(self.licenseComments)
             output += "</text>\n"
@@ -262,12 +262,12 @@ class fileInfo:
         for uri in self.artifactOfProjectURI:
             output += "ArtifactOfProjectURI: " + str(uri)
 
-        if self.fileComment != None:
+        if self.fileComment is not None:
             output += "FileComment: <text>"
             output += str(self.fileComment)
             output += "</text>\n"
 
-        if self.fileNotice != None:
+        if self.fileNotice is not None:
             output += "FileNotice: <text>" + str(self.fileNotice) + "</text>"
 
         for contributor in self.fileContributor:
@@ -282,7 +282,7 @@ class fileInfo:
         output = ""
         output += '\t\t<fileName>' + str(self.fileName) + '</fileName>\n'
 
-        if self.fileType != None:
+        if self.fileType is not None:
             output += '\t\t<fileType rdf:resource="'
             output += str(self.fileType) + '"/>\n'
 
@@ -306,7 +306,7 @@ class fileInfo:
             output += '\t\t<licenseInfoInFile rdf:resource="'
             output += str(license) + '/>\n'
 
-        if self.licenseComments != None:
+        if self.licenseComments is not None:
             output += '\t\t<licenseComments>'
             output += str(self.licenseComments)
             output += '</licenseComments>\n'
@@ -329,12 +329,12 @@ class fileInfo:
                 counter = counter + 1
             output += '\t\t</artifactOf>\n'
 
-        if self.fileComment != None:
+        if self.fileComment is not None:
             output += '\t\t<rdfs:comment>'
             output += str(self.fileComment)
             output += '</rdfs:comment>\n'
 
-        if self.fileNotice != None:
+        if self.fileNotice is not None:
             output += '\t\t<noticeText>'
             output += str(self.fileNotice)
             output += '</noticeText>\n'
@@ -414,7 +414,7 @@ class fileInfo:
             dbCursor.execute(sqlCommand, (self.fileChecksum))
             queryResult = dbCursor.fetchone()
 
-            if (queryResult == None):
+            if (queryResult is None):
                 return -1
             else:
                 return queryResult[0]

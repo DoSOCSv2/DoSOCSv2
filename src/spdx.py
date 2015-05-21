@@ -246,7 +246,7 @@ class SPDX:
             dbCursor.execute(sqlCommand, (spdx_doc_id))
             rows = dbCursor.fetchone()
 
-            if rows != None:
+            if rows is not None:
                 self.version = rows[0]
                 self.dataLicense = rows[1]
                 self.documentComment = rows[2]
@@ -265,7 +265,7 @@ class SPDX:
             dbCursor.execute(sqlCommand, spdx_doc_id)
 
             for row in dbCursor:
-                if row != None:
+                if row is not None:
                     tempFileInfo = fileInfo.fileInfo()
                     tempFileInfo.getFileInfo(row[0], self.packageInfo.packageId, dbCursor)
                     self.fileInfo.append(tempFileInfo)
@@ -282,7 +282,7 @@ class SPDX:
                     for y in range(0, dbCursor.rowcount):
                         tempLicensingInfo = licensingInfo.licensingInfo()
                         row2 = dbCursor.fetchone()
-                        if row2 != None:
+                        if row2 is not None:
                             tempLicensingInfo.getLicensingInfo(row2[0], dbCursor)
                             self.licensingInfo.append(tempLicensingInfo)
 
@@ -321,7 +321,7 @@ class SPDX:
                                                         tempFileInfo.fileChecksum
                                             )
                         existingLicense = tempLicenseInfo.compareLicensingInfo(self.licensingInfo)
-                        if existingLicense == None:
+                        if existingLicense is None:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:
@@ -355,7 +355,7 @@ class SPDX:
                                                         tempFileInfo.fileChecksum
                                         )
                         existingLicense = tempLicenseInfo.compareLicensingInfo(self.licensingInfo)
-                        if existingLicense == None:
+                        if existingLicense is None:
                             self.packageInfo.packageLicenseInfoFromFiles.append(tempLicenseInfo.licenseId)
                             licenseCounter += 1
                         else:

@@ -67,11 +67,11 @@ class reviewerInfo:
         '''outputs reviewerInfo in tag format'''
 
         output = None
-        if self.reviewer != None:
+        if self.reviewer is not None:
             output += "Reviewer: " + self.reviewer + '\n'
-        if self.reviewer != None and self.reviewDate != None:
+        if self.reviewer is not None and self.reviewDate is not None:
             output += "ReviewDate: " + str(self.reviewDate) + '\n'
-        if self.reviewComment != None:
+        if self.reviewComment is not None:
             output += "ReviewComment: <text>"
             output += self.reviewComment
             output += "</text>\n"
@@ -82,10 +82,10 @@ class reviewerInfo:
         '''outputs reviewerInfo in rdf format'''
         output = None
         output += '\t\t<reviewer>' + self.reviewer + '</reviewer>\n'
-        if self.reviewer != None and self.reviewDate != None:
+        if self.reviewer is not None and self.reviewDate is not None:
             output += '\t\t<reviewDate>'
             output += str(self.reviewDate) + '</reviewDate>\n'
-        if self.reviewComment != None:
+        if self.reviewComment is not None:
             output += '\t\t<rdfs:comment>'
             output += self.reviewComment
             output += '</rdfs:comment>\n'

@@ -57,7 +57,7 @@ class packageInfo:
 
         '''If path is defined then run some of the procedures on it,
         such as get checksum and package size.'''
-        if packagePath != None:
+        if packagePath is not None:
             self.packageName = os.path.split(packagePath)[1]
             self.packageFileName = self.packageName
             self.getChecksum()
@@ -157,13 +157,13 @@ class packageInfo:
         output = ""
         output += "PackageName: " + str(self.packageName) + '\n'
 
-        if self.packageVersion != None:
+        if self.packageVersion is not None:
             output += "PackageVersion: " + str(self.packageVersion) + '\n'
-        if self.packageFileName != None:
+        if self.packageFileName is not None:
             output += "PackageFileName: " + str(self.packageFileName) + '\n'
-        if self.packageSupplier != None:
+        if self.packageSupplier is not None:
             output += "PackageSupplier: " + str(self.packageSupplier) + '\n'
-        if self.packageOriginator != None:
+        if self.packageOriginator is not None:
             output += "PackageOriginator: "
             output += str(self.packageOriginator) + '\n'
 
@@ -172,11 +172,11 @@ class packageInfo:
         output += "PackageVerificationCode: "
         output += str(self.packageVerificationCode) + '\n'
 
-        if self.packageChecksum != None:
+        if self.packageChecksum is not None:
             output += "PackageChecksum: " + str(self.packageChecksum) + '\n'
-        if self.packageHomePage != None:
+        if self.packageHomePage is not None:
             output += "PackageHomePage: " + str(self.packageHomePage) + '\n'
-        if self.packageSourceInfo != None:
+        if self.packageSourceInfo is not None:
             output += "PackageSourceInfo: "
             output += str(self.packageSourceInfo) + '\n'
 
@@ -187,17 +187,17 @@ class packageInfo:
 
         for license in self.packageLicenseInfoFromFiles:
             output += "PackageLicenseInfoFromFiles: " + str(license) + '\n'
-        if self.packageLicenseComments != None:
+        if self.packageLicenseComments is not None:
             output += "PackageLicenseComments: <text>"
             output += str(self.packageLicenseComments) + "</text>\n"
 
         output += "PackageCopyrightText: <text>"
         output += str(self.packageCopyrightText) + "</text>\n"
 
-        if self.packageSummary != None:
+        if self.packageSummary is not None:
             output += "PackageSummary: <text>"
             output += str(self.packageSummary) + "</text>\n"
-        if self.packageDescription != None:
+        if self.packageDescription is not None:
             output += "PackageDescription: <text>"
             output += str(self.packageDescription) + "</text>\n"
 
@@ -207,19 +207,19 @@ class packageInfo:
         output = ""
         output += '\t\t<name>' + str(self.packageName) + '</name>\n'
 
-        if self.packageVersion != None:
+        if self.packageVersion is not None:
             output += '\t\t<versionInfo>'
             output += str(self.packageVersion)
             output += '</versionInfo>\n'
-        if self.packageFileName != None:
+        if self.packageFileName is not None:
             output += '\t\t<PackageFileName>'
             output += str(self.packageFileName)
             output += '</packageFileName>\n'
-        if self.packageSupplier != None:
+        if self.packageSupplier is not None:
             output += '\t\t<supplier>'
             output += str(self.packageSupplier)
             output += '</supplier>\n'
-        if self.packageOriginator != None:
+        if self.packageOriginator is not None:
             output += '\t\t<originator>'
             output += str(self.packageOriginator)
             output += '</originator>\n'
@@ -247,21 +247,21 @@ class packageInfo:
         output += '\t\t\t</Checksum>\n'
         output += '\t\t</checksum>\n'
 
-        if self.packageHomePage != None:
+        if self.packageHomePage is not None:
             output += '\t\t<' + str(self.packageName)
             output += ':homepage rdf:resource="'
             output += str(self.packageHomePage) + '"/>\n'
-        if self.packageSourceInfo != None:
+        if self.packageSourceInfo is not None:
             output += '\t\t<sourceInfo>'
             output += str(self.packageSourceInfo) + '</sourceInfo>\n'
-        if self.packageLicenseConcluded != None:
+        if self.packageLicenseConcluded is not None:
             output += '\t\t<licenseConcluded>\n'
             output += '\t\t\t<DisjunctiveLicenseSet>\n'
             output += '\t\t\t\t<member rdf:resource="'
             output += str(self.packageLicenseConcluded) + '"/>\n'
             output += '\t\t\t</DisjunctiveLicenseSet>\n'
             output += '\t\t</licenseConcluded>\n'
-        if self.packageLicenseDeclared != None:
+        if self.packageLicenseDeclared is not None:
             output += '\t\t<licenseDeclared>\n'
             output += '\t\t\t<ConjunctiveLicenseSet>\n'
             output += '\t\t\t\t<member rdf:resource="'
@@ -273,7 +273,7 @@ class packageInfo:
             output += '\t\t<licenseInfoFromFiles rdf:resource="'
             output += str(license) + '" />\n'
 
-        if self.packageLicenseComments != None:
+        if self.packageLicenseComments is not None:
             output += '\t\t<licenseComments>'
             output += str(self.packageLicenseComments)
             output += '</licenseComments>\n'
@@ -282,11 +282,11 @@ class packageInfo:
         output += str(self.packageCopyrightText)
         output += '</copyrightText>\n'
 
-        if self.packageSummary != None:
+        if self.packageSummary is not None:
             output += '\t\t<summary>'
             output += str(self.packageSummary)
             output += '</summary>\n'
-        if self.packageDescription != None:
+        if self.packageDescription is not None:
             output += '\t\t<description>'
             output += str(self.packageDescription)
             output += '</description>\n'
@@ -391,7 +391,7 @@ class packageInfo:
 
             queryReturn = dbCursor.fetchone()
 
-            if (queryReturn == None):
+            if (queryReturn is None):
                 return -1
             else:
                 return queryReturn[0]
