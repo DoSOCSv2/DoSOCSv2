@@ -1,5 +1,4 @@
 # <SPDX-License-Identifier: Apache-2.0>
-
 # Copyright (c) 2015 doSOCS contributors.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Parse the output of the nomos license scanner.'''
 import re
+import settings
+import subprocess
 
-pattern = re.compile('File (.+?) contains license\(s\) (.+)')
-
-
-def parser(iterable):
-    m = None
-    for item in iterable:
-        m = re.match(pattern, item)
-        if m is None:
-            continue
-        yield [m.group(1), m.group(2)]
-
-
-def parse_one(s):
-    p = parser([s])
-    for single_item in p:
-        return single_item
+class nomos:
+    name = 'nomos'
+    @staticmethod
+    def scan(filename):
+        args = (settings.scanner['nomos'], filename)
+        output = subprocess.check_output(args)
+        licenses = []
+        pattern = re.compile('File (.+?) contains license\(s\) (.+)')
+        for line in output.split('\n'):
+            m = re.match(pattern, line)
+            if m is None:
+                continue
+            for subitem in m.group(2).split(','):
+                licenses.append((m.group(1), subitem))
+        return licenses

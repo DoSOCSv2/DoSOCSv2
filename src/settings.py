@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FOSSOLOGY_PATH = "/usr/share/fossology/nomos/agent/nomos"
+scanner = {
+    'nomos': "/usr/share/fossology/nomos/agent/nomos"
+}
+
 database = {
     'user': 'spdx',
     'passwd': 'spdx',

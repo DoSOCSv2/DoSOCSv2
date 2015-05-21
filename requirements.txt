@@ -1,0 +1,4 @@
+Jinja2>=2.7.3
+MySQL-python>=1.2.5
+python-magic>=0.4.6
+docopt>=0.6.2

@@ -122,7 +122,7 @@ class licensingInfo:
         output += "LicenseID: " + str(self.licenseId) + '\n'
         output += "LicenseName: " + str(self.licenseName) + '\n'
 
-        if self.licenseCrossReference != None:
+        if self.licenseCrossReference is not None:
             for reference in self.licenseCrossReference:
                 output += "LicenseCrossReference: " + str(reference) + '\n'
 
@@ -149,12 +149,12 @@ class licensingInfo:
         output += '\t\t<extractedText>'
         output += str(self.extractedText)
         output += '</extractedText>\n'
-        if self.licenseCrossReference != None:
+        if self.licenseCrossReference is not None:
             for reference in self.licenseCrossReference:
                 output += '\t\t<rdfs:seeAlso>'
                 output += str(self.reference)
                 output += '</rdfs:seeAlso>\n'
-        if self.licenseComment != None:
+        if self.licenseComment is not None:
             output += '\t\t<rdfs:comment>'
             output += str(self.licenseComment)
             output += '</rdfs:comment>\n'

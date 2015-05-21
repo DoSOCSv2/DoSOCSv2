@@ -69,9 +69,9 @@ class creatorInfo:
         output += "Creator: " + str(self.creator) + '\n'
         output += "Created: " + str(self.created) + '\n'
 
-        if self.creatorComment != None:
+        if self.creatorComment is not None:
             output += "CreatorComment: " + str(self.creatorComment) + '\n'
-        if self.licenseListVersion != None:
+        if self.licenseListVersion is not None:
             output += "LicenseListVersion: "
             output += str(self.licenseListVersion) + '\n'
 
@@ -82,11 +82,11 @@ class creatorInfo:
         output += '\t\t<creator>' + str(self.creator) + '</creator>\n'
         output += '\t\t<created>' + str(self.created) + '</created>\n'
 
-        if self.creatorComment != None:
+        if self.creatorComment is not None:
             output += '\t\t<rdfs:comment>'
             output += str(self.creatorComment)
             output += '</rdfs:comment>\n'
-        if self.licenseListVersion != None:
+        if self.licenseListVersion is not None:
             output += '\t\t<licenseListVersion>'
             output += str(self.licenseListVersion)
             output += '</licenseListVersion>\n'
