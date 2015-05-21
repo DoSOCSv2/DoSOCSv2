@@ -40,21 +40,22 @@ class File(object):
     @classmethod
     def from_db_checksum(cls, connection_info, checksum):
         with MySQLdb.connect(**connection_info) as cursor:
-            query = """SELECT pf.file_name,
-                              pf.file_type,
-                              pf.license_concluded,
-                              pf.license_info_in_file,
-                           pf.license_comments,
-                           pf.file_copyright_text,
-                           pf.artifact_of_project_name,
-                           pf.artifact_of_project_homepage,
-                           pf.artifact_of_project_uri,
-                           pf.file_comment,
-                           pf.file_notice,
-                           pf.file_contributor,
-                           pf.file_dependency
-                   FROM package_files AS pf
-                   WHERE pf.file_checksum = %s"""
+            query = """
+                SELECT pf.file_name,
+                    pf.file_type,
+                    pf.license_concluded,
+                    pf.license_info_in_file,
+                    pf.license_comments,
+                    pf.file_copyright_text,
+                    pf.artifact_of_project_name,
+                    pf.artifact_of_project_homepage,
+                    pf.artifact_of_project_uri,
+                    pf.file_comment,
+                    pf.file_notice,
+                    pf.file_contributor,
+                    pf.file_dependency
+                FROM package_files AS pf
+                WHERE pf.file_checksum = %s"""
             cursor.execute(query, (checksum,))
             result = cursor.fetchone()
 
@@ -79,26 +80,26 @@ class File(object):
     def from_db_package(cls, connection_info, package_file_id, package_id):
         with MySQLdb.connect(**connection_info) as cursor:
             query = """
-            SELECT pf.file_name,
-                   pf.file_type,
-                   pf.license_concluded,
-                   pf.license_info_in_file,
-                   pf.license_comments,
-                   pf.file_copyright_text,
-                   pf.artifact_of_project_name,
-                   pf.artifact_of_project_homepage,
-                   pf.artifact_of_project_uri,
-                   pf.file_comment,
-                   pf.file_notice,
-                   pf.file_contributor,
-                   pf.file_dependency,
-                   pf.file_checksum
-            FROM package_files AS pf
-            LEFT JOIN doc_file_package_associations AS dfpa
-              ON pf.id = dfpa.package_file_id
-              AND dfpa.package_id = %s
-            WHERE pf.id = %s
-            """
+                SELECT pf.file_name,
+                       pf.file_type,
+                       pf.license_concluded,
+                       pf.license_info_in_file,
+                       pf.license_comments,
+                       pf.file_copyright_text,
+                       pf.artifact_of_project_name,
+                       pf.artifact_of_project_homepage,
+                       pf.artifact_of_project_uri,
+                       pf.file_comment,
+                       pf.file_notice,
+                       pf.file_contributor,
+                       pf.file_dependency,
+                       pf.file_checksum
+                FROM package_files AS pf
+                LEFT JOIN doc_file_package_associations AS dfpa
+                  ON pf.id = dfpa.package_file_id
+                  AND dfpa.package_id = %s
+                WHERE pf.id = %s
+                """
             cursor.execute(query, (package_id, package_file_id))
             result = cursor.fetchone()
         
