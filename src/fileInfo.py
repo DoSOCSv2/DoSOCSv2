@@ -22,7 +22,6 @@ import subprocess
 import sys
 import os
 import nomosparse
-from signal import signal, SIGPIPE, SIG_DFL
 from mimetypes import MimeTypes
 
 

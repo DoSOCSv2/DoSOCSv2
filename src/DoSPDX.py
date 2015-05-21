@@ -99,14 +99,11 @@ def main():
     result = True
     if docid is not None:
         result = spdxDoc.getSPDX(docid)
-
-    if result is False:
-        sys.exit(1)
-
-    if docid is None and scan:
+        if result is False:
+            sys.exit(1)
+    elif scan:
         spdxDoc.generateSPDXDoc()
         spdxDoc.insertSPDX()
-    # else...
 
     if output_format is not None:
         print(spdxDoc.as_string(output_format))
