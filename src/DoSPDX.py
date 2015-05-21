@@ -99,7 +99,7 @@ def main():
     result = True
     if docid is not None:
         result = spdxDoc.getSPDX(docid)
-        if not result:
+        if result is False:
             sys.exit(1)
     elif scan:
         spdxDoc.generateSPDXDoc()
