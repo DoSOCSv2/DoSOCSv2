@@ -20,7 +20,6 @@ from file import File
 #import licensing
 import reviewerInfo
 import licensingInfo
-import packageInfo
 import os
 import MySQLdb
 import tempfile
