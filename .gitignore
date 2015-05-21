@@ -2,6 +2,3 @@ __pycache__/
 *.py[cod]
 venv/
 *.sw[a-z]
-*.tag
-*.json
-*.rdf
