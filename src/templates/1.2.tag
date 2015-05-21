@@ -23,7 +23,7 @@ PackageChecksum: {{ package.checksum }}
 PackageHomePage: {{ package.home_page }}
 PackageSourceInfo: {{ package.source_info }}
 PackageLicenseConcluded: {{ package.license_concluded }}
-{% for li in package.license_info_from_files }}
+{% for li in package.license_info_from_files %}
 PackageLicenseInfoFromFiles: {{ li }}
 {% endfor %}
 PackageLicenseDeclared: {{ package.license_declared }}

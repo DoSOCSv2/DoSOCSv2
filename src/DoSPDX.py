@@ -44,25 +44,28 @@ Options taking a TEXT argument require double quotes around the argument.\
 import docopt
 import sys
 import os
-import spdx
-import fileInfo
-import licensingInfo
-import reviewerInfo
+import settings
+from spdxdoc import SPDXDoc
 
+format_map = {
+    'tag': 'templates/1.2.tag',
+    'rdf': 'templates/1.2.rdf',
+    'json': 'templates/1.2.json'
+}
 
 def extract_fields(argv):
     fields = {
-        'documentComment': argv['--comment'],
+        'document_comment': argv['--comment'],
         'creator': argv['--creator'],
-        'creatorComment': argv['--creator-comment'],
-        'packageVersion': argv['--package-version'],
-        'packageSupplier': argv['--supplier'],
-        'packageOriginator': argv['--originator'],
-        'packageDownloadLocation': argv['--download-location'],
-        'packageHomePage': argv['--home-page'],
-        'packageSourceInfo': argv['--source-info'],
-        'packageLicenseComments': argv['--license-comments'],
-        'packageDescription': argv['--description']
+        'creator_comment': argv['--creator-comment'],
+        'package_version': argv['--package-version'],
+        'package_supplier': argv['--supplier'],
+        'package_originator': argv['--originator'],
+        'package_download_location': argv['--download-location'],
+        'package_home_page': argv['--home-page'],
+        'package_source_info': argv['--source-info'],
+        'package_license_comments': argv['--license-comments'],
+        'package_description': argv['--description']
     }
     for key in fields:
         fields[key] = fields[key] or ''
@@ -79,7 +82,7 @@ def main():
         sys.exit(1)
 
     fields = extract_fields(argv)
-    package = argv['FILE']
+    package_path = argv['FILE']
     docid = argv['--doc-id']
     scan = not argv['--no-scan']
     output_format = argv['--print']
@@ -89,24 +92,17 @@ def main():
         print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
-    '''Create spdx object'''
-    spdxDoc = spdx.SPDX(packagePath=package,
-                        licenseListVersion="1.19",
-                        **fields
-                        )
-
-    '''Execute requested commands'''
-    result = True
     if docid is not None:
-        result = spdxDoc.getSPDX(docid)
-        if result is False:
+        document = SPDXDoc.from_db_docid(settings.database, docid)
+        if document is None:
+            print('Document id {} not found in the database.'.format(docid))
             sys.exit(1)
     elif scan:
-        spdxDoc.generateSPDXDoc()
-        spdxDoc.insertSPDX()
+        document = SPDXDoc.from_package(settings.database, package_path)
+        document.store(settings.database)
 
-    if output_format is not None:
-        print(spdxDoc.as_string(output_format))
+    if document is not None and output_format is not None:
+        print(document.render(format_map[output_format]))
 
 
 if __name__ == "__main__":
