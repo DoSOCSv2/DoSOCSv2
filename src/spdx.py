@@ -251,7 +251,7 @@ class SPDX:
                 self.dataLicense = rows[1]
                 self.documentComment = rows[2]
             else:
-                print "SPDX Document not found in database."
+                print("SPDX Document not found in database.")
                 return False
 
             self.creatorInfo.getCreatorInfo(spdx_doc_id, dbCursor)
@@ -279,7 +279,7 @@ class SPDX:
 
                     dbCursor.execute(sqlCommand, row[0])
 
-                    for y in xrange(0, dbCursor.rowcount):
+                    for y in range(0, dbCursor.rowcount):
                         tempLicensingInfo = licensingInfo.licensingInfo()
                         row2 = dbCursor.fetchone()
                         if row2 != None:
@@ -289,7 +289,7 @@ class SPDX:
             '''Get Reviewer Info'''
             sqlCommand = """SELECT id FROM reviewers WHERE spdx_doc_id = %s"""
             dbCursor.execute(sqlCommand, spdx_doc_id)
-            for x in xrange(0, dbCursor.rowcount):
+            for x in range(0, dbCursor.rowcount):
                 tempReviewerInfo = reviewerInfo.reviewerInfo()
                 tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
                 self.reviewerInfo.append(tempReviewerInfo)

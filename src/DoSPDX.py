@@ -74,8 +74,8 @@ def main():
     argv = docopt.docopt(doc=__doc__, version='2.0.0-dev')
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
-        print progname + ": You must specify a file or document ID"
-        print progname + ": Try `" + progname + " --help' for more information."
+        print(progname + ": You must specify a file or document ID")
+        print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
     fields = extract_fields(argv)
@@ -85,8 +85,8 @@ def main():
     output_format = argv['--print']
 
     if output_format not in ('json', 'tag', 'rdf', None):
-        print progname + ": Unknown output format '" + output_format + "'"
-        print progname + ": Try `" + progname + " --help' for more information."
+        print(progname + ": Unknown output format '" + output_format + "'")
+        print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
     '''Create spdx object'''
@@ -109,7 +109,7 @@ def main():
     # else...
 
     if output_format is not None:
-        print spdxDoc.as_string(output_format)
+        print(spdxDoc.as_string(output_format))
 
 
 if __name__ == "__main__":

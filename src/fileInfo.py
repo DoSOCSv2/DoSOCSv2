@@ -446,7 +446,7 @@ class fileInfo:
                 fossOutput = subprocess.check_output([settings.FOSSOLOGY_PATH,
                                                       self.filePath])
             except OSError as ose:
-                print "Error running FOSSology nomos, check your path to nomos in settings.py"
+                print("Error running FOSSology nomos, check your path to nomos in settings.py")
             except Exception as e:
                 fossOutput = str(e.output)
 
