@@ -34,8 +34,8 @@ import zipfile
 class SPDX:
     def __init__(self,
                  packagePath,
-                 version="1.2",
-                 dataLicense="CC-1.0",
+                 version="SPDX-1.2",
+                 dataLicense="CC0-1.0",
                  documentComment=None,
                  creator=None,
                  creatorComment=None,
