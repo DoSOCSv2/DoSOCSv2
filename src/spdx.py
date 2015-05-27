@@ -48,8 +48,8 @@ class SPDXDB:
                        'notice': ''
                        }
         new_file = orm.File(**file_params)
-        session.add(new_file)
-        session.commit()
+        self.session.add(new_file)
+        self.session.commit()
         return new_file
 
 
@@ -69,15 +69,15 @@ class SPDXDB:
                           'license_identifier': license_identifier
                           }
         new_license = orm.License(**license_params)
-        session.add(new_license)
-        session.commit()
+        self.session.add(new_license)
+        self.session.commit()
         return new_license
 
 
     def scan_file(self, path, scanner=scanners.nomos):
-        file = lookup_or_add_file(path)
+        file = self.lookup_or_add_file(path)
         shortnames_found = [item[1] for item in scanner.scan(path)]
-        licenses_found = [lookup_or_add_license(shortname)
+        licenses_found = [self.lookup_or_add_license(shortname)
                           for shortname in shortnames_found
                           ]
         license_comment = scanner.name + ': ' + ','.join(shortnames_found)
@@ -88,8 +88,8 @@ class SPDXDB:
                                    'license_comment': license_comment
                                    }
             new_file_license = orm.FileLicense(**file_license_params)
-            session.add(new_file_license)
-        session.commit()
+            self.session.add(new_file_license)
+        self.session.commit()
         return file
 
 
