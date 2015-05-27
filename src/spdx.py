@@ -24,71 +24,73 @@ import tempfile
 import util
 import uuid
 
+class SPDXDB:
+    def __init__(self):
+        self.session = orm.load_session()
 
-def lookup_or_add_file(path):
-    session = orm.load_session()
-    sha1 = util.sha1(path)
-    existing_file = (session.query(orm.File)
-                     .filter(orm.File.sha1 == sha1)
-                     .first()
-                     )
-    if existing_file is not None:
-        return existing_file.file_id
-    file_type_id = (session.query(orm.FileType)
-                    .filter(orm.FileType.name == util.spdx_filetype(path))
-                    .one().file_type_id
-                    )
-    file_params = {'sha1': sha1,
-                   'file_type_id': file_type_id,
-                   'copyright_text': '',
-                   'project_id': None,
-                   'comment': '',
-                   'notice': ''
-                   }
-    new_file = orm.File(**file_params)
-    session.add(new_file)
-    session.commit()
-    return new_file
-
-
-def lookup_or_add_license(short_name):
-    existing_license = (session.query(orm.License)
-                        .filter(orm.License.short_name == short_name)
-                        .first()
-                       )
-    if existing_license is not None:
-        return existing_license
-    license_identifier = 'LicenseRef-' + uuid.uuid4()
-    license_params = {'name': 'NOASSERTION',
-                      'short_name': short_name,
-                      'cross_reference': '',
-                      'comment': '',
-                      'is_spdx_official': False,
-                      'license_identifier': license_identifier
-                      }
-    new_license = orm.License(**license_params)
-    session.add(new_license)
-    session.commit()
-    return new_license
+    def lookup_or_add_file(self, path):
+        sha1 = util.sha1(path)
+        existing_file = (self.session.query(orm.File)
+                         .filter(orm.File.sha1 == sha1)
+                         .first()
+                         )
+        if existing_file is not None:
+            return existing_file.file_id
+        file_type_id = (self.session.query(orm.FileType)
+                        .filter(orm.FileType.name == util.spdx_filetype(path))
+                        .one().file_type_id
+                        )
+        file_params = {'sha1': sha1,
+                       'file_type_id': file_type_id,
+                       'copyright_text': '',
+                       'project_id': None,
+                       'comment': '',
+                       'notice': ''
+                       }
+        new_file = orm.File(**file_params)
+        session.add(new_file)
+        session.commit()
+        return new_file
 
 
-def scan_file(path, scanner=scanners.nomos):
-    file = lookup_or_add_file(path)
-    shortnames_found = [item[1] for item in scanner.scan(path)]
-    licenses_found = [lookup_or_add_license(short_name)
-                      for shortname in shortnames_found
-                      ]
-    license_comment = scanner.name + ': ' + ','.join(shortnames_found)
-    for license in licenses_found:
-        file_license_params = {'file_id': file.file_id,
-                               'license_id': license.license_id,
-                               'extracted_text': '',
-                               'license_comment': license_comment
-                               }
-        new_file_license = orm.FileLicense(**file_license_params)
-        session.add(new_file_license)
-    session.commit()
-    return file.file_id
+    def lookup_or_add_license(self, short_name):
+        existing_license = (self.session.query(orm.License)
+                            .filter(orm.License.short_name == short_name)
+                            .first()
+                            )
+        if existing_license is not None:
+            return existing_license
+        license_identifier = 'LicenseRef-' + str(uuid.uuid4())
+        license_params = {'name': 'NOASSERTION',
+                          'short_name': short_name,
+                          'cross_reference': '',
+                          'comment': '',
+                          'is_spdx_official': False,
+                          'license_identifier': license_identifier
+                          }
+        new_license = orm.License(**license_params)
+        session.add(new_license)
+        session.commit()
+        return new_license
+
+
+    def scan_file(self, path, scanner=scanners.nomos):
+        file = lookup_or_add_file(path)
+        shortnames_found = [item[1] for item in scanner.scan(path)]
+        licenses_found = [lookup_or_add_license(shortname)
+                          for shortname in shortnames_found
+                          ]
+        license_comment = scanner.name + ': ' + ','.join(shortnames_found)
+        for license in licenses_found:
+            file_license_params = {'file_id': file.file_id,
+                                   'license_id': license.license_id,
+                                   'extracted_text': '',
+                                   'license_comment': license_comment
+                                   }
+            new_file_license = orm.FileLicense(**file_license_params)
+            session.add(new_file_license)
+        session.commit()
+        return file
 
 
 def scan_package(package_path):
