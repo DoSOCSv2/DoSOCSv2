@@ -16,88 +16,25 @@
 
 '''Reviewer information in the SPDX object.'''
 import MySQLdb
-import datetime
-import settings
 
-
-class reviewerInfo:
+class Review:
     def __init__(self):
         self.reviewer = None
-        self.reviewDate = datetime.datetime.now()
-        self.reviewComment = None
+        self.review_date = None
+        self.review_comment = None
 
-    def getReviewerInfo(self, reviewer_id, dbCursor):
-        '''gets reviewerInfo from database'''
-        sqlCommand = """SELECT * FROM reviewers WHERE id = ?"""
-        dbCursor.execute(sqlCommand, (reviewer_id))
+    @classmethod
+    def from_database(self, connection_info, reviewer_id):
+        with MySQLDB.connect(**connection_info) as cursor:
+            query = """SELECT * FROM reviewers WHERE id = ?"""
+            cursor.execute(query, (reviewer_id,))
 
-        queryReturn = dbCursor.fetchone()
-        if queryReturn is not None:
-            self.reviewer = queryReturn.reviewer
-            self.reviewDate = queryReturn.reviewer_date
-            self.reviewComment = queryReturn.reviewer_comment
+            result = dbCursor.fetchone()
+            inst = cls()
+            self.reviewer = result.reviewer
+            self.review_date = result.reviewer_date
+            self.review_comment = result.reviewer_comment
 
-    def insertReviewerInfo(self, spdx_doc_id, dbCursor):
-        '''inserts reviewerInfo into database'''
-        '''Get id of reviewer'''
-        sqlCommand = "SHOW TABLE STATUS LIKE 'reviewers'"
-        dbCursor.execute(sqlCommand)
-        reviewerId = dbCursor.fetchone()[10]
-
-        sqlCommand = """INSERT INTO reviewers (reviewer,
-                                                reviewer_date,
-                                                reviewer_comment,
-                                                spdx_doc_id,
-                                                created_at,
-                                                updated_at)
-                            VALUES (%s,
-                                    %s,
-                                    %s,
-                                    %s,
-                                    CURRENT_TIMESTAMP,
-                                    CURRENT_TIMESTAMP)"""
-        dbCursor.execute(sqlCommand, (self.reviewer,
-                                      self.reviewDate,
-                                      self.reviewComment,
-                                      spdx_doc_id))
-
-        return reviewerId
-
-    def outputReviewerInfo_TAG(self):
-        '''outputs reviewerInfo in tag format'''
-
-        output = None
-        if self.reviewer is not None:
-            output += "Reviewer: " + self.reviewer + '\n'
-        if self.reviewer is not None and self.reviewDate is not None:
-            output += "ReviewDate: " + str(self.reviewDate) + '\n'
-        if self.reviewComment is not None:
-            output += "ReviewComment: <text>"
-            output += self.reviewComment
-            output += "</text>\n"
-
-        return output
-
-    def outputReviewerInfo_RDF(self):
-        '''outputs reviewerInfo in rdf format'''
-        output = None
-        output += '\t\t<reviewer>' + self.reviewer + '</reviewer>\n'
-        if self.reviewer is not None and self.reviewDate is not None:
-            output += '\t\t<reviewDate>'
-            output += str(self.reviewDate) + '</reviewDate>\n'
-        if self.reviewComment is not None:
-            output += '\t\t<rdfs:comment>'
-            output += self.reviewComment
-            output += '</rdfs:comment>\n'
-
-        return output
-
-    def outputReviewerInfo_JSON(self):
-        '''outputs reviewerInfo in json format'''
-        output = '{\n'
-        output += '\t\t\t"reviewer" : "' + str(self.reviewer) + '",\n'
-        output += '\t\t\t"reviewDate" : "' + str(self.reviewDate) + '",\n'
-        output += '\t\t\t"comment" : "' + str(self.reviewComment) + '"\n'
-        output += '\t\t}'
-
-        return output
+    def store(self, connection_info, spdx_doc_id):
+        # stub
+        pass

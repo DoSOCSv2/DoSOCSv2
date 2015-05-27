@@ -14,21 +14,85 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from package import Package
-from file import File
-#from review import Review
-#import licensing
-import reviewerInfo
-import licensingInfo
+from sqlalchemy.orm.exc import NoResultFound
+import orm
 import os
-import MySQLdb
-import tempfile
+import scanners
 import shutil
 import tarfile
+import tempfile
 import util
+import uuid
 
 
-'''Definition for the SPDX object.'''
+def lookup_or_add_file(path):
+    session = orm.load_session()
+    sha1 = util.sha1(path)
+    existing_file = (session.query(orm.File)
+                     .filter(orm.File.sha1 == sha1)
+                     .first()
+                     )
+    if existing_file is not None:
+        return existing_file.file_id
+    file_type_id = (session.query(orm.FileType)
+                    .filter(orm.FileType.name == util.spdx_filetype(path))
+                    .one().file_type_id
+                    )
+    file_params = {'sha1': sha1,
+                   'file_type_id': file_type_id,
+                   'copyright_text': '',
+                   'project_id': None,
+                   'comment': '',
+                   'notice': ''
+                   }
+    new_file = orm.File(**file_params)
+    session.add(new_file)
+    session.commit()
+    return new_file
+
+
+def lookup_or_add_license(short_name):
+    existing_license = (session.query(orm.License)
+                        .filter(orm.License.short_name == short_name)
+                        .first()
+                       )
+    if existing_license is not None:
+        return existing_license
+    license_identifier = 'LicenseRef-' + uuid.uuid4()
+    license_params = {'name': 'NOASSERTION',
+                      'short_name': short_name,
+                      'cross_reference': '',
+                      'comment': '',
+                      'is_spdx_official': False,
+                      'license_identifier': license_identifier
+                      }
+    new_license = orm.License(**license_params)
+    session.add(new_license)
+    session.commit()
+    return new_license
+
+
+def scan_file(path, scanner=scanners.nomos):
+    file = lookup_or_add_file(path)
+    shortnames_found = [item[1] for item in scanner.scan(path)]
+    licenses_found = [lookup_or_add_license(short_name)
+                      for shortname in shortnames_found
+                      ]
+    license_comment = scanner.name + ': ' + ','.join(shortnames_found)
+    for license in licenses_found:
+        file_license_params = {'file_id': file.file_id,
+                               'license_id': license.license_id,
+                               'extracted_text': '',
+                               'license_comment': license_comment
+                               }
+        new_file_license = orm.FileLicense(**file_license_params)
+        session.add(new_file_license)
+    session.commit()
+    return file.file_id
+
+
+def scan_package(package_path):
+    pass
 
 
 class SPDXDoc:
@@ -43,18 +107,16 @@ class SPDXDoc:
         self.package = None
 
     def store(self, connection_info):
-        return  # temp
-        '''insert SPDX doc into db'''
-        spdxDocId = None
+        doc_id = None
 
-        with MySQLdb.connect(**settings.database) as dbCursor:
+        with MySQLdb.connect(**connection_info) as cursor:
             '''get spdx doc id'''
-            sqlCommand = "SHOW TABLE STATUS LIKE 'spdx_docs'"
-            dbCursor.execute(sqlCommand)
-            spdxDocId = dbCursor.fetchone()[10]
+            query = "SHOW TABLE STATUS LIKE 'spdx_docs'"
+            cursor.execute(query)
+            doc_id = cursor.fetchone()[10]
 
             '''Insert spdx info'''
-            sqlCommand = """INSERT INTO spdx_docs(spdx_version,
+            query = """INSERT INTO spdx_docs(spdx_version,
                                                 data_license,
                                                 upload_file_name,
                                                 upload_content_type,
@@ -72,99 +134,41 @@ class SPDXDoc:
                                     CURRENT_TIMESTAMP,
                                     CURRENT_TIMESTAMP)"""
 
-            dbCursor.execute(sqlCommand, (self.version,
-                                         self.dataLicense,
-                                         self.packageInfo.packageName,
+            cursor.execute(query, (self.version,
+                                         self.data_license,
+                                         self.package.name,
                                          'SQL',
-                                         self.packageInfo.fileSize,
-                                         self.documentComment
+                                         0,
+                                         self.document_comment
                                          )
                             )
 
             ''' Insert Creator Information '''
-            creatorId = self.creatorInfo.insertCreatorInfo(spdxDocId, dbCursor)
+            creator_id = self.creator.store(connection_info, doc_id)
             ''' Insert Package Information '''
-            packageId = self.packageInfo.insertPackageInfo(dbCursor)
+            package_id = self.package.store(connection_info)
             ''' Insert File Information '''
 
-        with MySQLdb.connect(**settings.database) as dbCursor:
-            for files in self.fileInfo:
-                files.insertFileInfo(spdxDocId, packageId, dbCursor)
+        with MySQLdb.connect(**connection_info) as cursor:
+            for file in self.files:
+                file.store(connection_info, doc_id, package_id)
 
-        with MySQLdb.connect(**settings.database) as dbCursor:
-            for license in self.licensingInfo:
-                license.insertLicensingInfo(spdxDocId, dbCursor)
+        with MySQLdb.connect(**connection_info) as cursor:
+            for license in self.licenses:
+                license.store(connection_info, doc_id)
 
-        with MySQLdb.connect(**settings.database) as dbCursor:
+        with MySQLdb.connect(**connection_info) as cursor:
             ''' Insert Reviewer Information '''
-            for reviewer in self.reviewerInfo:
-                reviewer.insertReviewerInfo(spdxDocId, dbCursor)
-        return spdxDocId
+            for review in self.reviews:
+                review.store(connection_info, doc_id)
+        return doc_id
 
     def render(self, templatefile):
         return util.render_template(templatefile, self.__dict__)
 
     @classmethod
     def from_db_docid(self, connection_info, docid):
-        '''Generates the entire object from the database.'''
-
-        with MySQLdb.connect(**connection_info) as cursor:
-            query = '''
-                SELECT spdx_version,
-                       data_license,
-                       document_comment
-                FROM spdx_docs
-                WHERE id = %s'''
-            cursor.execute(query, (spdx_doc_id,))
-            rows = cursor.fetchone()
-
-            if rows is not None:
-                self.version = rows[0]
-                self.data_license = rows[1]
-                self.document_comment = rows[2]
-            else:
-                print("SPDX Document not found in database.")
-                return False
-
-            self.creatorInfo.getCreatorInfo(spdx_doc_id, dbCursor)
-            self.package = Package.from_db_docid(connection_info, docid)
-
-            '''Get File Info'''
-            sqlCommand = """SELECT dfpa.package_file_id,pf.file_checksum
-                            FROM doc_file_package_associations AS dfpa
-                                    LEFT OUTER JOIN package_files AS pf ON pf.id = dfpa.package_file_id
-                            WHERE spdx_doc_id = %s"""
-            dbCursor.execute(sqlCommand, spdx_doc_id)
-
-            for row in dbCursor:
-                if row is not None:
-                    tempFileInfo = fileInfo.fileInfo()
-                    tempFileInfo.getFileInfo(row[0], self.packageInfo.packageId, dbCursor)
-                    self.fileInfo.append(tempFileInfo)
-
-                    '''Get the license information for this file'''
-                    sqlCommand = """SELECT dla.license_id
-                                    FROM licensings AS l
-                                    LEFT OUTER JOIN doc_license_associations AS dla
-                                            ON l.doc_license_association_id = dla.id
-                                    WHERE l.package_file_id = %s"""
-
-                    dbCursor.execute(sqlCommand, row[0])
-
-                    for y in range(0, dbCursor.rowcount):
-                        tempLicensingInfo = licensingInfo.licensingInfo()
-                        row2 = dbCursor.fetchone()
-                        if row2 is not None:
-                            tempLicensingInfo.getLicensingInfo(row2[0], dbCursor)
-                            self.licensingInfo.append(tempLicensingInfo)
-
-            '''Get Reviewer Info'''
-            sqlCommand = """SELECT id FROM reviewers WHERE spdx_doc_id = %s"""
-            dbCursor.execute(sqlCommand, spdx_doc_id)
-            for x in range(0, dbCursor.rowcount):
-                tempReviewerInfo = reviewerInfo.reviewerInfo()
-                tempReviewerInfo.getReviwerInfo(dbCursorfetchone()[0], dbCursor)
-                self.reviewerInfo.append(tempReviewerInfo)
+        raise NotImplementedError
 
     @classmethod
     def from_package(cls, connection_info, package_path):

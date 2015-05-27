@@ -22,6 +22,6 @@ database = {
     'user': 'spdx',
     'passwd': 'spdx',
     'host': 'localhost',
-    'db': 'SPDX',
-#    'port': '3306'
+    'db': 'spdx20',
+#    'port': '5432'
 }

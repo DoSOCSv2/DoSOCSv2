@@ -24,7 +24,7 @@ Options:
   -n, --no-scan               Don't scan the package if SPDX data has not
                                 already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
-                                (`tag', `json' or `rdf')
+                                (`tag' or `rdf')
   --comment=TEXT              Specify SPDX document comment section
   --creator=TEXT              Specify SPDX creator field
   --creator-comment=TEXT      Specify SPDX creator comment field
@@ -42,15 +42,15 @@ Options taking a TEXT argument require double quotes around the argument.\
 
 
 import docopt
-import sys
+import orm
 import os
 import settings
-from spdxdoc import SPDXDoc
+import spdx
+import sys
 
 format_map = {
     'tag': 'templates/1.2.tag',
     'rdf': 'templates/1.2.rdf',
-    'json': 'templates/1.2.json'
 }
 
 def extract_fields(argv):
@@ -87,22 +87,24 @@ def main():
     scan = not argv['--no-scan']
     output_format = argv['--print']
 
-    if output_format not in ('json', 'tag', 'rdf', None):
+    if output_format not in ('tag', 'rdf', None):
         print(progname + ": Unknown output format '" + output_format + "'")
         print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
+    session = orm.load_session()
+
     if docid is not None:
-        document = SPDXDoc.from_db_docid(settings.database, docid)
+        document = spdx.get_doc_by_docid(session, docid)
         if document is None:
             print('Document id {} not found in the database.'.format(docid))
             sys.exit(1)
     elif scan:
-        document = SPDXDoc.from_package(settings.database, package_path)
-        document.store(settings.database)
+        docid = spdx.scan_package(session, package_path)
+        document = spdx.get_doc_by_docid(session, docid)
 
     if document is not None and output_format is not None:
-        print(document.render(format_map[output_format]))
+        print(spdx.render_document(session, document, format_map[output_format]))
 
 
 if __name__ == "__main__":

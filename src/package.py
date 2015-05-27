@@ -46,91 +46,88 @@ class Package(object):
         #    self.packageFileName = self.packageName
 
     def store(self, connection_info):
-        '''inserts packageInformation into database.'''
+        with MySQLdb.connect(**connection_info) as cursor:
+            query = "SHOW TABLE STATUS LIKE 'packages'"
+            cursor.execute(query)
+            package_id = cursor.fetchone()[10]
 
-        return  # temp
-        sqlCommand = "SHOW TABLE STATUS LIKE 'packages'"
-        dbCursor.execute(sqlCommand)
-        packageId = dbCursor.fetchone()
-        packageId = packageId[10]
+            query = """INSERT INTO packages
+                                    (package_name,
+                                    package_file_name,
+                                    package_download_location,
+                                    package_copyright_text,
+                                    package_version,
+                                    package_description,
+                                    package_summary,
+                                    package_originator,
+                                    package_supplier,
+                                    package_license_concluded,
+                                    package_license_declared,
+                                    package_checksum,
+                                    checksum_algorithm,
+                                    package_home_page,
+                                    package_source_info,
+                                    package_license_comments,
+                                    package_verification_code,
+                                    package_verification_code_excluded_file,
+                                    created_at,
+                                    updated_at)
+                            VALUES (%s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    %s,
+                                    CURRENT_TIMESTAMP,
+                                    CURRENT_TIMESTAMP)"""
 
-        sqlCommand = """INSERT INTO packages
-                                (package_name,
-                                  package_file_name,
-                                  package_download_location,
-                                  package_copyright_text,
-                                  package_version,
-                                  package_description,
-                                  package_summary,
-                                  package_originator,
-                                  package_supplier,
-                                  package_license_concluded,
-                                  package_license_declared,
-                                  package_checksum,
-                                  checksum_algorithm,
-                                  package_home_page,
-                                  package_source_info,
-                                  package_license_comments,
-                                  package_verification_code,
-                                  package_verification_code_excluded_file,
-                                  created_at,
-                                  updated_at)
-                        VALUES (%s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                %s,
-                                CURRENT_TIMESTAMP,
-                                CURRENT_TIMESTAMP)"""
+            cursor.execute(sqlCommand,
+                           (self.name,
+                            self.file_name,
+                            self.download_location,
+                            self.copyright_text,
+                            self.version,
+                            self.description,
+                            self.summary,
+                            self.originator,
+                            self.supplier,
+                            self.license_concluded,
+                            self.license_declared,
+                            self.checksum,
+                            'SHA1',
+                            self.home_page,
+                            self.source_info,
+                            self.license_comments,
+                            self.verification_code,
+                            '')
+                            )
 
-        dbCursor.execute(sqlCommand,
-                          (self.packageName,
-                           self.packageFileName,
-                           self.packageDownloadLocation,
-                           self.packageCopyrightText,
-                           self.packageVersion,
-                           self.packageDescription,
-                           self.packageSummary,
-                           self.packageOriginator,
-                           self.packageSupplier,
-                           self.packageLicenseConcluded,
-                           self.packageLicenseDeclared,
-                           self.packageChecksum,
-                           self.packageChecksumAlgorithm,
-                           self.packageHomePage,
-                           self.packageSourceInfo,
-                           self.packageLicenseComments,
-                           self.packageVerificationCode,
-                           self.packageVerificationCodeExcludedFile)
-                        )
+            query = """INSERT INTO package_license_info_from_files
+                                                (package_id,
+                                                package_license_info_from_files,
+                                                created_at,
+                                                updated_at)
+                            VALUES (%s,
+                                    %s,
+                                    CURRENT_TIMESTAMP,
+                                    CURRENT_TIMESTAMP)"""
 
-        sqlCommand = """INSERT INTO package_license_info_from_files
-                                            (package_id,
-                                            package_license_info_from_files,
-                                            created_at,
-                                            updated_at)
-                        VALUES (%s,
-                                %s,
-                                CURRENT_TIMESTAMP,
-                                CURRENT_TIMESTAMP)"""
+            for license_info in self.license_info_from_files:
+                cursor.execute(query, (package_id, license_info))
 
-        for license_info in self.packageLicenseInfoFromFiles:
-            dbCursor.execute(sqlCommand, (packageId, license_info))
-
-        return packageId
+            return package_id
 
     @classmethod
     def from_database(cls, connection_info, package_id):
