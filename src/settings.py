@@ -18,4 +18,5 @@ scanner = {
     'nomos': "/usr/share/fossology/nomos/agent/nomos"
 }
 
+# format: dbms://user:password@hostname:port/database
 connection_string = 'postgresql://spdx:spdx@localhost:5432/spdx20'
