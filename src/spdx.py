@@ -39,7 +39,7 @@ class SPDXDB:
                          .first()
                          )
         if existing_file is not None:
-            return existing_file.file_id
+            return existing_file
         file_type_id = (self.session.query(orm.FileType)
                         .filter(orm.FileType.name == util.spdx_filetype(path))
                         .one().file_type_id
