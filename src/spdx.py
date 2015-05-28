@@ -29,6 +29,10 @@ class SPDXDB:
         self.session = orm.load_session()
 
     def lookup_or_add_file(self, path):
+        '''Add file to the database if it does not exist. (Do not scan.)
+
+        Return the new or existing file object in any case.
+        '''
         sha1 = util.sha1(path)
         existing_file = (self.session.query(orm.File)
                          .filter(orm.File.sha1 == sha1)
@@ -54,6 +58,10 @@ class SPDXDB:
 
 
     def lookup_or_add_license(self, short_name):
+        '''Add license to the database if it does not exist.
+
+        Return the new or existing license object in any case.
+        '''
         existing_license = (self.session.query(orm.License)
                             .filter(orm.License.short_name == short_name)
                             .first()
@@ -75,6 +83,10 @@ class SPDXDB:
 
 
     def scan_file(self, path, scanner=scanners.nomos):
+        '''Scan file for licenses, and add it to the DB if it does not exist.
+
+        Return the file object.
+        '''
         file = self.lookup_or_add_file(path)
         shortnames_found = [item[1] for item in scanner.scan(path)]
         licenses_found = [self.lookup_or_add_license(shortname)
