@@ -44,7 +44,6 @@ Options taking a TEXT argument require double quotes around the argument.\
 import docopt
 import os
 import settings
-from spdx import SPDXDB
 import sys
 
 format_map = {
@@ -91,6 +90,9 @@ def main():
         print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
+    # import not at top of file for performance reasons
+    from spdx import SPDXDB
+
     with SPDXDB() as spdx:
         if docid is not None:
             document = spdx.fetch_doc(docid)
@@ -100,6 +102,8 @@ def main():
         elif scan:
             docid = spdx.scan_package_create_doc(package_path)
             document = spdx.fetch_doc(docid)
+
+    with SPDXDB() as spdx:
         if document is not None and output_format is not None:
             print(spdx.render_doc(document, format_map[output_format]))
 

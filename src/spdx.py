@@ -26,7 +26,17 @@ import uuid
 
 class SPDXDB:
     def __init__(self):
-        self.session = orm.load_session()
+        pass
+
+    def __enter__(self):
+        self.session = orm.Session()
+
+    def __exit__(self, type, value, traceback):
+        if type is None:
+            self.session.commit()
+        else:
+            self.session.rollback()
+        self.session.close()
 
     def lookup_or_add_file(self, path):
         '''Add file to the database if it does not exist. (Do not scan.)
@@ -53,7 +63,7 @@ class SPDXDB:
                        }
         new_file = orm.File(**file_params)
         self.session.add(new_file)
-        self.session.commit()
+        self.session.flush()
         return new_file
 
 
@@ -78,7 +88,7 @@ class SPDXDB:
                           }
         new_license = orm.License(**license_params)
         self.session.add(new_license)
-        self.session.commit()
+        self.session.flush()
         return new_license
 
 
@@ -101,7 +111,7 @@ class SPDXDB:
                                    }
             new_file_license = orm.FileLicense(**file_license_params)
             self.session.add(new_file_license)
-        self.session.commit()
+        self.session.flush()
         return file
 
 

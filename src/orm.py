@@ -7,6 +7,7 @@ echo = False
 engine = create_engine(settings.connection_string, echo=echo)
 Base = declarative_base(engine)
 
+
 class License(Base):
     __tablename__ = 'licenses'
     __table_args__ = {'autoload': True}
@@ -97,5 +98,4 @@ class Annotation(Base):
     __table_args__ = {'autoload': True}
 
 
-def load_session():
-    return sessionmaker(bind=engine)()
+Session = sessionmaker(bind=engine)
