@@ -25,9 +25,8 @@ Options:
                                 already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
-
-Options taking a TEXT argument require double quotes around the argument.\
 '''
+#Options taking a TEXT argument require double quotes around the argument.\
 # Not implemented:
 # --comment=TEXT              Specify SPDX document comment section
 # --creator=TEXT              Specify SPDX creator field
