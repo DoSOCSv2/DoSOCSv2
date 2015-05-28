@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Usage: DoSPDX.py [--help] [options] (FILE | -i DOCID)
+'''Usage: {} [--help] [options] (FILE | -i DOCID)
 
 Options:
   -i, --doc-id=DOCID          Generate SPDX document from database
@@ -72,7 +72,7 @@ def extract_fields(argv):
 
 def main():
     progname = os.path.basename(sys.argv[0])
-    argv = docopt.docopt(doc=__doc__, version='0.0.1-dev')
+    argv = docopt.docopt(doc=__doc__.format(progname), version='0.0.1-dev')
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
         print(progname + ": You must specify a file or document ID")
