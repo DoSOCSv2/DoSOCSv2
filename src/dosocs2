@@ -25,20 +25,21 @@ Options:
                                 already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
-  --comment=TEXT              Specify SPDX document comment section
-  --creator=TEXT              Specify SPDX creator field
-  --creator-comment=TEXT      Specify SPDX creator comment field
-  --supplier=TEXT             Specify package supplier field
-  --package-version=TEXT      Specify package version field
-  --download-location=TEXT    Specify package download location field
-  --originator=TEXT           Specify package originator field
-  --home-page=TEXT            Specify package home page field
-  --source-info=TEXT          Specify package source information field
-  --license-comments=TEXT     Specify license comments field
-  --description=TEXT          Specify package description field
 
 Options taking a TEXT argument require double quotes around the argument.\
 '''
+# Not implemented:
+# --comment=TEXT              Specify SPDX document comment section
+# --creator=TEXT              Specify SPDX creator field
+# --creator-comment=TEXT      Specify SPDX creator comment field
+# --supplier=TEXT             Specify package supplier field
+# --package-version=TEXT      Specify package version field
+# --download-location=TEXT    Specify package download location field
+# --originator=TEXT           Specify package originator field
+# --home-page=TEXT            Specify package home page field
+# --source-info=TEXT          Specify package source information field
+# --license-comments=TEXT     Specify license comments field
+# --description=TEXT          Specify package description field
 
 
 import docopt
@@ -79,7 +80,7 @@ def main():
         print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
-    fields = extract_fields(argv)
+    #fields = extract_fields(argv)
     package_path = argv['FILE']
     docid = argv['--doc-id']
     scan = not argv['--no-scan']
