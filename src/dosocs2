@@ -91,7 +91,7 @@ def main():
         sys.exit(1)
 
     # import not at top of file for performance reasons
-    from spdx import SPDXDB
+    from spdxdb import SPDXDB
 
     with SPDXDB() as spdx:
         if docid is not None:
