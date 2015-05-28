@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Usage: {} [--help] [options] (FILE | -i DOCID)
+'''Usage: {} [--help] [options] (FILE | -i DOCID | --init)
 
 Options:
   -i, --doc-id=DOCID          Generate SPDX document from database
@@ -25,6 +25,8 @@ Options:
                                 already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
+  --init                      Initialize the empty database with static
+                                data (destructive, will prompt first)
 '''
 #Options taking a TEXT argument require double quotes around the argument.\
 # Not implemented:
@@ -74,9 +76,21 @@ def main():
     progname = os.path.basename(sys.argv[0])
     argv = docopt.docopt(doc=__doc__.format(progname), version='0.0.1-dev')
 
+    if argv['--init']:
+        print(progname + ': preparing to initialize the database')
+        print(progname + ': all existing data will be deleted!')
+        print(progname + ': type the word "YES" (all uppercase) to commit.')
+        answer = raw_input()
+        if answer != 'YES':
+            sys.exit(1)
+        else:
+            import dbinit
+            dbinit.main()
+            sys.exit(0)
+
     if argv['--doc-id'] is None and argv['FILE'] is None:
-        print(progname + ": You must specify a file or document ID")
-        print(progname + ": Try `" + progname + " --help' for more information.")
+        print(progname + ": you must specify a file or document ID")
+        print(progname + ": try `" + progname + " --help' for more information.")
         sys.exit(1)
 
     #fields = extract_fields(argv)
@@ -86,8 +100,8 @@ def main():
     output_format = argv['--print']
 
     if output_format not in ('tag', 'rdf', None):
-        print(progname + ": Unknown output format '" + output_format + "'")
-        print(progname + ": Try `" + progname + " --help' for more information.")
+        print(progname + ": unknown output format '" + output_format + "'")
+        print(progname + ": try `" + progname + " --help' for more information.")
         sys.exit(1)
 
     # import not at top of file for performance reasons
