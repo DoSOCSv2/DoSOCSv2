@@ -53,6 +53,7 @@ format_map = {
     'rdf': 'templates/2.0.rdf',
 }
 
+
 def extract_fields(argv):
     fields = {
         'document_comment': argv['--comment'],

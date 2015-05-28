@@ -2,6 +2,7 @@ import re
 import sys
 import subprocess
 
+
 def scrape(page_text):
     '''Scrape license info and return (url, name, shortname) tuples'''
     url_part = r'<tr>\s*<td><a href=\"(.*?)\".*?>'
