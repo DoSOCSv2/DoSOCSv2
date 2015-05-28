@@ -1,5 +1,6 @@
 import orm
-session = orm.load_session()
+
+session = orm.Session()
 filetypes = (
     'SOURCE',
     'BINARY',
