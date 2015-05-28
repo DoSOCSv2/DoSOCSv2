@@ -18,10 +18,4 @@ scanner = {
     'nomos': "/usr/share/fossology/nomos/agent/nomos"
 }
 
-database = {
-    'user': 'spdx',
-    'passwd': 'spdx',
-    'host': 'localhost',
-    'db': 'spdx20',
-#    'port': '5432'
-}
+connection_string = 'postgresql://spdx:spdx@localhost:5432/spdx20'

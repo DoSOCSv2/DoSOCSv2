@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import settings
 
-engine = create_engine('postgresql://spdx:spdx@localhost/spdx20', echo=True)
+engine = create_engine(settings.connection_string, echo=True)
 Base = declarative_base(engine)
 
 class License(Base):
