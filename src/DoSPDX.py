@@ -97,7 +97,7 @@ def main():
         if docid is not None:
             document = spdx.fetch_doc(docid)
             if document is None:
-                print('Document id {} not found in the database.'.format(docid))
+                print('docid {} not found in the database.'.format(docid))
                 sys.exit(1)
         elif scan:
             docid = spdx.scan_package_create_doc(package_path)

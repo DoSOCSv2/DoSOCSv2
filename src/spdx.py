@@ -66,7 +66,6 @@ class SPDXDB:
         self.session.flush()
         return new_file
 
-
     def lookup_or_add_license(self, short_name):
         '''Add license to the database if it does not exist.
 
@@ -91,7 +90,6 @@ class SPDXDB:
         self.session.flush()
         return new_license
 
-
     def scan_file(self, path, scanner=scanners.nomos):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
@@ -114,10 +112,12 @@ class SPDXDB:
         self.session.flush()
         return file
 
-
     def scan_package(self, path, scanner=scanners.nomos):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
         '''
-        pass
+        raise NotImplementedError
+
+    def fetch_doc(self, docid):
+        return self.session.query(orm.Document).get(docid)
