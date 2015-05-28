@@ -1,5 +1,5 @@
 # <SPDX-License-Identifier: Apache-2.0>
-# Copyright (c) 2015 doSOCS contributors.
+# Copyright (c) 2015 University of Nebraska Omaha and other contributors.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
