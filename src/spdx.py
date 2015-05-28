@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy.orm.exc import NoResultFound
 import orm
 import os
 import scanners
