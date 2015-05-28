@@ -30,6 +30,7 @@ class SPDXDB:
 
     def __enter__(self):
         self.session = orm.Session()
+        return self
 
     def __exit__(self, type, value, traceback):
         if type is None:
