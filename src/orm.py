@@ -3,7 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import settings
 
-engine = create_engine(settings.connection_string, echo=True)
+echo = False
+engine = create_engine(settings.connection_string, echo=echo)
 Base = declarative_base(engine)
 
 class License(Base):

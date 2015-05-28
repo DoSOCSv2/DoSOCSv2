@@ -42,15 +42,14 @@ Options taking a TEXT argument require double quotes around the argument.\
 
 
 import docopt
-import orm
 import os
 import settings
-import spdx
+from spdx import SPDXDB
 import sys
 
 format_map = {
-    'tag': 'templates/1.2.tag',
-    'rdf': 'templates/1.2.rdf',
+    'tag': 'templates/2.0.tag',
+    'rdf': 'templates/2.0.rdf',
 }
 
 def extract_fields(argv):
@@ -74,7 +73,7 @@ def extract_fields(argv):
 
 def main():
     progname = os.path.basename(sys.argv[0])
-    argv = docopt.docopt(doc=__doc__, version='2.0.0-dev')
+    argv = docopt.docopt(doc=__doc__, version='0.0.1-dev')
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
         print(progname + ": You must specify a file or document ID")
@@ -92,19 +91,17 @@ def main():
         print(progname + ": Try `" + progname + " --help' for more information.")
         sys.exit(1)
 
-    session = orm.load_session()
-
-    if docid is not None:
-        document = spdx.get_doc_by_docid(session, docid)
-        if document is None:
-            print('Document id {} not found in the database.'.format(docid))
-            sys.exit(1)
-    elif scan:
-        docid = spdx.scan_package(session, package_path)
-        document = spdx.get_doc_by_docid(session, docid)
-
-    if document is not None and output_format is not None:
-        print(spdx.render_document(session, document, format_map[output_format]))
+    with SPDXDB() as spdx:
+        if docid is not None:
+            document = spdx.fetch_doc(docid)
+            if document is None:
+                print('Document id {} not found in the database.'.format(docid))
+                sys.exit(1)
+        elif scan:
+            docid = spdx.scan_package_create_doc(package_path)
+            document = spdx.fetch_doc(docid)
+        if document is not None and output_format is not None:
+            print(spdx.render_doc(document, format_map[output_format]))
 
 
 if __name__ == "__main__":
