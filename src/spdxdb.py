@@ -40,33 +40,17 @@ class SPDXDB:
             self.session.rollback()
         self.session.close()
 
-    def lookup_or_add_file(self, path):
-        '''Add file to the database if it does not exist. (Do not scan.)
-
-        Return the new or existing file object in any case.
-        '''
-        sha1 = util.sha1(path)
-        existing_file = (self.session.query(orm.File)
-                         .filter(orm.File.sha1 == sha1)
-                         .first()
-                         )
-        if existing_file is not None:
-            return existing_file
-        file_type_id = (self.session.query(orm.FileType)
-                        .filter(orm.FileType.name == util.spdx_filetype(path))
-                        .one().file_type_id
-                        )
-        file_params = {'sha1': sha1,
-                       'file_type_id': file_type_id,
-                       'copyright_text': '',
-                       'project_id': None,
-                       'comment': '',
-                       'notice': ''
-                       }
-        new_file = orm.File(**file_params)
-        self.session.add(new_file)
-        self.session.flush()
-        return new_file
+    def lookup_by_sha1(self, obj_type, sha1):
+        '''Lookup object by SHA-1 sum and return the object, or None.'''
+        # Maybe shouldn't be using first() here?
+        # Freak occurence of sha1 collision probably won't happen.
+        # But if it does, this will give nondeterministic results.
+        # (although, you will have bigger problems...)
+        return (
+            self.session.query(obj_type)
+            .filter(obj_type.sha1 == sha1)
+            .first()
+            )
 
     def lookup_or_add_license(self, short_name):
         '''Add license to the database if it does not exist.
@@ -92,25 +76,53 @@ class SPDXDB:
         self.session.flush()
         return new_license
 
+    def _create_file(self, path, sha1):
+        file_type_id = (
+            self.session.query(orm.FileType)
+            .filter(orm.FileType.name == util.spdx_filetype(path))
+            .one().file_type_id
+            )
+        file_params = {
+            'sha1': sha1,
+            'file_type_id': file_type_id,
+            'copyright_text': '',
+            'project_id': None,
+            'comment': '',
+            'notice': ''
+            }
+        new_file = orm.File(**file_params)
+        self.session.add(new_file)
+        self.session.flush()
+        return new_file
+
+
     def scan_file(self, path, scanner=scanners.nomos):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
+
+        If the file is cached, return the cached file object, and do not
+        scan.
         '''
-        file = self.lookup_or_add_file(path)
-        shortnames_found = [item[1] for item in scanner.scan(path)]
-        licenses_found = [self.lookup_or_add_license(shortname)
-                          for shortname in shortnames_found
-                          ]
-        license_comment = scanner.name + ': ' + ','.join(shortnames_found)
-        for license in licenses_found:
-            file_license_params = {'file_id': file.file_id,
-                                   'license_id': license.license_id,
-                                   'extracted_text': '',
-                                   'license_comment': license_comment
-                                   }
-            new_file_license = orm.FileLicense(**file_license_params)
-            self.session.add(new_file_license)
+        sha1 = util.sha1(path)
+        file = self.lookup_by_sha1(orm.File, sha1)
+        if file is not None:
+            return file
+        file = self._create_file(path, sha1)
+        if scanner is not None:
+            shortnames_found = [item[1] for item in scanner.scan(path)]
+            licenses_found = [self.lookup_or_add_license(shortname)
+                              for shortname in shortnames_found
+                              ]
+            license_comment = scanner.name + ': ' + ','.join(shortnames_found)
+            for license in licenses_found:
+                file_license_params = {'file_id': file.file_id,
+                                       'license_id': license.license_id,
+                                       'extracted_text': '',
+                                       'license_comment': license_comment
+                                       }
+                new_file_license = orm.FileLicense(**file_license_params)
+                self.session.add(new_file_license)
         self.session.flush()
         return file
 
@@ -118,6 +130,8 @@ class SPDXDB:
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
+
+        Only scan if the package is not already cached (by SHA-1).
         '''
         package_params = {
             'name': '',
