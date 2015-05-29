@@ -118,7 +118,6 @@ packages_files (
     concluded_license_id    integer,
     file_name               text not null,
     primary key (package_file_id),
-    constraint uc_package_id_file_id unique (package_id, file_id),
     foreign key (package_id) references packages (package_id),
     foreign key (file_id) references files (file_id),
     foreign key (concluded_license_id) references licenses (license_id)

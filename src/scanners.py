@@ -32,4 +32,4 @@ class nomos:
                 continue
             for subitem in m.group(2).split(','):
                 licenses.append((m.group(1), subitem))
-        return licenses
+        return [l for l in licenses if l[1] != 'No_license_found']

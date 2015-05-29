@@ -16,10 +16,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import settings
+from settings import settings
 
-echo = False
-engine = create_engine(settings.connection_string, echo=echo)
+engine = create_engine(settings['connection_url'], echo=settings.get('echo_sql', False))
 Base = declarative_base(engine)
 
 

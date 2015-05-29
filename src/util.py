@@ -13,9 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from contextlib import contextmanager
+import hashlib
 import jinja2
 import magic
-import hashlib
+import shutil
+import tarfile
+import tempfile
+import zipfile
 
 
 def render_template(templatefile, context):
@@ -51,3 +56,29 @@ def sha1(filename):
         lines = f.read()
     checksum = hashlib.sha1(lines).hexdigest()
     return checksum
+
+
+@contextmanager
+def tempextract(path):
+    try:
+        tempdir = tempfile.mkdtemp()
+        if tarfile.is_tarfile(path):
+            with tarfile.open(path) as tf:
+                relpaths = tf.getnames()
+                tf.extractall(path=tempdir)
+            yield (tempdir, relpaths)
+        elif zipfile.is_zipfile(path):
+            with zipfile.open(path) as zf:
+                relpaths = zf.namelist()
+                zf.extractall(path=tempdir)
+            yield (tempdir, relpaths)
+    finally:
+        shutil.rmtree(tempdir)
+
+
+def gen_ver_code(hashes, excluded_hashes=None):
+    if excluded_hashes is None:
+        excluded_hashes = set()
+    hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
+    hashblob = ''.join(sorted(hashes_less_excluded))
+    return hashlib.sha1(hashblob).hexdigest()
