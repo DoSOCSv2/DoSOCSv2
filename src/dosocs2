@@ -169,7 +169,9 @@ def main():
                 sys.exit(1)
         elif scan:
             #docid = spdx.scan_package_create_doc(package_path)
-            spdx.scan_package(package_path)
+            package = spdx.scan_package(package_path)
+            if output_format is None:
+                print('package_id: ' + str(package.package_id))
             #document = spdx.fetch_doc(docid)
 
     with SPDXDB() as spdx:
