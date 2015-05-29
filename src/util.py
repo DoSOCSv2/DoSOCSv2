@@ -17,6 +17,7 @@ from contextlib import contextmanager
 import hashlib
 import jinja2
 import magic
+import os
 import shutil
 import tarfile
 import tempfile
@@ -82,3 +83,10 @@ def gen_ver_code(hashes, excluded_hashes=None):
     hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
     hashblob = ''.join(sorted(hashes_less_excluded))
     return hashlib.sha1(hashblob).hexdigest()
+
+
+def package_friendly_name(package_file_name):
+    newname = os.path.splitext(package_file_name)[0]
+    if newname.endswith('.tar'):
+        newname = os.path.splitext(newname)[0]
+    return newname

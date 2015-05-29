@@ -17,11 +17,13 @@
 # limitations under the License.
 
 '''Usage:
-{0} [options] (FILE | -i DOCID)
+{0} [options] (FILE | -i DOCID | -c PACKAGEID)
 {0} [--init | --init-noconfirm]
 {0} --help
 
 Options:
+  -c, --create=PACKAGEID      Create and store document from an
+                                already-scanned package
   -i, --doc-id=DOCID          Generate SPDX document from database
                                 (required if FILE argument not specified)
   -n, --no-scan               Don't scan the package if SPDX data has not
@@ -144,14 +146,15 @@ def main():
         else:
             sys.exit(1)
 
-    if argv['--doc-id'] is None and argv['FILE'] is None:
-        msg("you must specify a file or document ID")
+    if not any([argv['--doc-id'], argv['FILE'], argv['--create']]):
+        msg("you must specify a document ID, package ID, or file")
         msg("try `" + PROGNAME + " --help' for more information.")
         sys.exit(1)
 
     #fields = extract_fields(argv)
     package_path = argv['FILE']
     docid = argv['--doc-id']
+    package_id = argv['--create']
     scan = not argv['--no-scan']
     output_format = argv['--print']
 
@@ -171,6 +174,10 @@ def main():
             if document is None:
                 msg('docid {} not found in the database.'.format(docid))
                 sys.exit(1)
+        elif package_id is not None:
+            document = spdx.create_document(package_id)
+            if output_format is None:
+                print('document_id: ' + str(document.document_id))
         elif scan:
             #docid = spdx.scan_package_create_doc(package_path)
             package = spdx.scan_package(package_path)

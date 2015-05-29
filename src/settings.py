@@ -22,5 +22,6 @@ settings = {
     # 'connection_url': dbms://user:password@hostname:port/database
     'connection_url': 'postgresql://spdx:spdx@localhost:5432/spdx20',
     'creator_string': 'dosocs2 0.0.1-dev',
+    'default_namespace_prefix': 'postgresql://localhost:5432/spdx20'
     # 'echo_sql': False
 }

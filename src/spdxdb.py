@@ -17,6 +17,7 @@
 import itertools
 import orm
 import os
+from settings import settings
 import scanners
 import util
 import uuid
@@ -180,6 +181,40 @@ class SPDXDB:
         self.session.add_all(new_package_files)
         self.session.flush()
         return package
+
+    def create_document(self, package_id, **kwargs):
+        package = self.session.query(orm.Package).get(package_id)
+        data_license = (
+            self.session.query(orm.License)
+            .filter(orm.License.short_name == 'CC0-1.0')
+            .one()
+            )
+        doc_name = kwargs.get('name') or util.package_friendly_name(package.file_name)
+        default_namespace_suffix = '/' + doc_name + '-' + str(uuid.uuid4())
+        default_namespace = settings['default_namespace_prefix'] + default_namespace_suffix
+        doc_namespace = kwargs.get('document_namespace') or default_namespace
+        document_params = {
+            'data_license_id': data_license.license_id,
+            'spdx_version': 'SPDX-2.0',
+            'name': doc_name,
+            'document_namespace': doc_namespace,
+            'license_list_version': '2.0',  # TODO: dynamically fill from database table
+            'creator_comment': kwargs.get('creator_comment') or '',
+            'document_comment': kwargs.get('document_comment') or '',
+            'package_id': package_id
+        }
+        new_document = orm.Document(**document_params)
+        self.session.add(new_document)
+        self.session.flush()
+        default_creator_id = 1  # should always be 1. TODO: don't hardcode this.
+        document_creator_params = {
+            'document_id': new_document.document_id,
+            'creator_id': default_creator_id
+            }
+        new_document_creator = orm.DocumentCreator(**document_creator_params)
+        self.session.add(new_document_creator)
+        self.session.flush()
+        return new_document
 
     def fetch_doc(self, docid):
         return self.session.query(orm.Document).get(docid)
