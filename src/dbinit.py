@@ -90,13 +90,3 @@ def scrape_site(url='http://spdx.org/licenses/'):
                       for row in rows
                       ]
     return completed_rows
-
-
-def main():
-    session = orm.Session()
-    load_licenses(session)
-    load_creator_types(session)
-    load_annotation_types(session)
-    load_file_types(session)
-    session.commit()
-    session.close()

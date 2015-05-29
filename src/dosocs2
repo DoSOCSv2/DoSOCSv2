@@ -43,6 +43,7 @@ Options:
 # --description=TEXT          Specify package description field
 
 
+from __future__ import print_function
 import docopt
 import os
 import settings
@@ -74,9 +75,30 @@ def extract_fields(argv):
     return fields
 
 
-def msg(text):
-    print(PROGNAME + ': ' + text)
+def msg(text, **kwargs):
+    print(PROGNAME + ': ' + text, **kwargs)
 
+
+def dbinit():
+    # importing these modules only when needed, for performance
+    import dbinit, orm
+    session = orm.Session()
+    msg('loading licenses...', end='')
+    dbinit.load_licenses(session)
+    print('done.')
+    msg('loading creator types...', end='')
+    dbinit.load_creator_types(session)
+    print('done.')
+    msg('loading annotation types...', end='')
+    dbinit.load_annotation_types(session)
+    print('done.')
+    msg('loading file types...', end='')
+    dbinit.load_file_types(session)
+    print('done.')
+    msg('committing changes...', end='')
+    session.commit()
+    print('done.')
+    session.close()
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1-dev')
@@ -91,8 +113,7 @@ def main():
             msg('canceling operation.')
             sys.exit(1)
         else:
-            import dbinit
-            dbinit.main()
+            dbinit()
             sys.exit(0)
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
