@@ -49,6 +49,7 @@ Options:
 
 
 from __future__ import print_function
+from settings import settings
 import docopt
 import os
 import sys
@@ -108,6 +109,9 @@ def dbinit():
         print('ok.')
     msg('loading creator types...', end='')
     dbinit.load_creator_types(session)
+    print('ok.')
+    msg('loading default creator...', end='')
+    dbinit.load_default_creator(session, settings['creator_string'])
     print('ok.')
     msg('loading annotation types...', end='')
     dbinit.load_annotation_types(session)

@@ -21,5 +21,6 @@ scanner = {
 settings = {
     # 'connection_url': dbms://user:password@hostname:port/database
     'connection_url': 'postgresql://spdx:spdx@localhost:5432/spdx20',
+    'creator_string': 'dosocs2 0.0.1-dev',
     # 'echo_sql': False
 }

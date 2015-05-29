@@ -75,6 +75,19 @@ def load_annotation_types(session):
         session.add(orm.AnnotationType(name=a))
 
 
+def load_default_creator(session, creator_string):
+    creator_type = (
+        session.query(orm.CreatorType)
+        .filter(orm.CreatorType.name == 'TOOL')
+        .one()
+        )
+    creator_params = {
+        'creator_type_id': creator_type.creator_type_id,
+        'name': creator_string
+        }
+    session.add(orm.Creator(**creator_params))
+
+
 def scrape_site(url):
     '''Scrape license info and return (url, name, shortname) tuples'''
     page_text = requests.get(url).text
