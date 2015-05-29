@@ -17,9 +17,10 @@ import re
 import settings
 import subprocess
 
+
 class nomos:
     name = 'nomos'
-    
+
     @staticmethod
     def scan(filename):
         args = (settings.scanner['nomos'], filename)

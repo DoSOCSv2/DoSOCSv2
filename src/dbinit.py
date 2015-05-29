@@ -102,5 +102,6 @@ def execute_sql_in_file(path):
 def drop_all_tables():
     return execute_sql_in_file('sql/spdx20_drop.sql')
 
+
 def create_all_tables():
     return execute_sql_in_file('sql/spdx20_create.sql')

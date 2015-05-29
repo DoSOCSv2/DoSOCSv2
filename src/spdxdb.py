@@ -95,7 +95,6 @@ class SPDXDB:
         self.session.flush()
         return new_file
 
-
     def scan_file(self, path, scanner=scanners.nomos):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 

@@ -60,6 +60,7 @@ format_map = {
 
 PROGNAME = os.path.basename(sys.argv[0])
 
+
 def extract_fields(argv):
     fields = {
         'document_comment': argv['--comment'],
@@ -86,7 +87,8 @@ def msg(text, **kwargs):
 
 def dbinit():
     # importing these modules only when needed, for performance
-    import dbinit, orm
+    import dbinit
+    import orm
     url = 'http://spdx.org/licenses/'
     msg('dropping all tables...', end='')
     result = dbinit.drop_all_tables()
@@ -118,6 +120,7 @@ def dbinit():
     print('ok.')
     session.close()
     return True
+
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1-dev')
