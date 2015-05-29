@@ -15,7 +15,7 @@
 
 import orm
 import re
-import subprocess
+import requests
 import sys
 import uuid
 
@@ -83,7 +83,7 @@ def scrape(page_text):
 
 
 def scrape_site(url='http://spdx.org/licenses/'):
-    page_text = subprocess.check_output(['curl', url])
+    page_text = requests.get(url).text
     rows = scrape(page_text)
     # reverse column order and append full url to first column
     completed_rows = [[row[2], row[1], (url + row[0][2:])]
