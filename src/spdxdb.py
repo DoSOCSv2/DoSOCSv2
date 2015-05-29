@@ -57,20 +57,22 @@ class SPDXDB:
 
         Return the new or existing license object in any case.
         '''
-        existing_license = (self.session.query(orm.License)
-                            .filter(orm.License.short_name == short_name)
-                            .first()
-                            )
+        existing_license = (
+            self.session.query(orm.License)
+            .filter(orm.License.short_name == short_name)
+            .first()
+            )
         if existing_license is not None:
             return existing_license
         license_identifier = 'LicenseRef-' + str(uuid.uuid4())
-        license_params = {'name': 'NOASSERTION',
-                          'short_name': short_name,
-                          'cross_reference': '',
-                          'comment': '',
-                          'is_spdx_official': False,
-                          'license_identifier': license_identifier
-                          }
+        license_params = {
+            'name': 'NOASSERTION',
+            'short_name': short_name,
+            'cross_reference': '',
+            'comment': '',
+            'is_spdx_official': False,
+            'license_identifier': license_identifier
+            }
         new_license = orm.License(**license_params)
         self.session.add(new_license)
         self.session.flush()
@@ -110,16 +112,18 @@ class SPDXDB:
         file = self._create_file(path, sha1)
         if scanner is not None:
             shortnames_found = [item[1] for item in scanner.scan(path)]
-            licenses_found = [self.lookup_or_add_license(shortname)
-                              for shortname in shortnames_found
-                              ]
+            licenses_found = [
+                self.lookup_or_add_license(shortname)
+                for shortname in shortnames_found
+                ]
             license_comment = scanner.name + ': ' + ','.join(shortnames_found)
             for license in licenses_found:
-                file_license_params = {'file_id': file.file_id,
-                                       'license_id': license.license_id,
-                                       'extracted_text': '',
-                                       'license_comment': license_comment
-                                       }
+                file_license_params = {
+                    'file_id': file.file_id,
+                    'license_id': license.license_id,
+                    'extracted_text': '',
+                    'license_comment': license_comment
+                    }
                 new_file_license = orm.FileLicense(**file_license_params)
                 self.session.add(new_file_license)
         self.session.flush()

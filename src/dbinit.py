@@ -86,9 +86,10 @@ def scrape_site(url):
     page_one_line = page_text.replace('\n', '')
     rows = pattern.findall(page_one_line)
     # reverse column order and append full url to first column
-    completed_rows = [[row[2], row[1], (url + row[0][2:])]
-                      for row in rows
-                      ]
+    completed_rows = [
+        [row[2], row[1], (url + row[0][2:])]
+        for row in rows
+        ]
     return completed_rows
 
 
