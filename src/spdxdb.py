@@ -18,9 +18,6 @@ import itertools
 import orm
 import os
 import scanners
-import shutil
-import tarfile
-import tempfile
 import util
 import uuid
 
@@ -136,16 +133,20 @@ class SPDXDB:
 
         Only scan if the package is not already cached (by SHA-1).
         '''
+        sha1 = util.sha1(path)
+        package = self.lookup_by_sha1(orm.Package, sha1)
+        if package is not None:
+            return package
         package_params = {
             'name': '',
             'version': '',
-            'file_name': path,
+            'file_name': os.path.basename(path),
             'supplier': '',
             'originator': '',
             'download_location': '',
-            'verification_code': '',  # filled in later
+            'verification_code': '',  # filled in after file processing
             'ver_code_excluded_file_id': None,
-            'sha1': util.sha1(path),
+            'sha1': sha1,
             'home_page': '',
             'source_info': '',
             'concluded_license_id': None,
@@ -156,8 +157,8 @@ class SPDXDB:
             'description': '',
             'comment': ''
             }
-        new_package = orm.Package(**package_params)
-        self.session.add(new_package)
+        package = orm.Package(**package_params)
+        self.session.add(package)
         with util.tempextract(path) as (tempdir, relpaths):
             abspaths = [os.path.join(tempdir, path) for path in relpaths]
             hashes = []
@@ -168,17 +169,17 @@ class SPDXDB:
                 fileobj = self.scan_file(abspath, scanner)
                 hashes.append(fileobj.sha1)
                 package_file_params = {
-                    'package_id': new_package.package_id,
+                    'package_id': package.package_id,
                     'file_id': fileobj.file_id,
                     'concluded_license_id': None,
                     'file_name': os.path.join(os.curdir, relpath)
                     }
                 new_package_file = orm.PackageFile(**package_file_params)
                 new_package_files.append(new_package_file)
-        new_package.verification_code = util.gen_ver_code(hashes)
+        package.verification_code = util.gen_ver_code(hashes)
         self.session.add_all(new_package_files)
         self.session.flush()
-        return new_package
+        return package
 
     def fetch_doc(self, docid):
         return self.session.query(orm.Document).get(docid)
