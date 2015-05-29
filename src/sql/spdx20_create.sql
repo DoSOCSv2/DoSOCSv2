@@ -139,7 +139,7 @@ documents (
     name                    varchar(255) not null,
     document_namespace      varchar(500) not null,
     license_list_version    varchar(255) not null,
-    created_ts              timestamp not null,
+    created_ts              timestamp not null default current_timestamp,
     creator_comment         text not null,
     document_comment        text not null,
     package_id              integer not null,
