@@ -16,7 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Usage: {} [--help] [options] (FILE | -i DOCID | --init)
+'''Usage:
+{0} [options] (FILE | -i DOCID)
+{0} [--init | --init-noconfirm]
+{0} --help
 
 Options:
   -i, --doc-id=DOCID          Generate SPDX document from database
@@ -28,6 +31,7 @@ Options:
   --init                      Drop and create all tables, then initialize
                                 with static data (destructive, will
                                 prompt first)
+  --init-noconfirm            Same as --init, but don't prompt
 '''
 #Options taking a TEXT argument require double quotes around the argument.\
 # Not implemented:
@@ -118,20 +122,20 @@ def dbinit():
 def main():
     argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1-dev')
 
-    if argv['--init']:
-        msg('preparing to initialize the database')
-        msg('all existing data will be deleted!')
-        msg('make sure you are connected to the internet before continuing.')
-        msg('type the word "YES" (all uppercase) to commit.')
-        answer = raw_input()
-        if answer != 'YES':
-            msg('canceling operation.')
-            sys.exit(1)
-        else:
-            if dbinit():
-                sys.exit(0)
-            else:
+    if argv['--init'] or argv['--init-noconfirm']:
+        if not argv['--init-noconfirm']:
+            msg('preparing to initialize the database')
+            msg('all existing data will be deleted!')
+            msg('make sure you are connected to the internet before continuing.')
+            msg('type the word "YES" (all uppercase) to commit.')
+            answer = raw_input()
+            if answer != 'YES':
+                msg('canceling operation.')
                 sys.exit(1)
+        if dbinit():
+            sys.exit(0)
+        else:
+            sys.exit(1)
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
         msg("you must specify a file or document ID")
