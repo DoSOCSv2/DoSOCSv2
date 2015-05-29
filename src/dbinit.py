@@ -30,7 +30,9 @@ def load_file_types(session):
         'IMAGE',
         'TEXT',
         'VIDEO',
-        'DOCUMENTATION'
+        'DOCUMENTATION',
+        'SPDX',
+        'OTHER'
         )
     for f in filetypes:
         session.add(orm.FileType(name=f))
