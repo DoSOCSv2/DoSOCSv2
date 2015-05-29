@@ -36,9 +36,11 @@ def load_file_types(session):
         session.add(orm.FileType(name=f))
 
 
-def load_licenses(session):
-    rows = scrape_site()
+def load_licenses(session, url='http://spdx.org/licenses/'):
+    rows = scrape_site(url)
     sorted_rows = list(sorted(rows))
+    if len(rows) == 0:
+        return False
     for shortname, name, url in sorted_rows:
         license_params = {
             'name': name,
@@ -49,6 +51,7 @@ def load_licenses(session):
             'license_identifier': 'LicenseRef-' + str(uuid.uuid4())
             }
         session.add(orm.License(**license_params))
+    return True
 
 
 def load_creator_types(session):
@@ -70,8 +73,9 @@ def load_annotation_types(session):
         session.add(orm.AnnotationType(name=a))
 
 
-def scrape(page_text):
+def scrape_site(url):
     '''Scrape license info and return (url, name, shortname) tuples'''
+    page_text = requests.get(url).text
     url_part = r'<tr>\s*<td><a href=\"(.*?)\".*?>'
     name_part = r'(.*?)</a></td>\s*.*?'
     shortname_part = r'<code property=\"spdx:licenseId\">(.*?)</code>'
@@ -79,14 +83,22 @@ def scrape(page_text):
     pattern = re.compile(pattern_str)
     page_one_line = page_text.replace('\n', '')
     rows = pattern.findall(page_one_line)
-    return rows
-
-
-def scrape_site(url='http://spdx.org/licenses/'):
-    page_text = requests.get(url).text
-    rows = scrape(page_text)
     # reverse column order and append full url to first column
     completed_rows = [[row[2], row[1], (url + row[0][2:])]
                       for row in rows
                       ]
     return completed_rows
+
+
+def execute_sql_in_file(path):
+    with open(path) as f:
+        query = f.read()
+    result = orm.engine.execute(query)
+    return result
+
+
+def drop_all_tables():
+    return execute_sql_in_file('sql/spdx20_drop.sql')
+
+def create_all_tables():
+    return execute_sql_in_file('sql/spdx20_create.sql')

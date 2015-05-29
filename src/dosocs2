@@ -25,8 +25,9 @@ Options:
                                 already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
-  --init                      Initialize the empty database with static
-                                data (destructive, will prompt first)
+  --init                      Drop and create all tables, then initialize
+                                with static data (destructive, will
+                                prompt first)
 '''
 #Options taking a TEXT argument require double quotes around the argument.\
 # Not implemented:
@@ -77,28 +78,43 @@ def extract_fields(argv):
 
 def msg(text, **kwargs):
     print(PROGNAME + ': ' + text, **kwargs)
+    sys.stdout.flush()
 
 
 def dbinit():
     # importing these modules only when needed, for performance
     import dbinit, orm
+    url = 'http://spdx.org/licenses/'
+    msg('dropping all tables...', end='')
+    result = dbinit.drop_all_tables()
+    print('ok.')
+    msg('creating all tables...', end='')
+    result = dbinit.create_all_tables()
+    print('ok.')
     session = orm.Session()
     msg('loading licenses...', end='')
-    dbinit.load_licenses(session)
-    print('done.')
+    result = dbinit.load_licenses(session, url)
+    if not result:
+        print('error!')
+        msg('failed to download and load the license list')
+        msg('check your connection to ' + url + ' and make sure it is the correct page')
+        return False
+    else:
+        print('ok.')
     msg('loading creator types...', end='')
     dbinit.load_creator_types(session)
-    print('done.')
+    print('ok.')
     msg('loading annotation types...', end='')
     dbinit.load_annotation_types(session)
-    print('done.')
+    print('ok.')
     msg('loading file types...', end='')
     dbinit.load_file_types(session)
-    print('done.')
+    print('ok.')
     msg('committing changes...', end='')
     session.commit()
-    print('done.')
+    print('ok.')
     session.close()
+    return True
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1-dev')
@@ -113,8 +129,10 @@ def main():
             msg('canceling operation.')
             sys.exit(1)
         else:
-            dbinit()
-            sys.exit(0)
+            if dbinit():
+                sys.exit(0)
+            else:
+                sys.exit(1)
 
     if argv['--doc-id'] is None and argv['FILE'] is None:
         msg("you must specify a file or document ID")
