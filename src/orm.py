@@ -67,6 +67,11 @@ class PackageFile(Base):
     __table_args__ = {'autoload': True}
 
 
+class DocumentNamespace(Base):
+    __tablename__ = 'document_namespaces'
+    __table_args__ = {'autolad': True}
+
+
 class Document(Base):
     __tablename__ = 'documents'
     __table_args__ = {'autoload': True}
