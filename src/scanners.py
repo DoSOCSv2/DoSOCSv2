@@ -13,9 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections import namedtuple
 import re
 import settings
 import subprocess
+
+ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 
 
 class nomos:
@@ -32,5 +35,5 @@ class nomos:
             if m is None:
                 continue
             for subitem in m.group(2).split(','):
-                licenses.append((m.group(1), subitem))
-        return [l for l in licenses if l[1] != 'No_license_found']
+                licenses.append(ScannerResult(file_path=m.group(1), license=subitem))
+        return [l for l in licenses if l.license != 'No_license_found']

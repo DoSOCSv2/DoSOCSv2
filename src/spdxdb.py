@@ -109,7 +109,7 @@ class SPDXDB:
             return file
         file = self._create_file(path, sha1)
         if scanner is not None:
-            shortnames_found = [item[1] for item in scanner.scan(path)]
+            shortnames_found = [item.license for item in scanner.scan(path)]
             licenses_found = [
                 self.lookup_or_add_license(shortname)
                 for shortname in shortnames_found
