@@ -77,6 +77,7 @@ creators (
     creator_id              serial,
     creator_type_id         integer not null,
     name                    varchar(255) not null,
+    email                   varchar(255) not null,
     primary key (creator_id),
     foreign key (creator_type_id) references creator_types (creator_type_id)
 );
@@ -255,11 +256,12 @@ annotations (
     document_id             integer not null,
     annotation_type_id      integer not null,
     identifier_id           integer not null,
-    annotator               text not null,
+    creator_id              integer not null,
     created_ts              timestamp not null,
     comment                 text not null,
     primary key (annotation_id),
     foreign key (document_id) references documents (document_id),
     foreign key (annotation_type_id) references annotation_types (annotation_type_id),
-    foreign key (identifier_id) references identifiers (identifier_id)
+    foreign key (identifier_id) references identifiers (identifier_id),
+    foreign key (creator_id) references creators (creator_id)
 );
