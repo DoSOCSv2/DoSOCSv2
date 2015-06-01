@@ -139,7 +139,7 @@ class SPDXDB:
         if package is not None:
             return package
         package_params = {
-            'name': '',
+            'name': util.package_friendly_name(os.path.basename(path)),
             'version': '',
             'file_name': os.path.basename(path),
             'supplier': '',
