@@ -58,6 +58,7 @@ PackageLicenseComments: <text>{{ package.license_comments }}</text>
 PackageCopyrightText: <text>{{ package.copyright_text }}</text>
 PackageSummary: <text>{{ package.summary }}</text>
 PackageDescription: <text>{{ package.description }}</text>
+PackageComment: <text>{{ package.comment }}</text>
 
 {% if package.annotations %}
 ## Annotations
