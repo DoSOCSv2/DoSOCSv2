@@ -190,6 +190,29 @@ class SPDXDB:
         self.session.flush()
         return document_namespace
 
+    def create_all_identifiers(self, document_namespace_id, package_id):
+        all_file_ids = (
+            self.session.query(orm.PackageFile.file_id)
+            .filter(orm.PackageFile.package_id == package_id)
+            .all()
+            )
+        package_identifier_params = {
+            'document_namespace_id': document_namespace_id,
+            'package_id': package_id,
+            'id_string': util.gen_id_string()
+            }
+        package_identifier = orm.Identifier(**package_identifier_params)
+        for file_id in all_file_ids:
+            params = {
+                'document_namespace_id': document_namespace_id,
+                'file_id': file_id,
+                'id_string': util.gen_id_string()
+                }
+            file_identifier = orm.Identifier(**params)
+            self.session.add(file_identifier)
+        self.session.add(package_identifier)
+        self.session.flush()
+
     def create_document(self, package_id, **kwargs):
         package = self.session.query(orm.Package).get(package_id)
         data_license = (
@@ -212,13 +235,24 @@ class SPDXDB:
         new_document = orm.Document(**document_params)
         self.session.add(new_document)
         self.session.flush()
-        default_creator_id = 1  # should always be 1. TODO: don't hardcode this.
+        # default_creator_id should always be 1, because the default is
+        # always the first creator row created.
+        # TODO: don't hardcode this.
+        default_creator_id = 1
         document_creator_params = {
             'document_id': new_document.document_id,
             'creator_id': default_creator_id
             }
         new_document_creator = orm.DocumentCreator(**document_creator_params)
         self.session.add(new_document_creator)
+        document_identifier_params = {
+            'document_namespace_id': doc_namespace.document_namespace_id,
+            'document_id': new_document.document_id,
+            'id_string': 'SPDXRef-DOCUMENT'
+        }
+        new_document_identifier = orm.Identifier(**document_identifier_params)
+        self.session.add(new_document_identifier)
+        self.create_all_identifiers(doc_namespace.document_namespace_id, package_id)
         self.session.flush()
         return new_document
 

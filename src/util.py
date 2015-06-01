@@ -21,6 +21,7 @@ import os
 import shutil
 import tarfile
 import tempfile
+import uuid
 import zipfile
 
 
@@ -90,3 +91,7 @@ def package_friendly_name(package_file_name):
     if newname.endswith('.tar'):
         newname = os.path.splitext(newname)[0]
     return newname
+
+
+def gen_id_string():
+    return 'SPDXRef-' + str(uuid.uuid4())
