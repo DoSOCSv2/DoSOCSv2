@@ -131,21 +131,31 @@ add constraint fk_package_packages_files foreign key (ver_code_excluded_file_id)
 references packages_files (package_file_id);
 
 
+create table if not exists
+document_namespaces (
+    document_namespace_id   serial,
+    uri                     varchar(500) not null,
+    primary key (document_namespace_id),
+    constraint uc_document_namespace_uri unique (uri)
+);
+
+
 -- SPDX documents
 create table if not exists
 documents (
     document_id             serial,
+    document_namespace_id   integer not null,
     data_license_id         integer not null,
     spdx_version            varchar(255) not null,
     name                    varchar(255) not null,
-    document_namespace      varchar(500) not null,
     license_list_version    varchar(255) not null,
     created_ts              timestamp not null default current_timestamp,
     creator_comment         text not null,
     document_comment        text not null,
     package_id              integer not null,
     primary key (document_id),
-    constraint uc_document_namespace unique (document_namespace),
+    constraint uc_document_document_namespace_id unique (document_namespace_id),
+    foreign key (document_namespace_id) references document_namespaces (document_namespace_id),
     foreign key (data_license_id) references licenses (license_id),
     foreign key (package_id) references packages (package_id)
 );
@@ -156,11 +166,13 @@ create table if not exists
 external_refs (
     external_ref_id         serial,
     document_id             integer not null,
+    document_namespace_id   integer not null,
     id_string               varchar(255) not null,
-    external_uri            text not null,
     sha1                    char(40) not null,
     primary key (external_ref_id),
-    foreign key (document_id) references documents (document_id)
+    constraint uc_external_ref_document_id_string unique (document_id, id_string),
+    foreign key (document_id) references documents (document_id),
+    foreign key (document_namespace_id) references document_namespaces (document_namespace_id)
 );
 
 
@@ -189,21 +201,23 @@ file_contributors (
 create table if not exists
 identifiers (
     identifier_id           serial,
-    name                    varchar(255) not null,
+    document_namespace_id   integer not null,
+    id_string               varchar(255) not null,
     document_id             integer,
     package_id              integer,
     file_id                 integer,
     primary key (identifier_id),
-    constraint uc_identifier_name unique (name),
+    constraint uc_identifier_document_namespace_id_name unique (document_namespace_id, id_string),
     constraint ck_identifier_exactly_one check (
         (cast(document_id is not null as int) +
          cast(package_id is not null as int) +
          cast(file_id is not null as int)
         ) = 1
     ),
-    constraint uc_identifier_document_id unique (document_id),
-    constraint uc_identifier_package_id unique (package_id),
-    constraint uc_identifier_file_id unique (file_id),
+    constraint uc_identifier_namespace_document_id unique (document_namespace_id, document_id),
+    constraint uc_identifier_namespace_package_id unique (document_namespace_id, package_id),
+    constraint uc_identifier_namespace_file_id unique (document_namespace_id, file_id),
+    foreign key (document_namespace_id) references document_namespaces (document_namespace_id),
     foreign key (document_id) references documents (document_id),
     foreign key (package_id) references packages (package_id),
     foreign key (file_id) references files (file_id)

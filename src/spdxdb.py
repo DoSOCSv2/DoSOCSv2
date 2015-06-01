@@ -182,6 +182,14 @@ class SPDXDB:
         self.session.flush()
         return package
 
+    def create_document_namespace(self, doc_name):
+        suffix = '/' + doc_name + '-' + str(uuid.uuid4())
+        uri = settings['default_namespace_prefix'] + suffix
+        document_namespace = orm.DocumentNamespace(uri=uri)
+        self.session.add(document_namespace)
+        self.session.flush()
+        return document_namespace
+
     def create_document(self, package_id, **kwargs):
         package = self.session.query(orm.Package).get(package_id)
         data_license = (
@@ -190,14 +198,12 @@ class SPDXDB:
             .one()
             )
         doc_name = kwargs.get('name') or util.package_friendly_name(package.file_name)
-        default_namespace_suffix = '/' + doc_name + '-' + str(uuid.uuid4())
-        default_namespace = settings['default_namespace_prefix'] + default_namespace_suffix
-        doc_namespace = kwargs.get('document_namespace') or default_namespace
+        doc_namespace = self.create_document_namespace(doc_name)
         document_params = {
             'data_license_id': data_license.license_id,
             'spdx_version': 'SPDX-2.0',
             'name': doc_name,
-            'document_namespace': doc_namespace,
+            'document_namespace_id': doc_namespace.document_namespace_id,
             'license_list_version': '2.0',  # TODO: dynamically fill from database table
             'creator_comment': kwargs.get('creator_comment') or '',
             'document_comment': kwargs.get('document_comment') or '',

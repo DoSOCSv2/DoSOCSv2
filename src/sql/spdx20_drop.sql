@@ -2,6 +2,7 @@ drop table if exists annotation_types cascade;
 drop table if exists annotations cascade;
 drop table if exists creator_types cascade;
 drop table if exists creators cascade;
+drop table if exists document_namespaces cascade;
 drop table if exists documents cascade;
 drop table if exists documents_creators cascade;
 drop table if exists external_refs cascade;
