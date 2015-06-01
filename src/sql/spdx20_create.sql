@@ -38,7 +38,7 @@ create table if not exists
 files (
     file_id                 serial,
     file_type_id            integer not null,
-    sha1                    char(64) not null,
+    sha1                    char(40) not null,
     copyright_text          text not null,
     project_id              integer,
     comment                 text not null,
