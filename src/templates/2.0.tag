@@ -1,13 +1,13 @@
 SPDXVersion: SPDX-1.2
 DataLicense: CC0-1.0
-DocumentNamespace: {{ document.document_namespace }}
+DocumentNamespace: {{ document.uri }}
 DocumentName: {{ document.name }}
-SPDXID: SPDXRef-DOCUMENT
+SPDXID: {{ document.id_string }}
 DocumentComment: <text>{{ document.document_comment }}</text>
 
 ## External Document References
 {% for er in external_refs %}
-ExternalDocumentRef: {{ er.id_string }} {{ er.external_uri }} SHA1: {{ er.sha1 }}
+ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
 {% endfor %}
 
 
@@ -25,20 +25,20 @@ LicenseListVersion: {{ document.license_list_version }}
 Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
-SPDXID: {{ annotation.identifier }}
+SPDXID: {{ annotation.id_string }}
 {% endfor %}
 
 
 ## Document Relationships
 {% for relationship in document.relationships %}
-Relationship: {{ relationship.left_identifier }} {{ relationship.type }} {{ relationship.right_identifier}}
+Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
 {% endfor %}
 
 
 ## Package Information
 
 PackageName: {{ package.name }}
-SPDXID: {{ package.identifier }}
+SPDXID: {{ package.id_string }}
 PackageVersion: {{ package.version }}
 PackageFileName: {{ package.file_name }}
 PackageSupplier: {{ package.supplier}}
@@ -64,14 +64,14 @@ PackageDescription: <text>{{ package.description }}</text>
 Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
-SPDXID: {{ annotation.identifier }}
+SPDXID: {{ annotation.id_string }}
 {% endfor %}
 {% endif %}
 
 {% if package.relationships %}
 ## Relationships
 {% for relationship in package.relationships %}
-Relationship: {{ relationship.left_identifier }} {{ relationship.type }} {{ relationship.right_identifier}}
+Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
 {% endfor %}
 {% endif %}
 
@@ -80,7 +80,7 @@ Relationship: {{ relationship.left_identifier }} {{ relationship.type }} {{ rela
 
 {% for file in files %}
 FileName: {{ file.name }}
-SPDXID: {{ file.identifier }}
+SPDXID: {{ file.id_string }}
 FileType: {{ file.type }}
 FileChecksum: SHA1: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded }}
@@ -102,14 +102,14 @@ FileContributor: {{ contributor.contributor }}
 {% if file.relationships %}
 ## Relationships
 {% for relationship in package.relationships %}
-Relationship: {{ relationship.left_identifier }} {{ relationship.type }} {{ relationship.right_identifier}}
+Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
 {% endfor %}
 {% endif %}
 {% endfor %}
 
 ## License Information
 {% for license in licenses %}
-LicenseID: {{ license.id }}
+LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
 ExtractedText: {{ license.extracted_text }}
 LicenseCrossReference: {{ license.cross_reference }}
