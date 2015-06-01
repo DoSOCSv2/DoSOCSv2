@@ -25,6 +25,7 @@ LicenseListVersion: {{ document.license_list_version }}
 Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
 {% endfor %}
 
@@ -64,6 +65,7 @@ PackageDescription: <text>{{ package.description }}</text>
 Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
 {% endfor %}
 {% endif %}
@@ -99,6 +101,16 @@ FileNotice: <text>{{ file.notice }}</text>
 {% for contributor in file.contributors %}
 FileContributor: {{ contributor.contributor }}
 {% endfor %}
+{% if file.annotations %}
+## Annotations
+{% for annotation in file.annotations %}
+Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
+AnnotationDate: {{ annotation.created_ts }}
+AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationType: {{ annotation.type }}
+SPDXID: {{ annotation.id_string }}
+{% endfor %}
+{% endif %}
 {% if file.relationships %}
 ## Relationships
 {% for relationship in package.relationships %}
