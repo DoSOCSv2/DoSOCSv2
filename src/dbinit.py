@@ -83,7 +83,8 @@ def load_default_creator(session, creator_string):
         )
     creator_params = {
         'creator_type_id': creator_type.creator_type_id,
-        'name': creator_string
+        'name': creator_string,
+        'email': ''
         }
     session.add(orm.Creator(**creator_params))
 
