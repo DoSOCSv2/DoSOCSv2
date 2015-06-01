@@ -69,7 +69,7 @@ class PackageFile(Base):
 
 class DocumentNamespace(Base):
     __tablename__ = 'document_namespaces'
-    __table_args__ = {'autolad': True}
+    __table_args__ = {'autoload': True}
 
 
 class Document(Base):
