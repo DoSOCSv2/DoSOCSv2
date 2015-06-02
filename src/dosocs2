@@ -26,8 +26,6 @@ Options:
                                 already-scanned package
   -i, --doc-id=DOCID          Generate SPDX document from database
                                 (required if FILE argument not specified)
-  -n, --no-scan               Don't scan the package if SPDX data has not
-                                already been generated
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
   --init                      Drop and create all tables, then initialize
@@ -48,7 +46,9 @@ Options:
 # --source-info=TEXT          Specify package source information field
 # --license-comments=TEXT     Specify license comments field
 # --description=TEXT          Specify package description field
-
+#
+# -n, --no-scan               Don't scan the package if SPDX data has not
+#                               already been generated
 
 from __future__ import print_function
 from settings import settings
