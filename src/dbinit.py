@@ -50,7 +50,6 @@ def load_licenses(session, url='http://spdx.org/licenses/'):
             'cross_reference': url,
             'comment': '',
             'is_spdx_official': True,
-            'license_identifier': 'LicenseRef-' + str(uuid.uuid4())
             }
         session.add(orm.License(**license_params))
     return True
