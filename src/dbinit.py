@@ -58,9 +58,9 @@ def load_licenses(session, url='http://spdx.org/licenses/'):
 
 def load_creator_types(session):
     creator_types = (
-        'PERSON',
-        'ORGANIZATION',
-        'TOOL'
+        'Person',
+        'Organization',
+        'Tool'
         )
     for c in creator_types:
         session.add(orm.CreatorType(name=c))
