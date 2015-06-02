@@ -1,14 +1,12 @@
 create table if not exists
 licenses (
     license_id              serial,
-    name                    varchar(255) not null,
-    short_name              varchar(64) not null,
+    name                    varchar(255),
+    short_name              varchar(255) not null,
     cross_reference         text not null,
     comment                 text not null,
     is_spdx_official        boolean not null,
-    license_identifier      varchar(255),
     primary key (license_id),
-    constraint uc_license_identifier unique (license_identifier),
     constraint uc_license_short_name unique (short_name)
 );
 
