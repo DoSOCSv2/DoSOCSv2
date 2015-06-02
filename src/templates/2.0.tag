@@ -1,5 +1,5 @@
-SPDXVersion: SPDX-1.2
-DataLicense: CC0-1.0
+SPDXVersion: {{ document.spdx_version }}
+DataLicense: {{ document.data_license }}
 DocumentNamespace: {{ document.uri }}
 DocumentName: {{ document.name }}
 SPDXID: {{ document.id_string }}
@@ -13,7 +13,7 @@ ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
 
 ## Creation Information
 {% for creator in creators %}
-Creator: {{ creator.creator_type }}: {{ creator.creator_name }} {{ creator.creator_email }}
+Creator: {{ creator.creator }}
 {% endfor %}
 Created: {{ document.created_ts }}
 CreatorComment: <text>{{ document.creator_comment }}</text>
@@ -22,7 +22,7 @@ LicenseListVersion: {{ document.license_list_version }}
 
 ## Document Annotations
 {% for annotation in document.annotations %}
-Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
+Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
 AnnotationType: {{ annotation.type }}
@@ -63,7 +63,7 @@ PackageComment: <text>{{ package.comment }}</text>
 {% if package.annotations %}
 ## Annotations
 {% for annotation in package.annotations %}
-Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
+Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
 AnnotationType: {{ annotation.type }}
@@ -105,7 +105,7 @@ FileContributor: {{ contributor.contributor }}
 {% if file.annotations %}
 ## Annotations
 {% for annotation in file.annotations %}
-Annotator: {{ annotation.creator_type }}: {{ annotation.creator_name }} {{ annotation.creator_email }}
+Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: <text>{{ annotation.comment }}</text>
 AnnotationType: {{ annotation.type }}
