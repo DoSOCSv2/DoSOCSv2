@@ -182,11 +182,9 @@ def main():
             if output_format is None:
                 print('document_id: ' + str(document.document_id))
         elif scan:
-            #docid = spdx.scan_package_create_doc(package_path)
             package = spdx.scan_package(package_path)
             if output_format is None:
                 print('package_id: ' + str(package.package_id))
-            #document = spdx.fetch_doc(docid)
 
     with Transaction(db) as spdx:
         if document is not None and output_format is not None:
