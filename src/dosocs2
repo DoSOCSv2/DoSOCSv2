@@ -171,24 +171,26 @@ def main():
     document = None  # remove later??
     db = sqlsoup.SQLSoup(settings['connection_url'])
 
-    with Transaction(db) as spdx:
-        if docid is not None:
-            document = spdx.fetch_doc(docid)
-            if document is None:
-                msg('docid {} not found in the database.'.format(docid))
-                sys.exit(1)
-        elif package_id is not None:
-            document = spdx.create_document(package_id)
-            if output_format is None:
-                print('document_id: ' + str(document.document_id))
-        elif scan:
-            package = spdx.scan_package(package_path)
-            if output_format is None:
-                print('package_id: ' + str(package.package_id))
+    if docid is not None:
+        with Transaction(db) as t:
+            document = t.fetch_doc(docid)
+        if document is None:
+            msg('docid {} not found in the database.'.format(docid))
+            sys.exit(1)
+    elif package_id is not None:
+        with Transaction(db) as t:
+            document = t.create_document(package_id)
+        if output_format is None:
+            print('document_id: ' + str(document.document_id))
+    elif scan:
+        with Transaction(db) as t:
+            package = t.scan_package(package_path)
+        if output_format is None:
+            print('package_id: ' + str(package.package_id))
 
-    with Transaction(db) as spdx:
-        if document is not None and output_format is not None:
-            print(spdx.render_doc(document, format_map[output_format]))
+    if document is not None and output_format is not None:
+        with Transaction(db) as t:
+            print(t.render_doc(document, format_map[output_format]))
 
 
 if __name__ == "__main__":
