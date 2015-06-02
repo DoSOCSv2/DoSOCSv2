@@ -35,19 +35,6 @@ Options:
                                 prompt first)
   --init-noconfirm            Same as --init, but don't prompt
 '''
-#Options taking a TEXT argument require double quotes around the argument.\
-# Not implemented:
-# --comment=TEXT              Specify SPDX document comment section
-# --creator=TEXT              Specify SPDX creator field
-# --creator-comment=TEXT      Specify SPDX creator comment field
-# --supplier=TEXT             Specify package supplier field
-# --package-version=TEXT      Specify package version field
-# --download-location=TEXT    Specify package download location field
-# --originator=TEXT           Specify package originator field
-# --home-page=TEXT            Specify package home page field
-# --source-info=TEXT          Specify package source information field
-# --license-comments=TEXT     Specify license comments field
-# --description=TEXT          Specify package description field
 
 from __future__ import print_function
 from settings import settings
@@ -63,25 +50,6 @@ format_map = {
 }
 
 PROGNAME = os.path.basename(sys.argv[0])
-
-
-def extract_fields(argv):
-    fields = {
-        'document_comment': argv['--comment'],
-        'creator': argv['--creator'],
-        'creator_comment': argv['--creator-comment'],
-        'package_version': argv['--package-version'],
-        'package_supplier': argv['--supplier'],
-        'package_originator': argv['--originator'],
-        'package_download_location': argv['--download-location'],
-        'package_home_page': argv['--home-page'],
-        'package_source_info': argv['--source-info'],
-        'package_license_comments': argv['--license-comments'],
-        'package_description': argv['--description']
-    }
-    for key in fields:
-        fields[key] = fields[key] or ''
-    return fields
 
 
 def msg(text, **kwargs):
@@ -156,7 +124,6 @@ def main():
         msg("try `" + PROGNAME + " --help' for more information.")
         sys.exit(1)
 
-    #fields = extract_fields(argv)
     package_path = argv['FILE']
     docid = argv['--doc-id']
     package_id = argv['--create']
