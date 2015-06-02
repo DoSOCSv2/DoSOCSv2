@@ -87,15 +87,15 @@ SPDXID: {{ file.id_string }}
 FileType: {{ file.type }}
 FileChecksum: SHA1: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded }}
-{% for li in file.license_info %}
-LicenseInfoInFile: {{ li }}
+{% for fli in file.license_info %}
+LicenseInfoInFile: {{ fli.short_name }}
 {% endfor %}
 LicenseComments: <text>{{ file.license_comments }}</text>
 FileCopyrightText: <text>{{ file.copyright_text }}</text>
-{% if file.project %}
-ArtifactOfProjectName: {{ file.project.name }}
-ArtifactOfProjectHomePage: {{ file.project.homepage }}
-ArtifactOfProjectURI: {{ file.project.uri }}
+{% if file.project_name != 'NOASSERTION' %}
+ArtifactOfProjectName: {{ file.project_name }}
+ArtifactOfProjectHomePage: {{ file.project_homepage }}
+ArtifactOfProjectURI: {{ file.project_uri }}
 {% endif %}
 FileComment: <text>{{ file.comment }}</text>
 FileNotice: <text>{{ file.notice }}</text>
