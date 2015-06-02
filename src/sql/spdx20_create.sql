@@ -39,7 +39,7 @@ files (
     file_id                 serial,
     file_type_id            integer not null,
     sha1                    char(40) not null,
-    copyright_text          text not null,
+    copyright_text          text,
     project_id              integer,
     comment                 text not null,
     notice                  text not null,
@@ -61,7 +61,7 @@ files_licenses (
 );
 
 
--- type of creator ('PERSON', 'TOOL', 'ORGANIZATION')
+-- type of creator ('Person', 'Tool', 'Organization')
 create table if not exists
 creator_types (
     creator_type_id         serial,
@@ -88,22 +88,24 @@ packages (
     name                    varchar(255) not null,
     version                 varchar(255) not null,
     file_name               text not null,
-    supplier                text not null,
-    originator              text not null,
-    download_location       text not null,
+    supplier_id             integer,
+    originator_id           integer,
+    download_location       text,
     verification_code       char(40) not null,
     ver_code_excluded_file_id  integer,
     sha1                    char(40),
-    home_page               text not null,
+    home_page               text,
     source_info             text not null,
     concluded_license_id    integer,
     declared_license_id     integer,
     license_comment         text not null,
-    copyright_text          text not null,
+    copyright_text          text,
     summary                 text not null,
     description             text not null,
     comment                 text not null,
     primary key (package_id),
+    foreign key (supplier_id) references creators (creator_id),
+    foreign key (originator_id) references creators (creator_id),
     foreign key (concluded_license_id) references licenses (license_id),
     foreign key (declared_license_id) references licenses (license_id)
 );
