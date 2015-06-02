@@ -95,3 +95,10 @@ def package_friendly_name(package_file_name):
 
 def gen_id_string():
     return 'SPDXRef-' + str(uuid.uuid4())
+
+
+def row_to_dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d
