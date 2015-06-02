@@ -111,3 +111,7 @@ def lookup_by_sha1(table, sha1):
     # But if it does, this will give nondeterministic results.
     # (although, you will have bigger problems...)
     return table.filter(table.sha1 == sha1).first()
+
+
+def friendly_namespace_suffix(doc_name):
+    return '/' + doc_name + '-' + str(uuid.uuid4())

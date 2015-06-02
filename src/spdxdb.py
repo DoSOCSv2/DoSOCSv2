@@ -19,7 +19,6 @@ import os
 from settings import settings
 import scanners
 import util
-import uuid
 
 
 class Transaction:
@@ -163,7 +162,7 @@ class Transaction:
         return package
 
     def create_document_namespace(self, doc_name):
-        suffix = '/' + doc_name + '-' + str(uuid.uuid4())
+        suffix = util.friendly_namespace_suffix(doc_name)
         uri = settings['default_namespace_prefix'] + suffix
         document_namespace = self.db.document_namespaces.insert(uri=uri)
         self.db.flush()
