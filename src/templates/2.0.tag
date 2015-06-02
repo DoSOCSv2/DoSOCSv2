@@ -12,7 +12,7 @@ ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
 
 
 ## Creation Information
-{% for creator in creators %}
+{% for creator in document.creators %}
 Creator: {{ creator.creator }}
 {% endfor %}
 Created: {{ document.created_ts }}
