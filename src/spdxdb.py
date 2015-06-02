@@ -63,7 +63,8 @@ class SPDXDB:
         if existing_license is not None:
             return existing_license
         license_params = {
-            'name': 'NOASSERTION',
+            # correct long name is never known for found licenses
+            'name': None,
             'short_name': short_name,
             'cross_reference': '',
             'comment': '',
