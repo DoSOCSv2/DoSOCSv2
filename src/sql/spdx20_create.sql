@@ -55,7 +55,6 @@ files_licenses (
     file_id                 serial,
     license_id              integer not null,
     extracted_text          text not null,
-    license_comment         text not null,
     primary key (file_id, license_id),
     foreign key (file_id) references files (file_id),
     foreign key (license_id) references licenses (license_id)
@@ -117,6 +116,7 @@ packages_files (
     package_id              integer not null,
     file_id                 integer not null,
     concluded_license_id    integer,
+    license_comment         text not null,
     file_name               text not null,
     primary key (package_file_id),
     constraint uc_package_id_file_id_file_name unique (package_id, file_id, file_name),
