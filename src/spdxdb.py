@@ -35,15 +35,6 @@ class Transaction:
         else:
             self.db.rollback()
 
-    @staticmethod
-    def lookup_by_sha1(table, sha1):
-        '''Lookup object by SHA-1 sum and return the object, or None.'''
-        # Maybe shouldn't be using first() here?
-        # Freak occurence of sha1 collision probably won't happen.
-        # But if it does, this will give nondeterministic results.
-        # (although, you will have bigger problems...)
-        return table.filter(table.sha1 == sha1).first()
-
     def lookup_or_add_license(self, short_name):
         '''Add license to the database if it does not exist.
 
@@ -93,7 +84,7 @@ class Transaction:
         scan.
         '''
         sha1 = util.sha1(path)
-        file = Transaction.lookup_by_sha1(self.db.files, sha1)
+        file = util.lookup_by_sha1(self.db.files, sha1)
         if file is not None:
             return file
         file = self._create_file(path, sha1)
@@ -126,7 +117,7 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         sha1 = util.sha1(path)
-        package = self.lookup_by_sha1(self.db.packages, sha1)
+        package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
         package_params = {

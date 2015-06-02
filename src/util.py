@@ -102,3 +102,12 @@ def row_to_dict(row):
     for column in row.__table__.columns:
         d[column.name] = str(getattr(row, column.name))
     return d
+
+
+def lookup_by_sha1(table, sha1):
+    '''Lookup object by SHA-1 sum and return the object, or None.'''
+    # Maybe shouldn't be using first() here?
+    # Freak occurence of sha1 collision probably won't happen.
+    # But if it does, this will give nondeterministic results.
+    # (although, you will have bigger problems...)
+    return table.filter(table.sha1 == sha1).first()
