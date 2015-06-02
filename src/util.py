@@ -13,16 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''Miscellaneous utility functions.'''
+
 from contextlib import contextmanager
 import hashlib
-import jinja2
-import magic
 import os
 import shutil
 import tarfile
 import tempfile
 import uuid
 import zipfile
+
+import jinja2
+import magic
 
 
 def render_template(templatefile, context):
@@ -33,6 +36,7 @@ def render_template(templatefile, context):
 
 
 def spdx_filetype(filename):
+    '''Try to guess the SPDX filetype of the file.'''
     magic_string = magic.from_file(filename)
     if (' source' in magic_string and ' text' in magic_string or
         ' script' in magic_string and ' text' in magic_string or
@@ -79,6 +83,7 @@ def tempextract(path):
 
 
 def gen_ver_code(hashes, excluded_hashes=None):
+    '''Generate and return SPDX package verification code.'''
     if excluded_hashes is None:
         excluded_hashes = set()
     hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
@@ -87,6 +92,7 @@ def gen_ver_code(hashes, excluded_hashes=None):
 
 
 def package_friendly_name(package_file_name):
+    '''Return name of a package, without extension.'''
     newname = os.path.splitext(package_file_name)[0]
     if newname.endswith('.tar'):
         newname = os.path.splitext(newname)[0]
@@ -94,10 +100,12 @@ def package_friendly_name(package_file_name):
 
 
 def gen_id_string():
+    '''Generate and return a unique SPDX identifier.'''
     return 'SPDXRef-' + str(uuid.uuid4())
 
 
 def row_to_dict(row):
+    '''Convert SQLAlchemy row to a dictionary.'''
     d = {}
     for column in row.__table__.columns:
         d[column.name] = str(getattr(row, column.name))
@@ -105,7 +113,10 @@ def row_to_dict(row):
 
 
 def lookup_by_sha1(table, sha1):
-    '''Lookup object by SHA-1 sum and return the object, or None.'''
+    '''Lookup object by SHA-1 sum and return the object, or None.
+    
+    'table' argument must be a table object as created by SQLSoup.
+    '''
     # Maybe shouldn't be using first() here?
     # Freak occurence of sha1 collision probably won't happen.
     # But if it does, this will give nondeterministic results.
@@ -114,4 +125,5 @@ def lookup_by_sha1(table, sha1):
 
 
 def friendly_namespace_suffix(doc_name):
+    '''Return a namespace suffix based on an SPDX document name.'''
     return '/' + doc_name + '-' + str(uuid.uuid4())

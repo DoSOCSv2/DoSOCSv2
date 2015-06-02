@@ -13,10 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''Interfaces to external scanning tools.
+
+The expected format is one class per scanner. Each class must have an
+attribute 'name'; this is the name that will be attached to the raw scanner
+output as stored in the database. It must also have a single method scan()
+that returns a list of ScannerResult objects.
+'''
+
 from collections import namedtuple
 import re
-import settings
 import subprocess
+
+import settings
 
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 

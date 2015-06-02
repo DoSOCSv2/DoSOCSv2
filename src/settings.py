@@ -14,6 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''dosocs2 application settings.'''
+
+'''Paths to external scanner executables.
+
+To define a scanner name and path here is not enough to enable dosocs2 to use
+that scanner; it also needs an interface defined for it in scanners.py.
+'''
 scanner = {
     'nomos': "/usr/share/fossology/nomos/agent/nomos"
 }
@@ -23,5 +30,4 @@ settings = {
     'connection_url': 'postgresql://spdx:spdx@localhost:5432/spdx20',
     'creator_string': 'dosocs2-0.0.1-dev',
     'default_namespace_prefix': 'postgresql://localhost:5432/spdx20'
-    # 'echo_sql': False
 }

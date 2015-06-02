@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+'''dosocs2 database initialization.'''
+
 import re
-import requests
 import sys
 import uuid
+
+import requests
 
 
 def load_file_types(db):
