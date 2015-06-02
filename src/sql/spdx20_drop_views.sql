@@ -1,0 +1,12 @@
+drop view if exists v_license_approved_names cascade;
+drop view if exists v_creators cascade;
+drop view if exists v_annotations cascade;
+drop view if exists v_documents_creators cascade;
+drop view if exists v_documents_files cascade;
+drop view if exists v_documents_packages cascade;
+drop view if exists v_documents cascade;
+drop view if exists v_documents_unofficial_licenses cascade;
+drop view if exists v_external_refs cascade;
+drop view if exists v_files_licenses cascade;
+drop view if exists v_packages_all_licenses_in_files cascade;
+drop view if exists v_relationships cascade;

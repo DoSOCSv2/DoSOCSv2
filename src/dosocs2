@@ -93,11 +93,17 @@ def dbinit():
     import dbinit
     import orm
     url = 'http://spdx.org/licenses/'
+    msg('dropping all views...', end='')
+    result = dbinit.drop_all_views()
+    print('ok.')
     msg('dropping all tables...', end='')
     result = dbinit.drop_all_tables()
     print('ok.')
     msg('creating all tables...', end='')
     result = dbinit.create_all_tables()
+    print('ok.')
+    msg('creating all views...', end='')
+    result = dbinit.create_all_views()
     print('ok.')
     session = orm.Session()
     msg('loading licenses...', end='')

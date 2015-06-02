@@ -114,8 +114,16 @@ def execute_sql_in_file(path):
 
 
 def drop_all_tables():
-    return execute_sql_in_file('sql/spdx20_drop.sql')
+    return execute_sql_in_file('sql/spdx20_drop_tables.sql')
 
 
 def create_all_tables():
-    return execute_sql_in_file('sql/spdx20_create.sql')
+    return execute_sql_in_file('sql/spdx20_create_tables.sql')
+
+
+def drop_all_views():
+    return execute_sql_in_file('sql/spdx20_drop_views.sql')
+
+
+def create_all_views():
+    return execute_sql_in_file('sql/spdx20_create_views.sql')
