@@ -85,7 +85,7 @@ class SPDXDB:
         file_params = {
             'sha1': sha1,
             'file_type_id': file_type_id,
-            'copyright_text': '',
+            'copyright_text': None,
             'project_id': None,
             'comment': '',
             'notice': ''
@@ -145,18 +145,18 @@ class SPDXDB:
             'name': util.package_friendly_name(os.path.basename(path)),
             'version': '',
             'file_name': os.path.basename(path),
-            'supplier': '',
-            'originator': '',
-            'download_location': '',
+            'supplier_id': None,
+            'originator_id': None,
+            'download_location': None,
             'verification_code': '',  # filled in after file processing
             'ver_code_excluded_file_id': None,
             'sha1': sha1,
-            'home_page': '',
+            'home_page': None,
             'source_info': '',
             'concluded_license_id': None,
             'declared_license_id': None,
             'license_comment': '',
-            'copyright_text': '',
+            'copyright_text': None,
             'summary': '',
             'description': '',
             'comment': ''
