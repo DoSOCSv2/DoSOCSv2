@@ -114,13 +114,16 @@ class SPDXDB:
                 self.lookup_or_add_license(shortname)
                 for shortname in shortnames_found
                 ]
-            license_comment = scanner.name + ': ' + ','.join(shortnames_found)
+            if len(shortnames_found) > 0:
+                scanner_comment = scanner.name + ': ' + ','.join(shortnames_found)
+            else:
+                scanner_comment = scanner.name + ': ' + 'No licenses found'
+            file.comment = scanner_comment
             for license in licenses_found:
                 file_license_params = {
                     'file_id': file.file_id,
                     'license_id': license.license_id,
                     'extracted_text': '',
-                    'license_comment': license_comment
                     }
                 new_file_license = orm.FileLicense(**file_license_params)
                 self.session.add(new_file_license)
@@ -173,7 +176,8 @@ class SPDXDB:
                     'package_id': package.package_id,
                     'file_id': fileobj.file_id,
                     'concluded_license_id': None,
-                    'file_name': os.path.join(os.curdir, relpath)
+                    'file_name': os.path.join(os.curdir, relpath),
+                    'license_comment': ''
                     }
                 new_package_file = orm.PackageFile(**package_file_params)
                 new_package_files.append(new_package_file)
