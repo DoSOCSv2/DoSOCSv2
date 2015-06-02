@@ -15,7 +15,6 @@
 # limitations under the License.
 
 import itertools
-import orm
 import os
 from settings import settings
 import scanners
@@ -23,41 +22,26 @@ import util
 import uuid
 
 
-class SPDXDB:
-    def __init__(self):
-        pass
+class Transaction:
+    def __init__(self, db):
+        self.db = db
 
     def __enter__(self):
-        self.session = orm.Session()
         return self
 
     def __exit__(self, type, value, traceback):
         if type is None:
-            self.session.commit()
+            self.db.commit()
         else:
-            self.session.rollback()
-        self.session.close()
-
-    def lookup_by_sha1(self, obj_type, sha1):
-        '''Lookup object by SHA-1 sum and return the object, or None.'''
-        # Maybe shouldn't be using first() here?
-        # Freak occurence of sha1 collision probably won't happen.
-        # But if it does, this will give nondeterministic results.
-        # (although, you will have bigger problems...)
-        return (
-            self.session.query(obj_type)
-            .filter(obj_type.sha1 == sha1)
-            .first()
-            )
+            self.db.rollback()
 
     def lookup_or_add_license(self, short_name):
         '''Add license to the database if it does not exist.
 
         Return the new or existing license object in any case.
         '''
-        existing_license = (
-            self.session.query(orm.License)
-            .filter(orm.License.short_name == short_name)
+        existing_license = (self.db.licenses
+            .filter(self.db.licenses.short_name == short_name)
             .first()
             )
         if existing_license is not None:
@@ -70,15 +54,13 @@ class SPDXDB:
             'comment': '',
             'is_spdx_official': False,
             }
-        new_license = orm.License(**license_params)
-        self.session.add(new_license)
-        self.session.flush()
+        new_license = self.db.licenses.insert(**license_params)
+        self.db.flush()
         return new_license
 
     def _create_file(self, path, sha1):
-        file_type_id = (
-            self.session.query(orm.FileType)
-            .filter(orm.FileType.name == util.spdx_filetype(path))
+        file_type_id = (self.db.file_types
+            .filter(self.db.file_types.name == util.spdx_filetype(path))
             .one().file_type_id
             )
         file_params = {
@@ -89,9 +71,8 @@ class SPDXDB:
             'comment': '',
             'notice': ''
             }
-        new_file = orm.File(**file_params)
-        self.session.add(new_file)
-        self.session.flush()
+        new_file = self.db.files.insert(**file_params)
+        self.db.flush()
         return new_file
 
     def scan_file(self, path, scanner=scanners.nomos):
@@ -103,7 +84,7 @@ class SPDXDB:
         scan.
         '''
         sha1 = util.sha1(path)
-        file = self.lookup_by_sha1(orm.File, sha1)
+        file = util.lookup_by_sha1(self.db.files, sha1)
         if file is not None:
             return file
         file = self._create_file(path, sha1)
@@ -124,9 +105,8 @@ class SPDXDB:
                     'license_id': license.license_id,
                     'extracted_text': '',
                     }
-                new_file_license = orm.FileLicense(**file_license_params)
-                self.session.add(new_file_license)
-        self.session.flush()
+                self.db.files_licenses.insert(**file_license_params)
+        self.db.flush()
         return file
 
     def scan_package(self, path, scanner=scanners.nomos):
@@ -137,7 +117,7 @@ class SPDXDB:
         Only scan if the package is not already cached (by SHA-1).
         '''
         sha1 = util.sha1(path)
-        package = self.lookup_by_sha1(orm.Package, sha1)
+        package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
         package_params = {
@@ -160,12 +140,11 @@ class SPDXDB:
             'description': '',
             'comment': ''
             }
-        package = orm.Package(**package_params)
-        self.session.add(package)
+        package = self.db.packages.insert(**package_params)
+        self.db.flush()
         with util.tempextract(path) as (tempdir, relpaths):
             abspaths = [os.path.join(tempdir, path) for path in relpaths]
             hashes = []
-            new_package_files = []
             for relpath, abspath in itertools.izip(relpaths, abspaths):
                 if not os.path.isfile(abspath):
                     continue
@@ -178,49 +157,42 @@ class SPDXDB:
                     'file_name': os.path.join(os.curdir, relpath),
                     'license_comment': ''
                     }
-                new_package_file = orm.PackageFile(**package_file_params)
-                new_package_files.append(new_package_file)
+                self.db.packages_files.insert(**package_file_params)
         package.verification_code = util.gen_ver_code(hashes)
-        self.session.add_all(new_package_files)
-        self.session.flush()
+        self.db.flush()
         return package
 
     def create_document_namespace(self, doc_name):
         suffix = '/' + doc_name + '-' + str(uuid.uuid4())
         uri = settings['default_namespace_prefix'] + suffix
-        document_namespace = orm.DocumentNamespace(uri=uri)
-        self.session.add(document_namespace)
-        self.session.flush()
+        document_namespace = self.db.document_namespaces.insert(uri=uri)
+        self.db.flush()
         return document_namespace
 
     def create_all_identifiers(self, document_namespace_id, package_id):
-        all_file_ids = (
-            self.session.query(orm.PackageFile.file_id)
-            .filter(orm.PackageFile.package_id == package_id)
+        all_files = (self.db.packages_files
+            .filter(self.db.packages_files.package_id == package_id)
             .all()
             )
-        package_identifier_params = {
+        package_id_params = {
             'document_namespace_id': document_namespace_id,
             'package_id': package_id,
             'id_string': util.gen_id_string()
             }
-        package_identifier = orm.Identifier(**package_identifier_params)
-        for file_id in all_file_ids:
-            params = {
+        for file in all_files:
+            file_id_params = {
                 'document_namespace_id': document_namespace_id,
-                'file_id': file_id,
+                'file_id': file.file_id,
                 'id_string': util.gen_id_string()
                 }
-            file_identifier = orm.Identifier(**params)
-            self.session.add(file_identifier)
-        self.session.add(package_identifier)
-        self.session.flush()
+            self.db.identifiers.insert(**file_id_params)
+        self.db.identifiers.insert(**package_id_params)
+        self.db.flush()
 
     def create_document(self, package_id, **kwargs):
-        package = self.session.query(orm.Package).get(package_id)
-        data_license = (
-            self.session.query(orm.License)
-            .filter(orm.License.short_name == 'CC0-1.0')
+        package = self.db.packages.get(package_id)
+        data_license = (self.db.licenses
+            .filter(self.db.licenses.short_name == 'CC0-1.0')
             .one()
             )
         doc_name = kwargs.get('name') or util.package_friendly_name(package.file_name)
@@ -235,9 +207,8 @@ class SPDXDB:
             'document_comment': kwargs.get('document_comment') or '',
             'package_id': package_id
         }
-        new_document = orm.Document(**document_params)
-        self.session.add(new_document)
-        self.session.flush()
+        new_document = self.db.documents.insert(**document_params)
+        self.db.flush()
         # default_creator_id should always be 1, because the default is
         # always the first creator row created.
         # TODO: don't hardcode this.
@@ -246,18 +217,16 @@ class SPDXDB:
             'document_id': new_document.document_id,
             'creator_id': default_creator_id
             }
-        new_document_creator = orm.DocumentCreator(**document_creator_params)
-        self.session.add(new_document_creator)
+        self.db.documents_creators.insert(**document_creator_params)
         document_identifier_params = {
             'document_namespace_id': doc_namespace.document_namespace_id,
             'document_id': new_document.document_id,
             'id_string': 'SPDXRef-DOCUMENT'
         }
-        new_document_identifier = orm.Identifier(**document_identifier_params)
-        self.session.add(new_document_identifier)
+        self.db.identifiers.insert(**document_identifier_params)
         self.create_all_identifiers(doc_namespace.document_namespace_id, package_id)
-        self.session.flush()
+        self.db.flush()
         return new_document
 
     def fetch_doc(self, docid):
-        return self.session.query(orm.Document).get(docid)
+        return self.db.documents.get(docid)

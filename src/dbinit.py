@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import orm
 import re
 import requests
 import sys
 import uuid
 
 
-def load_file_types(session):
+def load_file_types(db):
     filetypes = (
         'SOURCE',
         'BINARY',
@@ -35,10 +34,10 @@ def load_file_types(session):
         'OTHER'
         )
     for f in filetypes:
-        session.add(orm.FileType(name=f))
+        db.file_types.insert(name=f)
 
 
-def load_licenses(session, url='http://spdx.org/licenses/'):
+def load_licenses(db, url='http://spdx.org/licenses/'):
     rows = scrape_site(url)
     sorted_rows = list(sorted(rows))
     if len(rows) == 0:
@@ -51,33 +50,32 @@ def load_licenses(session, url='http://spdx.org/licenses/'):
             'comment': '',
             'is_spdx_official': True,
             }
-        session.add(orm.License(**license_params))
+        db.licenses.insert(**license_params)
     return True
 
 
-def load_creator_types(session):
+def load_creator_types(db):
     creator_types = (
         'Person',
         'Organization',
         'Tool'
         )
     for c in creator_types:
-        session.add(orm.CreatorType(name=c))
+        db.creator_types.insert(name=c)
 
 
-def load_annotation_types(session):
+def load_annotation_types(db):
     annotation_types = (
         'REVIEW',
         'OTHER'
         )
     for a in annotation_types:
-        session.add(orm.AnnotationType(name=a))
+        db.annotation_types.insert(name=a)
 
 
-def load_default_creator(session, creator_string):
-    creator_type = (
-        session.query(orm.CreatorType)
-        .filter(orm.CreatorType.name == 'Tool')
+def load_default_creator(db, creator_string):
+    creator_type = (db.creator_types
+        .filter(db.creator_types.name == 'Tool')
         .one()
         )
     creator_params = {
@@ -85,7 +83,7 @@ def load_default_creator(session, creator_string):
         'name': creator_string,
         'email': ''
         }
-    session.add(orm.Creator(**creator_params))
+    db.creators.insert(**creator_params)
 
 
 def scrape_site(url):
@@ -106,24 +104,24 @@ def scrape_site(url):
     return completed_rows
 
 
-def execute_sql_in_file(path):
+def execute_sql_in_file(path, db):
     with open(path) as f:
         query = f.read()
-    result = orm.engine.execute(query)
+    result = db.execute(query)
     return result
 
 
-def drop_all_tables():
-    return execute_sql_in_file('sql/spdx20_drop_tables.sql')
+def drop_all_tables(db):
+    return execute_sql_in_file('sql/spdx20_drop_tables.sql', db)
 
 
-def create_all_tables():
-    return execute_sql_in_file('sql/spdx20_create_tables.sql')
+def create_all_tables(db):
+    return execute_sql_in_file('sql/spdx20_create_tables.sql', db)
 
 
-def drop_all_views():
-    return execute_sql_in_file('sql/spdx20_drop_views.sql')
+def drop_all_views(db):
+    return execute_sql_in_file('sql/spdx20_drop_views.sql', db)
 
 
-def create_all_views():
-    return execute_sql_in_file('sql/spdx20_create_views.sql')
+def create_all_views(db):
+    return execute_sql_in_file('sql/spdx20_create_views.sql', db)

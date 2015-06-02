@@ -51,8 +51,10 @@ Options:
 
 from __future__ import print_function
 from settings import settings
+from spdxdb import Transaction
 import docopt
 import os
+import sqlsoup
 import sys
 
 format_map = {
@@ -90,23 +92,22 @@ def msg(text, **kwargs):
 def dbinit():
     # importing these modules only when needed, for performance
     import dbinit
-    import orm
+    db = sqlsoup.SQLSoup(settings['connection_url'])
     url = 'http://spdx.org/licenses/'
     msg('dropping all views...', end='')
-    result = dbinit.drop_all_views()
+    result = dbinit.drop_all_views(db)
     print('ok.')
     msg('dropping all tables...', end='')
-    result = dbinit.drop_all_tables()
+    result = dbinit.drop_all_tables(db)
     print('ok.')
     msg('creating all tables...', end='')
-    result = dbinit.create_all_tables()
+    result = dbinit.create_all_tables(db)
     print('ok.')
     msg('creating all views...', end='')
-    result = dbinit.create_all_views()
+    result = dbinit.create_all_views(db)
     print('ok.')
-    session = orm.Session()
     msg('loading licenses...', end='')
-    result = dbinit.load_licenses(session, url)
+    result = dbinit.load_licenses(db, url)
     if not result:
         print('error!')
         msg('failed to download and load the license list')
@@ -115,21 +116,20 @@ def dbinit():
     else:
         print('ok.')
     msg('loading creator types...', end='')
-    dbinit.load_creator_types(session)
+    dbinit.load_creator_types(db)
     print('ok.')
     msg('loading default creator...', end='')
-    dbinit.load_default_creator(session, settings['creator_string'])
+    dbinit.load_default_creator(db, settings['creator_string'])
     print('ok.')
     msg('loading annotation types...', end='')
-    dbinit.load_annotation_types(session)
+    dbinit.load_annotation_types(db)
     print('ok.')
     msg('loading file types...', end='')
-    dbinit.load_file_types(session)
+    dbinit.load_file_types(db)
     print('ok.')
     msg('committing changes...', end='')
-    session.commit()
+    db.commit()
     print('ok.')
-    session.close()
     return True
 
 
@@ -168,12 +168,10 @@ def main():
         msg("try `" + PROGNAME + " --help' for more information.")
         sys.exit(1)
 
-    # import not at top of file for performance reasons
-    from spdxdb import SPDXDB
-
     document = None  # remove later??
+    db = sqlsoup.SQLSoup(settings['connection_url'])
 
-    with SPDXDB() as spdx:
+    with Transaction(db) as spdx:
         if docid is not None:
             document = spdx.fetch_doc(docid)
             if document is None:
@@ -190,7 +188,7 @@ def main():
                 print('package_id: ' + str(package.package_id))
             #document = spdx.fetch_doc(docid)
 
-    with SPDXDB() as spdx:
+    with Transaction(db) as spdx:
         if document is not None and output_format is not None:
             print(spdx.render_doc(document, format_map[output_format]))
 
