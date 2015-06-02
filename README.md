@@ -10,7 +10,7 @@ on request.
 about the licenses and copyrights associated with a software package. dosocs2
 makes use of the SPDX 2.0 standard, released in May 2015.
 
-dosocs2 is currently (May 2015) under heavy development; it should be
+dosocs2 is currently (June 2015) under heavy development; it should be
 considered experimental, not production-ready, and subject to frequent
 backwards-incompatible changes until a proper release.
 
