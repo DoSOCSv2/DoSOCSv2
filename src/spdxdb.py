@@ -94,7 +94,8 @@ class Transaction:
                 for shortname in shortnames_found
                 ]
             if len(shortnames_found) > 0:
-                scanner_comment = scanner.name + ': ' + ','.join(shortnames_found)
+                license_name_list = ','.join(shortnames_found)
+                scanner_comment = scanner.name + ': ' + license_name_list
             else:
                 scanner_comment = scanner.name + ': ' + 'No licenses found'
             file.comment = scanner_comment

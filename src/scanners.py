@@ -35,5 +35,6 @@ class nomos:
             if m is None:
                 continue
             for subitem in m.group(2).split(','):
-                licenses.append(ScannerResult(file_path=m.group(1), license=subitem))
+                result = ScannerResult(file_path=m.group(1), license=subitem)
+                licenses.append(result)
         return [l for l in licenses if l.license != 'No_license_found']
