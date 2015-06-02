@@ -62,14 +62,12 @@ class SPDXDB:
             )
         if existing_license is not None:
             return existing_license
-        license_identifier = 'LicenseRef-' + str(uuid.uuid4())
         license_params = {
             'name': 'NOASSERTION',
             'short_name': short_name,
             'cross_reference': '',
             'comment': '',
             'is_spdx_official': False,
-            'license_identifier': license_identifier
             }
         new_license = orm.License(**license_params)
         self.session.add(new_license)
