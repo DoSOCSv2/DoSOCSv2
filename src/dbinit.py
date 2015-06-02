@@ -78,7 +78,7 @@ def load_annotation_types(session):
 def load_default_creator(session, creator_string):
     creator_type = (
         session.query(orm.CreatorType)
-        .filter(orm.CreatorType.name == 'TOOL')
+        .filter(orm.CreatorType.name == 'Tool')
         .one()
         )
     creator_params = {
