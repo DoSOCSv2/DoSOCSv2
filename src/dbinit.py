@@ -17,9 +17,8 @@
 
 import re
 import sys
+import urllib2
 import uuid
-
-import requests
 
 
 def load_file_types(db):
@@ -91,7 +90,7 @@ def load_default_creator(db, creator_string):
 
 def scrape_site(url):
     '''Scrape license info and return (url, name, shortname) tuples'''
-    page_text = requests.get(url).text
+    page_text = urllib2.urlopen(url).read()
     url_part = r'<tr>\s*<td><a href=\"(.*?)\".*?>'
     name_part = r'(.*?)</a></td>\s*.*?'
     shortname_part = r'<code property=\"spdx:licenseId\">(.*?)</code>'
