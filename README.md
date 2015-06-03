@@ -31,8 +31,8 @@ Dependencies
 - PostgreSQL
 - <a href="http://www.fossology.org/">FOSSology</a>
 
-Python libraries
-~~~~~~~~~~~~~~~~
+### Python libraries
+
 - [docopt](http://docopt.org/)
 - [Jinja2](http://jinja.pocoo.org/)
 - [psycopg2](http://initd.org/psycopg/)
