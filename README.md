@@ -31,6 +31,19 @@ Dependencies
 - PostgreSQL
 - <a href="http://www.fossology.org/">FOSSology</a>
 
+Python libraries
+~~~~~~~~~~~~~~~~
+- [docopt](http://docopt.org/)
+- [Jinja2](http://jinja.pocoo.org/)
+- [psycopg2](http://initd.org/psycopg/)
+- [python-magic](https://github.com/ahupp/python-magic)
+- [SQLSoup](https://sqlsoup.readthedocs.org/en/latest/)
+
+You can install all of these in one shot with the included `requirements.txt`
+file:
+
+    $ pip install -r requirements.txt
+
 
 Installation
 ------------
