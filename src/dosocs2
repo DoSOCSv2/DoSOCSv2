@@ -140,12 +140,16 @@ def main():
 
     if docid is not None:
         with Transaction(db) as t:
-            document = t.fetch_doc(docid)
+            document = t.fetch('documents', docid)
         if document is None:
             msg('docid {} not found in the database.'.format(docid))
             sys.exit(1)
     elif package_id is not None:
         with Transaction(db) as t:
+            package = t.fetch('packages', package_id)
+            if package is None:
+                msg('package id {} not found in the database.'.format(package_id))
+                sys.exit(1)
             document = t.create_document(package_id)
         if output_format is None:
             print('document_id: ' + str(document.document_id))

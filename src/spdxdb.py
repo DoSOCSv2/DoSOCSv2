@@ -230,5 +230,5 @@ class Transaction:
         self.db.flush()
         return new_document
 
-    def fetch_doc(self, docid):
-        return self.db.documents.get(docid)
+    def fetch(self, table_name, id):
+        return getattr(self.db, table_name).get(id)
