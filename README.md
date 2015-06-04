@@ -27,9 +27,9 @@ Creative Commons Attribution Share-Alike 3.0 license (see CC-BY-SA-3.0).
 
 Dependencies
 ------------
-- Python 2.7
-- PostgreSQL
-- <a href="http://www.fossology.org/">FOSSology</a>
+- Python 2.7.x
+- PostgreSQL 8.x or later version
+- <a href="http://www.fossology.org/">FOSSology</a> 2.6.x or later version
 
 ### Python libraries
 
