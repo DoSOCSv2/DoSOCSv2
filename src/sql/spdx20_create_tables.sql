@@ -42,6 +42,7 @@ files (
     comment                 text not null,
     notice                  text not null,
     primary key (file_id),
+    constraint uc_file_sha1 unique (sha1),
     foreign key (project_id) references projects (project_id),
     foreign key (file_type_id) references file_types (file_type_id)
 );
@@ -102,6 +103,7 @@ packages (
     description             text not null,
     comment                 text not null,
     primary key (package_id),
+    constraint uc_package_sha1 unique (sha1),
     foreign key (supplier_id) references creators (creator_id),
     foreign key (originator_id) references creators (creator_id),
     foreign key (concluded_license_id) references licenses (license_id),
