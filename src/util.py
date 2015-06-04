@@ -105,9 +105,9 @@ def gen_id_string():
 
 
 def row_to_dict(row):
-    '''Convert SQLAlchemy row to a dictionary.'''
+    '''Convert SQLSoup row to a dictionary.'''
     d = {}
-    for column in row.__table__.columns:
+    for column in row._table.columns:
         d[column.name] = str(getattr(row, column.name))
     return d
 
