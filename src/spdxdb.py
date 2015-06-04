@@ -184,7 +184,7 @@ class Transaction:
         for file in all_files:
             file_id_params = {
                 'document_namespace_id': document_namespace_id,
-                'file_id': file.file_id,
+                'package_file_id': file.package_file_id,
                 'id_string': util.gen_id_string()
                 }
             self.db.identifiers.insert(**file_id_params)

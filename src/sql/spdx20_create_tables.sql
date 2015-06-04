@@ -205,22 +205,22 @@ identifiers (
     id_string               varchar(255) not null,
     document_id             integer,
     package_id              integer,
-    file_id                 integer,
+    package_file_id         integer,
     primary key (identifier_id),
     constraint uc_identifier_document_namespace_id_name unique (document_namespace_id, id_string),
     constraint ck_identifier_exactly_one check (
         (cast(document_id is not null as int) +
          cast(package_id is not null as int) +
-         cast(file_id is not null as int)
+         cast(package_file_id is not null as int)
         ) = 1
     ),
     constraint uc_identifier_namespace_document_id unique (document_namespace_id, document_id),
     constraint uc_identifier_namespace_package_id unique (document_namespace_id, package_id),
-    constraint uc_identifier_namespace_file_id unique (document_namespace_id, file_id),
+    constraint uc_identifier_namespace_package_file_id unique (document_namespace_id, package_file_id),
     foreign key (document_namespace_id) references document_namespaces (document_namespace_id),
     foreign key (document_id) references documents (document_id),
     foreign key (package_id) references packages (package_id),
-    foreign key (file_id) references files (file_id)
+    foreign key (package_file_id) references packages_files (package_file_id)
 );
 
 
