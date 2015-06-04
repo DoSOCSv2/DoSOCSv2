@@ -69,7 +69,7 @@ creator_types (
 );
 
 
--- document creators
+-- document creators, annotation creators, suppliers, originators...
 create table if not exists
 creators (
     creator_id              serial,
