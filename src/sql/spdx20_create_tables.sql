@@ -219,6 +219,7 @@ identifiers (
     constraint uc_identifier_namespace_document_id unique (document_namespace_id, document_id),
     constraint uc_identifier_namespace_package_id unique (document_namespace_id, package_id),
     constraint uc_identifier_namespace_package_file_id unique (document_namespace_id, package_file_id),
+    constraint uc_identifier_namespace_id_string unique (document_namespace_id, id_string),
     foreign key (document_namespace_id) references document_namespaces (document_namespace_id),
     foreign key (document_id) references documents (document_id),
     foreign key (package_id) references packages (package_id),
