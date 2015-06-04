@@ -14,6 +14,17 @@ dosocs2 is currently (June 2015) under heavy development; it should be
 considered experimental, not production-ready, and subject to frequent
 backwards-incompatible changes until a proper release.
 
+### Current deviations from SPDX 2.0 specification
+
+* Exactly one package per document is required. (SPDX 2.0 allows zero or more
+  packages per document.)
+* Files in a document can only exist within a package. (SPDX 2.0 allows files
+  to exist outside of a package.)
+* Checksums are always assumed to be SHA-1. (SPDX 2.0 permits SHA-1, SHA-256,
+  and MD5)
+* A file may be an artifact of only one project.
+* License expression syntax is not supported.
+* Deprecated fields from SPDX 1.2 (reviewer info and file dependencies) are not supported.
 
 License and Copyright
 ---------------------
@@ -52,9 +63,13 @@ On my todo list!
 
 History
 -------
-dosocs2 owes its name and concept to the [DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zach McFarland, which in turn was spun off from the "do_spdx" plugin for Yocto Project, created by Jake Cloyd and Liang Cao.
+dosocs2 owes its name and concept to the
+[DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zach
+McFarland, which in turn was spun off from the "do_spdx" plugin for Yocto
+Project, created by Jake Cloyd and Liang Cao.
 
-dosocs2 aims to fill the same role as DoSOCS, but with support for SPDX 2.x, a larger feature set, and a more modular implementation, among other changes.
+dosocs2 aims to fill the same role as DoSOCS, but with support for SPDX 2.x, a
+larger feature set, and a more modular implementation, among other changes.
 
 
 Maintainers
