@@ -88,6 +88,43 @@ def load_default_creator(db, creator_string):
     db.creators.insert(**creator_params)
 
 
+def load_relationship_types(db):
+    relationship_types = (
+        'DESCRIBES',
+        'DESCRIBED_BY',
+        'CONTAINS',
+        'CONTAINED_BY',
+        'GENERATES',
+        'GENERATED_FROM',
+        'ANCESTOR_OF',
+        'DESCENDANT_OF',
+        'VARIANT_OF',
+        'DISTRIBUTION_ARTIFACT',
+        'PATCH_FOR',
+        'PATCH_APPLIED',
+        'COPY_OF',
+        'FILE_ADDED',
+        'FILE_DELETED',
+        'FILE_MODIFIED',
+        'EXPANDED_FROM_ARCHIVE',
+        'DYNAMIC_LINK',
+        'STATIC_LINK',
+        'DATA_FILE_OF',
+        'TEST_CASE_OF',
+        'BUILD_TOOL_OF',
+        'DOCUMENTATION_OF',
+        'OPTIONAL_COMPONENT_OF',
+        'METAFILE_OF',
+        'PACKAGE_OF',
+        'AMENDS',
+        'PREREQUISITE_FOR',
+        'HAS_PREREQUISITE',
+        'OTHER'
+        )
+    for rt in relationship_types:
+        db.relationship_types.insert(name=rt)
+
+
 def scrape_site(url):
     '''Scrape license info and return (url, name, shortname) tuples'''
     page_text = urllib2.urlopen(url).read()
