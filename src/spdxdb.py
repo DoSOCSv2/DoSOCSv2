@@ -209,7 +209,7 @@ class Transaction:
             'creator_comment': kwargs.get('creator_comment') or '',
             'document_comment': kwargs.get('document_comment') or '',
             'package_id': package_id
-        }
+            }
         new_document = self.db.documents.insert(**document_params)
         self.db.flush()
         # default_creator_id should always be 1, because the default is
@@ -225,7 +225,7 @@ class Transaction:
             'document_namespace_id': doc_namespace.document_namespace_id,
             'document_id': new_document.document_id,
             'id_string': 'SPDXRef-DOCUMENT'
-        }
+            }
         self.db.identifiers.insert(**document_identifier_params)
         self.create_all_identifiers(doc_namespace.document_namespace_id, package_id)
         self.db.flush()
@@ -240,6 +240,33 @@ class Transaction:
             v['v_documents']
             .filter(v['v_documents'].document_id == docid)
             .one()
-        )
+            )
         document = util.row_to_dict(document_obj)
+        external_refs_list = (
+            v['v_external_refs']
+            .filter(v['v_external_refs'].document_id == docid)
+            .all()
+            )
+        external_refs = [
+            util.row_to_dict(row)
+            for row in external_refs_list
+            ]
+        documents_creators_list = (
+            v['v_documents_creators']
+            .filter(v['v_documents_creators'].document_id == docid)
+            .all()
+            )
+        document['creators'] = [
+            util.row_to_dict(row)
+            for row in documents_creators_list
+            ]
+        annotations_list = (
+            v['v_annotations']
+            .filter(v['v_annotations'].document_id == docid)
+            .all()
+            )
+        document['annotations'] = [
+            util.row_to_dict(row)
+            for row in annotations_list
+        ]
         print(document)
