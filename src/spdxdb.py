@@ -21,6 +21,7 @@ import os
 from settings import settings
 import scanners
 import util
+import viewmap
 
 
 class Transaction:
@@ -232,3 +233,13 @@ class Transaction:
 
     def fetch(self, table_name, id):
         return getattr(self.db, table_name).get(id)
+
+    def render_document(self, docid, template_file):
+        v = viewmap.viewmap(self.db)
+        document_obj = (
+            v['v_documents']
+            .filter(v['v_documents'].document_id == docid)
+            .one()
+        )
+        document = util.row_to_dict(document_obj)
+        print(document)

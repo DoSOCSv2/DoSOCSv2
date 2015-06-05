@@ -163,7 +163,7 @@ def main():
 
     if document is not None and output_format is not None:
         with Transaction(db) as t:
-            print(t.render_doc(document, format_map[output_format]))
+            print(t.render_document(docid, format_map[output_format]))
 
 
 if __name__ == "__main__":
