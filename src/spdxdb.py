@@ -177,6 +177,7 @@ class Transaction:
             .filter(self.db.packages_files.package_id == package_id)
             .all()
             )
+        identifier_ids = []
         package_id_params = {
             'document_namespace_id': document_namespace_id,
             'package_id': package_id,
@@ -188,8 +189,32 @@ class Transaction:
                 'package_file_id': file.package_file_id,
                 'id_string': util.gen_id_string()
                 }
-            self.db.identifiers.insert(**file_id_params)
-        self.db.identifiers.insert(**package_id_params)
+            file_identifier = self.db.identifiers.insert(**file_id_params)
+            self.db.flush()
+            identifier_ids.append(file_identifier.identifier_id)
+        package_identifier = self.db.identifiers.insert(**package_id_params)
+        self.db.flush()
+        identifier_ids.append(package_identifier.identifier_id)
+        return identifier_ids
+
+    def rel_type_lookup(self, type_name):
+        return (
+            self.db.relationship_types
+            .filter(self.db.relationship_types.name == type_name)
+            .one()
+            )
+
+    def create_relationships(self, rel_type_name, left_ids, right_ids):
+        rel_type_id = self.rel_type_lookup(rel_type_name).relationship_type_id
+        for left_id in left_ids:
+            for right_id in right_ids:
+                relationship_params = {
+                    'left_identifier_id': left_id,
+                    'relationship_type_id': rel_type_id,
+                    'right_identifier_id': right_id,
+                    'relationship_comment': ''
+                    }
+                self.db.relationships.insert(**relationship_params)
         self.db.flush()
 
     def create_document(self, package_id, **kwargs):
@@ -226,8 +251,16 @@ class Transaction:
             'document_id': new_document.document_id,
             'id_string': 'SPDXRef-DOCUMENT'
             }
-        self.db.identifiers.insert(**document_identifier_params)
-        self.create_all_identifiers(doc_namespace.document_namespace_id, package_id)
+        # create all identifiers
+        document_identifier = self.db.identifiers.insert(**document_identifier_params)
+        self.db.flush()
+        doc_namespace_id = doc_namespace.document_namespace_id
+        doc_identifier_id = document_identifier.identifier_id
+        describes_ids = self.create_all_identifiers(doc_namespace_id, package_id)
+        self.db.flush()
+        # create known relationships
+        self.create_relationships('DESCRIBES', [doc_identifier_id], describes_ids)
+        self.create_relationships('DESCRIBED_BY', describes_ids, [doc_identifier_id])
         self.db.flush()
         return new_document
 
