@@ -302,4 +302,4 @@ class Transaction:
             util.row_to_dict(row)
             for row in annotations_list
         ]
-        print(document)
+        return document
