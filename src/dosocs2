@@ -34,6 +34,8 @@ Options:
                                 with static data (destructive, will
                                 prompt first)
   --init-noconfirm            Same as --init, but don't prompt
+
+Report bugs to <tgurney@unomaha.edu>.
 '''
 
 from __future__ import print_function
