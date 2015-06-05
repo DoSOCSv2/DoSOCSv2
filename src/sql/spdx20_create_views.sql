@@ -223,9 +223,13 @@ select
 rel.relationship_id             relationship_id,
 ide1.id_string                  left_id_string,
 rty.name                        "type",
-ide2.id_string                  right_id_string
+ide2.id_string                  right_id_string,
+doc1.document_id                left_document_id,
+doc2.document_id                right_document_id
 from relationships rel
 join relationship_types rty on rel.relationship_type_id = rty.relationship_type_id
 join identifiers ide1 on rel.left_identifier_id = ide1.identifier_id
 join identifiers ide2 on rel.right_identifier_id = ide2.identifier_id
+join documents doc1 on ide1.document_namespace_id = doc1.document_namespace_id
+join documents doc2 on ide2.document_namespace_id = doc2.document_namespace_id
 ;
