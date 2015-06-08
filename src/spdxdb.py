@@ -36,7 +36,7 @@ class Transaction:
         else:
             self.db.rollback()
 
-    def lookup_or_add_license(self, short_name):
+    def lookup_or_add_license(self, short_name, comment=''):
         '''Add license to the database if it does not exist.
 
         Return the new or existing license object in any case.
@@ -52,7 +52,7 @@ class Transaction:
             'name': None,
             'short_name': short_name,
             'cross_reference': '',
-            'comment': '',
+            'comment': comment,
             'is_spdx_official': False,
             }
         new_license = self.db.licenses.insert(**license_params)
@@ -92,7 +92,7 @@ class Transaction:
         if scanner is not None:
             shortnames_found = [item.license for item in scanner.scan(path)]
             licenses_found = [
-                self.lookup_or_add_license(shortname)
+                self.lookup_or_add_license(shortname, 'found by ' + scanner.name)
                 for shortname in shortnames_found
                 ]
             if len(shortnames_found) > 0:
