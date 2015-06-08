@@ -172,8 +172,7 @@ def main():
             print('package_id: ' + str(package.package_id))
 
     if document is not None and output_format is not None:
-        with Transaction(db) as t:
-            print(render.render_document(db, docid, format_map[output_format]))
+        print(render.render_document(db, docid, format_map[output_format]))
 
 
 if __name__ == "__main__":
