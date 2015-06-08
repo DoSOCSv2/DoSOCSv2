@@ -65,7 +65,7 @@ def msg(text, **kwargs):
 def dbinit():
     # importing these modules only when needed, for performance
     import dbinit
-    db = sqlsoup.SQLSoup(settings['connection_url'])
+    db = sqlsoup.SQLSoup(settings['connection-uri'])
     url = 'http://spdx.org/licenses/'
     msg('dropping all views...', end='')
     result = dbinit.drop_all_views(db)
@@ -92,7 +92,7 @@ def dbinit():
     dbinit.load_creator_types(db)
     print('ok.')
     msg('loading default creator...', end='')
-    dbinit.load_default_creator(db, settings['creator_string'])
+    dbinit.load_default_creator(db, settings['creator-string'])
     print('ok.')
     msg('loading annotation types...', end='')
     dbinit.load_annotation_types(db)
@@ -145,7 +145,7 @@ def main():
         sys.exit(1)
 
     document = None  # remove later??
-    db = sqlsoup.SQLSoup(settings['connection_url'])
+    db = sqlsoup.SQLSoup(settings['connection-uri'])
 
     if docid is not None:
         with Transaction(db) as t:

@@ -167,7 +167,7 @@ class Transaction:
 
     def create_document_namespace(self, doc_name):
         suffix = util.friendly_namespace_suffix(doc_name)
-        uri = settings['default_namespace_prefix'] + suffix
+        uri = settings['namespace-prefix'] + suffix
         document_namespace = self.db.document_namespaces.insert(uri=uri)
         self.db.flush()
         return document_namespace
