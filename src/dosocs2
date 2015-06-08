@@ -43,6 +43,7 @@ from settings import settings
 from spdxdb import Transaction
 import docopt
 import os
+import render
 import sqlsoup
 import sys
 
@@ -166,7 +167,7 @@ def main():
 
     if document is not None and output_format is not None:
         with Transaction(db) as t:
-            print(t.render_document(docid, format_map[output_format]))
+            print(render.render_document(db, docid, format_map[output_format]))
 
 
 if __name__ == "__main__":

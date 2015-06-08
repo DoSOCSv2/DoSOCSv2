@@ -222,8 +222,12 @@ v_relationships
 as
 select
 rel.relationship_id             relationship_id,
+ide1.package_id                 left_package_id,
+ide1.package_file_id            left_package_file_id,
 ide1.id_string                  left_id_string,
 rty.name                        "type",
+ide2.package_id                 right_package_id,
+ide2.package_file_id            right_package_file_id,
 ide2.id_string                  right_id_string,
 doc1.document_id                left_document_id,
 doc2.document_id                right_document_id,
