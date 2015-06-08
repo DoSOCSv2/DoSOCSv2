@@ -111,10 +111,15 @@ def render_document(db, docid, template_file):
             .filter(v['v_relationships'].left_id_string == file['id_string'])
             .all()
             )
+    licenses = util.rows_to_dicts(
+        v['v_documents_unofficial_licenses']
+        .filter(v['v_documents_unofficial_licenses'].document_id == document['document_id'])
+        .all()
+        )
     context = {
         'document': document,
         'external_refs': external_refs,
         'package': package,
-        'licenses': [] # stub
+        'licenses': licenses
         }
     return render_template(template_file, context)

@@ -128,11 +128,15 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
     {% endif %}
 {% endfor %}
 
+{% if licenses %}
+
 ## License Information
 {% for license in licenses %}
+
 LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
 ExtractedText: {{ license.extracted_text }}
 LicenseCrossReference: {{ license.cross_reference }}
 LicenseComment: {{ license.comment | text }}
 {% endfor %}
+{% endif %}
