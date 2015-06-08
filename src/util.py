@@ -18,6 +18,7 @@
 from contextlib import contextmanager
 import hashlib
 import os
+import re
 import shutil
 import tarfile
 import tempfile
@@ -91,9 +92,23 @@ def package_friendly_name(package_file_name):
     return newname
 
 
-def gen_id_string():
-    '''Generate and return a unique SPDX identifier.'''
-    return 'SPDXRef-' + str(uuid.uuid4())
+def file_name_for_id(file_name):
+    new1 = os.path.basename(file_name)
+    # strip illegal chars, limit to 20 chars
+    return re.sub(r'[^A-Za-z0-9]', '_', new1)[:20]
+
+
+def gen_id_string(prefix='element', file_name=None, sha1=None):
+    '''Generate and return an SPDX identifier.'''
+    uuid4 = str(uuid.uuid4())
+    if sha1 is None:
+        sha1part = uuid4[24:28]
+    else:
+        sha1part = sha1[:4]
+    suffix = sha1part + '-' + uuid4[:8]
+    new_file_name = file_name_for_id(file_name or uuid4[19:23])
+    pieces = 'SPDXRef', prefix, new_file_name, suffix
+    return '-'.join(pieces)
 
 
 def row_to_dict(row):

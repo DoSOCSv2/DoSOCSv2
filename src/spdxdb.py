@@ -177,16 +177,18 @@ class Transaction:
             .all()
             )
         identifier_ids = []
+        package = self.db.packages.get(package_id)
         package_id_params = {
             'document_namespace_id': document_namespace_id,
             'package_id': package_id,
-            'id_string': util.gen_id_string()
+            'id_string': util.gen_id_string('package', package.file_name, package.sha1)
             }
         for file in all_files:
+            filesha1 = self.db.files.get(file.file_id).sha1
             file_id_params = {
                 'document_namespace_id': document_namespace_id,
                 'package_file_id': file.package_file_id,
-                'id_string': util.gen_id_string()
+                'id_string': util.gen_id_string('file', file.file_name, filesha1)
                 }
             file_identifier = self.db.identifiers.insert(**file_id_params)
             self.db.flush()
