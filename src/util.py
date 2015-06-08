@@ -104,6 +104,10 @@ def row_to_dict(row):
     return d
 
 
+def rows_to_dicts(rows):
+    return [row_to_dict(row) for row in rows]
+
+
 def lookup_by_sha1(table, sha1):
     '''Lookup object by SHA-1 sum and return the object, or None.
     

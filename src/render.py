@@ -33,65 +33,42 @@ def render_template(templatefile, context):
 
 def render_document(db, docid, template_file):
     v = viewmap.viewmap(db)
-    document_obj = (
+    document = util.row_to_dict(
         v['v_documents']
         .filter(v['v_documents'].document_id == docid)
         .one()
         )
-    document = util.row_to_dict(document_obj)
-    external_refs_list = (
+    external_refs = util.rows_to_dicts(
         v['v_external_refs']
         .filter(v['v_external_refs'].document_id == docid)
         .all()
         )
-    external_refs = [
-        util.row_to_dict(row)
-        for row in external_refs_list
-        ]
-    documents_creators_list = (
+    document['creators'] = util.rows_to_dicts(
         v['v_documents_creators']
         .filter(v['v_documents_creators'].document_id == docid)
         .all()
         )
-    document['creators'] = [
-        util.row_to_dict(row)
-        for row in documents_creators_list
-        ]
-    annotations_list = (
+    document['annotations'] = util.rows_to_dicts(
         v['v_annotations']
         .filter(v['v_annotations'].document_id == docid)
         .all()
         )
-    document['annotations'] = [
-        util.row_to_dict(row)
-        for row in annotations_list
-    ]
-    relationships_list = (
+    document['relationships'] = util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
         .filter(v['v_relationships'].left_id_string == 'SPDXRef-DOCUMENT')
         .all()
         )
-    document['relationships'] = [
-        util.row_to_dict(row)
-        for row in relationships_list
-        ]
-    package_obj = (
+    package = util.row_to_dict(
         v['v_documents_packages']
         .filter(v['v_documents_packages'].document_id == docid)
         .one()
         )
-    package = util.row_to_dict(package_obj)
-    license_info_list = (
+    package['license_info_from_files'] = util.rows_to_dicts(
         v['v_packages_all_licenses_in_files']
         .filter(v['v_packages_all_licenses_in_files'].package_id == package['package_id'])
         .all()
-        )
-    license_info_from_files = [
-        util.row_to_dict(row)
-        for row in license_info_list
-        ]
-    package['license_info_from_files'] = license_info_from_files or ['NOASSERTION']
+        ) or ['NOASSERTION']
     context = {
         'document': document,
         'external_refs': external_refs,
