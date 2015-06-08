@@ -27,8 +27,6 @@ Options:
   -i, --doc-id=DOCID          Generate SPDX document from database
                                 (required if FILE argument not specified)
   -n, --no-license-scan       Do not scan for license information
-  -N, --no-scan               Do not collect any information at all
-                                (just use the cache)
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
       --init                  Drop and create all tables, then initialize
@@ -135,7 +133,6 @@ def main():
     package_path = argv['FILE']
     docid = argv['--doc-id']
     package_id = argv['--create']
-    scan = not argv['--no-scan']
     license_scan = not argv['--no-license-scan']
     output_format = argv['--print']
 
@@ -162,7 +159,7 @@ def main():
             document = t.create_document(package_id)
         if output_format is None:
             print('document_id: ' + str(document.document_id))
-    elif scan:
+    else:
         with Transaction(db) as t:
             if license_scan:
                 package = t.scan_package(package_path)
