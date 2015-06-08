@@ -87,44 +87,45 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 
 ## File Information
-
 {% for file in package.files %}
+
+
 FileName: {{ file.name }}
 SPDXID: {{ file.id_string }}
 FileType: {{ file.type }}
 FileChecksum: SHA1: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded | noassertion }}
-{% for fli in file.license_info %}
-LicenseInfoInFile: {{ fli.short_name }}
-{% endfor %}
-LicenseComments: {{ file.license_comments | text}}
+    {% for fli in file.license_info %}
+LicenseInfoInFile: {{ fli.short_name | noassertion }}
+    {% endfor %}
+LicenseComments: {{ file.license_comments | text }}
 FileCopyrightText: {{ file.copyright_text | text_default }}
-{% if file.project_name %}
+    {% if file.project_name %}
 ArtifactOfProjectName: {{ file.project_name | noassertion }}
 ArtifactOfProjectHomePage: {{ file.project_homepage | noassertion }}
 ArtifactOfProjectURI: {{ file.project_uri | noassertion }}
-{% endif %}
+    {% endif %}
 FileComment: {{ file.comment | text }}
 FileNotice: {{ file.notice | text }}
-{% for contributor in file.contributors %}
+    {% for contributor in file.contributors %}
 FileContributor: {{ contributor.contributor }}
-{% endfor %}
-{% if file.annotations %}
+    {% endfor %}
+    {% if file.annotations %}
 ## Annotations
-{% for annotation in file.annotations %}
+        {% for annotation in file.annotations %}
 Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
 AnnotationComment: {{ annotation.comment | text }}
 AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
-{% endfor %}
-{% endif %}
-{% if file.relationships %}
+        {% endfor %}
+    {% endif %}
+    {% if file.relationships %}
 ## Relationships
-{% for relationship in package.relationships %}
+        {% for relationship in file.relationships %}
 Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
-{% endfor %}
-{% endif %}
+        {% endfor %}
+    {% endif %}
 {% endfor %}
 
 ## License Information

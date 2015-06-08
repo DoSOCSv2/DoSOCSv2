@@ -65,6 +65,7 @@ as
 select
 doc.document_id                 document_id,
 pfi.package_id                  package_id,
+pfi.package_file_id             package_file_id,
 fil.file_id                     file_id,
 pfi.file_name                   "name",
 ide.id_string                   id_string,
@@ -188,11 +189,22 @@ join document_namespaces dna on ext.document_namespace_id = dna.document_namespa
 
 
 create view
+v_file_contributors
+as
+select
+file_contributor_id,
+file_id,
+contributor
+from file_contributors
+;
+
+
+create view
 v_files_licenses
 as
 select
 fil.file_id                 file_id,
-coalesce(lic.short_name, 'NOASSERTION') short_name
+lic.short_name              short_name
 from files fil
 left join files_licenses fli on fil.file_id = fli.file_id
 left join v_license_approved_names lic on fli.license_id = lic.license_id
@@ -222,12 +234,8 @@ v_relationships
 as
 select
 rel.relationship_id             relationship_id,
-ide1.package_id                 left_package_id,
-ide1.package_file_id            left_package_file_id,
 ide1.id_string                  left_id_string,
 rty.name                        "type",
-ide2.package_id                 right_package_id,
-ide2.package_file_id            right_package_file_id,
 ide2.id_string                  right_id_string,
 doc1.document_id                left_document_id,
 doc2.document_id                right_document_id,

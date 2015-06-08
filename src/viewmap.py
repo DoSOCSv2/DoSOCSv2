@@ -13,6 +13,7 @@ view_names = {
     'v_documents',
     'v_documents_unofficial_licenses',
     'v_external_refs',
+    'v_file_contributors',
     'v_files_licenses',
     'v_packages_all_licenses_in_files',
     'v_relationships'

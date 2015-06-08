@@ -51,14 +51,15 @@ def render_document(db, docid, template_file):
     document['annotations'] = util.rows_to_dicts(
         v['v_annotations']
         .filter(v['v_annotations'].document_id == docid)
+        .filter(v['v_annotations'].id_string == document['id_string'])
         .all()
         )
     document['relationships'] = util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
-        .filter(v['v_relationships'].left_id_string == 'SPDXRef-DOCUMENT')
+        .filter(v['v_relationships'].left_id_string == document['id_string'])
         .all()
-        )
+        ) or None
     package = util.row_to_dict(
         v['v_documents_packages']
         .filter(v['v_documents_packages'].document_id == docid)
@@ -69,6 +70,47 @@ def render_document(db, docid, template_file):
         .filter(v['v_packages_all_licenses_in_files'].package_id == package['package_id'])
         .all()
         ) or ['NOASSERTION']
+    package['annotations'] = util.rows_to_dicts(
+        v['v_annotations']
+        .filter(v['v_annotations'].document_id == docid)
+        .filter(v['v_annotations'].id_string == package['id_string'])
+        .all()
+        )
+    package['relationships'] = util.rows_to_dicts(
+        v['v_relationships']
+        .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
+        .filter(v['v_relationships'].left_id_string == package['id_string'])
+        .all()
+        ) or None
+    package['files'] = util.rows_to_dicts(
+        v['v_documents_files']
+        .filter(v['v_documents_files'].document_id == docid)
+        .filter(v['v_documents_files'].package_id == package['package_id'])
+        .all()
+        )
+    for file in package['files']:
+        file['license_info'] = util.rows_to_dicts(
+            v['v_files_licenses']
+            .filter(v['v_files_licenses'].file_id == file['file_id'])
+            .all()
+            )
+        file['contributors'] = util.rows_to_dicts(
+            v['v_file_contributors']
+            .filter(v['v_file_contributors'].file_id == file['file_id'])
+            .all()
+            )
+        file['annotations'] = util.rows_to_dicts(
+            v['v_annotations']
+            .filter(v['v_annotations'].document_id == docid)
+            .filter(v['v_annotations'].id_string == file['id_string'])
+            .all()
+            )
+        file['relationships'] = util.rows_to_dicts(
+            v['v_relationships']
+            .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
+            .filter(v['v_relationships'].left_id_string == file['id_string'])
+            .all()
+            )
     context = {
         'document': document,
         'external_refs': external_refs,
