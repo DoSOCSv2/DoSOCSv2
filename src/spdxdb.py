@@ -302,4 +302,36 @@ class Transaction:
             util.row_to_dict(row)
             for row in annotations_list
         ]
-        return document
+        relationships_list = (
+            v['v_relationships']
+            .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
+            .filter(v['v_relationships'].left_id_string == 'SPDXRef-DOCUMENT')
+            .all()
+            )
+        document['relationships'] = [
+            util.row_to_dict(row)
+            for row in relationships_list
+            ]
+        package_obj = (
+            v['v_documents_packages']
+            .filter(v['v_documents_packages'].document_id == docid)
+            .one()
+            )
+        package = util.row_to_dict(package_obj)
+        license_info_list = (
+            v['v_packages_all_licenses_in_files']
+            .filter(v['v_packages_all_licenses_in_files'].package_id == package['package_id'])
+            .all()
+            )
+        license_info_from_files = [
+            util.row_to_dict(row)
+            for row in license_info_list
+            ]
+        package['license_info_from_files'] = license_info_from_files or ['NOASSERTION']
+        context = {
+            'document': document,
+            'external_refs': external_refs,
+            'package': package,
+            'licenses': [] # stub
+            }
+        return util.render_template(template_file, context)

@@ -27,11 +27,27 @@ import zipfile
 import jinja2
 import magic
 
+def _filter_text(value):
+    return '<text>' + value + '</text>'
+
+def _filter_text_default(value, default_value='NOASSERTION'):
+    if value:
+        return '<text>' + value + '</text>'
+    else:
+        return default_value
+
+def _filter_noassertion(value):
+    return value if value else 'NOASSERTION'
+
+jinja2_env = jinja2.Environment(trim_blocks=True, lstrip_blocks=True)
+jinja2_env.filters['text'] = _filter_text
+jinja2_env.filters['text_default'] = _filter_text_default
+jinja2_env.filters['noassertion'] = _filter_noassertion
 
 def render_template(templatefile, context):
     with open(templatefile, 'r') as f:
         s = f.read()
-    t = jinja2.Template(s)
+    t = jinja2_env.from_string(s)
     return t.render(context)
 
 
@@ -108,7 +124,7 @@ def row_to_dict(row):
     '''Convert SQLSoup row to a dictionary.'''
     d = {}
     for column in row._table.columns:
-        d[column.name] = str(getattr(row, column.name))
+        d[column.name] = getattr(row, column.name)
     return d
 
 

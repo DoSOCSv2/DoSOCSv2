@@ -3,7 +3,7 @@ DataLicense: {{ document.data_license }}
 DocumentNamespace: {{ document.uri }}
 DocumentName: {{ document.name }}
 SPDXID: {{ document.id_string }}
-DocumentComment: <text>{{ document.document_comment }}</text>
+DocumentComment: {{ document.document_comment | text }}
 
 ## External Document References
 {% for er in external_refs %}
@@ -16,7 +16,7 @@ ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
 Creator: {{ creator.creator }}
 {% endfor %}
 Created: {{ document.created_ts }}
-CreatorComment: <text>{{ document.creator_comment }}</text>
+CreatorComment: {{ document.creator_comment | text }}
 LicenseListVersion: {{ document.license_list_version }}
 
 
@@ -24,7 +24,7 @@ LicenseListVersion: {{ document.license_list_version }}
 {% for annotation in document.annotations %}
 Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
-AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationComment: {{ annotation.comment | text }}
 AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
 {% endfor %}
@@ -33,6 +33,9 @@ SPDXID: {{ annotation.id_string }}
 ## Document Relationships
 {% for relationship in document.relationships %}
 Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
+    {% if relationship.comment %}
+RelationshipComment: {{ relationship.comment | text }}
+    {% endif %}
 {% endfor %}
 
 
@@ -40,32 +43,36 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 PackageName: {{ package.name }}
 SPDXID: {{ package.id_string }}
+{% if package.version %}
 PackageVersion: {{ package.version }}
+{% endif %}
 PackageFileName: {{ package.file_name }}
-PackageSupplier: {{ package.supplier}}
-PackageOriginator: {{ package.originator }}
-PackageDownloadLocation: {{ package.download_location }}
+PackageSupplier: {{ package.supplier | noassertion }}
+PackageOriginator: {{ package.originator | noassertion }}
+PackageDownloadLocation: {{ package.download_location | noassertion }}
 PackageVerificationCode: {{ package.verification_code }}
 PackageChecksum: SHA1: {{ package.checksum }}
-PackageHomePage: {{ package.home_page }}
+PackageHomePage: {{ package.home_page | noassertion }}
+{% if package.source_info %}
 PackageSourceInfo: {{ package.source_info }}
-PackageLicenseConcluded: {{ package.license_concluded }}
+{% endif %}
+PackageLicenseConcluded: {{ package.license_concluded | noassertion }}
 {% for li in package.license_info_from_files %}
-PackageLicenseInfoFromFiles: {{ li }}
+PackageLicenseInfoFromFiles: {{ li.license_short_name }}
 {% endfor %}
-PackageLicenseDeclared: {{ package.license_declared }}
-PackageLicenseComments: <text>{{ package.license_comments }}</text>
-PackageCopyrightText: <text>{{ package.copyright_text }}</text>
-PackageSummary: <text>{{ package.summary }}</text>
-PackageDescription: <text>{{ package.description }}</text>
-PackageComment: <text>{{ package.comment }}</text>
+PackageLicenseDeclared: {{ package.license_declared | noassertion }}
+PackageLicenseComments: {{ package.license_comments | text }}
+PackageCopyrightText: {{ package.copyright_text | text_default }}
+PackageSummary: {{ package.summary | text }}
+PackageDescription: {{ package.description | text }}
+PackageComment: {{ package.comment | text }}
 
 {% if package.annotations %}
 ## Annotations
 {% for annotation in package.annotations %}
 Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
-AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationComment: {{ annotation.comment | text }}
 AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
 {% endfor %}
@@ -81,24 +88,24 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 ## File Information
 
-{% for file in files %}
+{% for file in package.files %}
 FileName: {{ file.name }}
 SPDXID: {{ file.id_string }}
 FileType: {{ file.type }}
 FileChecksum: SHA1: {{ file.checksum }}
-LicenseConcluded: {{ file.license_concluded }}
+LicenseConcluded: {{ file.license_concluded | noassertion }}
 {% for fli in file.license_info %}
 LicenseInfoInFile: {{ fli.short_name }}
 {% endfor %}
-LicenseComments: <text>{{ file.license_comments }}</text>
-FileCopyrightText: <text>{{ file.copyright_text }}</text>
-{% if file.project_name != 'NOASSERTION' %}
-ArtifactOfProjectName: {{ file.project_name }}
-ArtifactOfProjectHomePage: {{ file.project_homepage }}
-ArtifactOfProjectURI: {{ file.project_uri }}
+LicenseComments: {{ file.license_comments | text}}
+FileCopyrightText: {{ file.copyright_text | text_default }}
+{% if file.project_name %}
+ArtifactOfProjectName: {{ file.project_name | noassertion }}
+ArtifactOfProjectHomePage: {{ file.project_homepage | noassertion }}
+ArtifactOfProjectURI: {{ file.project_uri | noassertion }}
 {% endif %}
-FileComment: <text>{{ file.comment }}</text>
-FileNotice: <text>{{ file.notice }}</text>
+FileComment: {{ file.comment | text }}
+FileNotice: {{ file.notice | text }}
 {% for contributor in file.contributors %}
 FileContributor: {{ contributor.contributor }}
 {% endfor %}
@@ -107,7 +114,7 @@ FileContributor: {{ contributor.contributor }}
 {% for annotation in file.annotations %}
 Annotator: {{ annotation.creator }}
 AnnotationDate: {{ annotation.created_ts }}
-AnnotationComment: <text>{{ annotation.comment }}</text>
+AnnotationComment: {{ annotation.comment | text }}
 AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
 {% endfor %}
@@ -126,5 +133,5 @@ LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
 ExtractedText: {{ license.extracted_text }}
 LicenseCrossReference: {{ license.cross_reference }}
-LicenseComment: <text>{{ license.comment }}</text>
+LicenseComment: {{ license.comment | text }}
 {% endfor %}
