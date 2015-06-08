@@ -89,6 +89,7 @@ class Transaction:
         if file is not None:
             return file
         file = self._create_file(path, sha1)
+        print(path)
         if scanner is not None:
             shortnames_found = [item.license for item in scanner.scan(path)]
             licenses_found = [

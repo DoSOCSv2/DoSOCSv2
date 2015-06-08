@@ -47,3 +47,11 @@ class nomos:
                 result = ScannerResult(file_path=m.group(1), license=subitem)
                 licenses.append(result)
         return [l for l in licenses if l.license != 'No_license_found']
+
+
+class dummy:
+    name = 'dummy'
+
+    @staticmethod
+    def scan(filename):
+        return []

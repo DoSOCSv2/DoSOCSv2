@@ -26,14 +26,15 @@ Options:
                                 already-scanned package
   -i, --doc-id=DOCID          Generate SPDX document from database
                                 (required if FILE argument not specified)
-  -n, --no-scan               Don't scan the package if SPDX data has not
-                                already been generated
+  -n, --no-license-scan       Do not scan for license information
+  -N, --no-scan               Do not collect any information at all
+                                (just use the cache)
   -p, --print=FORMAT          Print SPDX document in specified format
                                 (`tag' or `rdf')
-  --init                      Drop and create all tables, then initialize
+      --init                  Drop and create all tables, then initialize
                                 with static data (destructive, will
                                 prompt first)
-  --init-noconfirm            Same as --init, but don't prompt
+      --init-noconfirm        Same as --init, but don't prompt
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -44,6 +45,7 @@ from spdxdb import Transaction
 import docopt
 import os
 import render
+import scanners  # for the dummy scanner
 import sqlsoup
 import sys
 
@@ -134,6 +136,7 @@ def main():
     docid = argv['--doc-id']
     package_id = argv['--create']
     scan = not argv['--no-scan']
+    license_scan = not argv['--no-license-scan']
     output_format = argv['--print']
 
     if output_format not in ('tag', 'rdf', None):
@@ -161,7 +164,10 @@ def main():
             print('document_id: ' + str(document.document_id))
     elif scan:
         with Transaction(db) as t:
-            package = t.scan_package(package_path)
+            if license_scan:
+                package = t.scan_package(package_path)
+            else:
+                package = t.scan_package(package_path, scanner=scanners.dummy)
         if output_format is None:
             print('package_id: ' + str(package.package_id))
 
