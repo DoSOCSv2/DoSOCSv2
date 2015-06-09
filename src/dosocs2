@@ -108,7 +108,7 @@ def dbinit():
 
 
 def main():
-    argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1-dev')
+    argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1')
 
     if argv['--init'] or argv['--init-noconfirm']:
         if not argv['--init-noconfirm']:
