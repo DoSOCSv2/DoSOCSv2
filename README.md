@@ -89,17 +89,17 @@ NOTE: The current interface is clunky and subject to change.
 To scan a package and store its information in the database:
 
     $ dosocs2 package.tar.gz
-    package_id: 1
+    package_id: 456
 
 No document has been created yet. To create one in the database (specifying the
 package ID):
 
-    $ dosocs2 -c 1
-    document_id: 1
+    $ dosocs2 -c 456
+    document_id: 123
 
 Then, to compile and output the document:
 
-    $ dosocs2 -i 1 -p tag
+    $ dosocs2 -i 123 -p tag
     [... document output here ...]
 
 Currently only 'tag' format is supported.
