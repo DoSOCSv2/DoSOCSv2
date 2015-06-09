@@ -28,7 +28,7 @@ Options:
                                 (required if FILE argument not specified)
   -n, --no-license-scan       Do not scan for license information
   -p, --print=FORMAT          Print SPDX document in specified format
-                                (`tag' or `rdf')
+                                (Currently only `tag' is supported)
       --init                  Drop and create all tables, then initialize
                                 with static data (destructive, will
                                 prompt first)
@@ -49,7 +49,7 @@ import sys
 
 format_map = {
     'tag': 'templates/2.0.tag',
-    'rdf': 'templates/2.0.rdf',
+#    'rdf': 'templates/2.0.rdf',
 }
 
 PROGNAME = os.path.basename(sys.argv[0])
