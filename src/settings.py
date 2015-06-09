@@ -27,7 +27,7 @@ scanner = {
 
 settings = {
     # 'connection-uri': dbms://user:password@hostname:port/database
-    'connection-uri': 'postgresql://spdx:spdx@localhost:5432/spdx20',
+    'connection-uri': 'postgresql://spdx:spdx@localhost:5432/spdx',
     'creator-string': 'dosocs2-0.0.1',
-    'namespace-prefix': 'postgresql://localhost:5432/spdx20'
+    'namespace-prefix': 'postgresql://localhost:5432/spdx'
 }

@@ -50,22 +50,39 @@ Dependencies
 - [python-magic](https://github.com/ahupp/python-magic)
 - [SQLSoup](https://sqlsoup.readthedocs.org/en/latest/)
 
-You can install all of these in one shot with the included `requirements.txt`
-file:
-
-    $ pip install -r requirements.txt
-
+The included `install.sh` will install all Python libraries for you.
 
 Installation
 ------------
-On my todo list!
 
+First off, I recommend running dosocs2 inside a Python
+[virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
+is in no way a requirement. Now then...
+
+Clone this repository and `cd` to it, then run the install script.
+
+    $ git clone https://github.com/ttgurney/dosocs2
+    $ cd dosocs2
+    $ ./install.sh
+
+You will have to create the `spdx` (or whatever you want to call it) role and
+database yourself (although I recommend setting a different password than the
+one given...):
+
+    postgres=# create role spdx with login password 'spdx';
+    postgres=# create database spdx with owner spdx;
+
+Then edit `src/settings.py` and make sure you are pointed to the correct
+PostgreSQL server, with a valid username/password.
+
+Finally, you have to run `dosocs2 --init` to create all necessary tables and
+views. That's it!
 
 History
 -------
 dosocs2 owes its name and concept to the
 [DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zach
-McFarland, which in turn was spun off from the "do_spdx" plugin for Yocto
+McFarland, which in turn was spun off from the `do_spdx` plugin for Yocto
 Project, created by Jake Cloyd and Liang Cao.
 
 dosocs2 aims to fill the same role as DoSOCS, but with support for SPDX 2.x, a
