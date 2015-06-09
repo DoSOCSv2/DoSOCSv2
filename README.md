@@ -55,7 +55,7 @@ The included `install.sh` will install all Python libraries for you.
 Installation
 ------------
 
-First off, I recommend running dosocs2 inside a Python
+First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
 is in no way a requirement. Now then...
 
