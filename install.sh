@@ -8,8 +8,8 @@ if [[ ! -x ./install.sh ]]; then
 fi
 
 printf "$SELF: Checking for Python 2.7.x..."
-PY2_VERSION=$(python2 --version 2>&1)
-if [[ $PY2_VERSION < 'Python 2.7.0' ]]; then
+PY2_VERSION=$(/usr/bin/env python2 --version 2>&1 | cut -c 8- )
+if [[ $PY2_VERSION < '2.7.0' ]]; then
     printf "python2 executable not found or not recent enough. "
     printf "Please install Python 2.7.x.\n"
     exit 1
