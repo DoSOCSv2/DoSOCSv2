@@ -73,10 +73,37 @@ one given...):
     postgres=# create database spdx with owner spdx;
 
 Then edit `src/settings.py` and make sure you are pointed to the correct
-PostgreSQL server, with a valid username/password.
+PostgreSQL server, with a valid username/password. You also need to set the
+path of the default `nomos` scanner (part of FOSSology) if it is not already
+correct.
 
 Finally, you have to run `dosocs2 --init` to create all necessary tables and
 views. That's it!
+
+
+Usage
+-----
+
+NOTE: The current interface is clunky and subject to change.
+
+To scan a package and store its information in the database:
+
+    $ dosocs2 package.tar.gz
+    package_id: 1
+
+No document has been created yet. To create one in the database (specifying the
+package ID):
+
+    $ dosocs2 -c 1
+    document_id: 1
+
+Then, to compile and output the document:
+
+    $ dosocs2 -i 1 -p tag
+    [... document output here ...]
+
+Currently only 'tag' format is supported.
+
 
 History
 -------
