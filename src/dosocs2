@@ -38,7 +38,7 @@ Report bugs to <tgurney@unomaha.edu>.
 '''
 
 from __future__ import print_function
-from settings import settings
+from settings import settings, VERSION
 from spdxdb import Transaction
 import docopt
 import os
@@ -93,7 +93,7 @@ def dbinit():
     dbinit.load_creator_types(db)
     print('ok.')
     msg('loading default creator...', end='')
-    dbinit.load_default_creator(db, settings['creator-string'])
+    dbinit.load_default_creator(db, 'dosocs2-' + VERSION)
     print('ok.')
     msg('loading annotation types...', end='')
     dbinit.load_annotation_types(db)
@@ -111,7 +111,7 @@ def dbinit():
 
 
 def main():
-    argv = docopt.docopt(doc=__doc__.format(PROGNAME), version='0.0.1')
+    argv = docopt.docopt(doc=__doc__.format(PROGNAME), version=VERSION)
 
     if argv['--init'] or argv['--init-noconfirm']:
         if not argv['--init-noconfirm']:

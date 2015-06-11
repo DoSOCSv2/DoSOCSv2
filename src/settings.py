@@ -21,6 +21,7 @@
 To define a scanner name and path here is not enough to enable dosocs2 to use
 that scanner; it also needs an interface defined for it in scanners.py.
 '''
+
 scanner = {
     'nomos': "/usr/share/fossology/nomos/agent/nomos"
 }
@@ -28,6 +29,8 @@ scanner = {
 settings = {
     # 'connection-uri': dbms://user:password@hostname:port/database
     'connection-uri': 'postgresql://spdx:spdx@localhost:5432/spdx',
-    'creator-string': 'dosocs2-0.0.1',
     'namespace-prefix': 'postgresql://localhost:5432/spdx'
 }
+
+# version string used throughout program
+VERSION = '0.001'
