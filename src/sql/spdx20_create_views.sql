@@ -250,3 +250,102 @@ join identifiers ide2 on rel.right_identifier_id = ide2.identifier_id
 join documents doc1 on ide1.document_namespace_id = doc1.document_namespace_id
 join documents doc2 on ide2.document_namespace_id = doc2.document_namespace_id
 ;
+
+
+create view
+v_rel_contains
+as
+select
+ide1.document_namespace_id  left_document_namespace_id,
+ide2.document_namespace_id  right_document_namespace_id,
+pfi.package_id      package_id,
+pfi.package_file_id package_file_id,
+ide1.identifier_id   left_identifier_id,
+rty.relationship_type_id relationship_type_id,
+ide2.identifier_id   right_identifier_id
+from packages_files pfi
+join identifiers ide1 on pfi.package_id = ide1.package_id
+join identifiers ide2 on pfi.package_file_id = ide2.package_file_id
+join relationship_types rty on rty.name = 'CONTAINS'
+;
+
+
+create view
+v_rel_contained_by
+as
+select
+v.left_document_namespace_id,
+v.right_document_namespace_id,
+v.package_id,
+v.package_file_id,
+v.right_identifier_id       left_identifier_id,
+rty2.relationship_type_id   relationship_type_id,
+v.left_identifier_id        right_identifier_id
+from v_rel_contains v
+join relationship_types rty2 on rty2.name = 'CONTAINED_BY'
+;
+
+
+create view
+v_rel_describes
+as
+select
+doc.document_id             document_id,
+pac.package_id              package_id,
+null                        package_file_id,
+ide1.identifier_id          left_identifier_id,
+rty.relationship_type_id    relationship_type_id,
+ide2.identifier_id          right_identifier_id
+from documents doc
+join packages pac on doc.package_id = pac.package_id
+join identifiers ide1 on doc.document_id = ide1.document_id
+     and ide1.id_string = 'SPDXRef-DOCUMENT'
+join identifiers ide2 on pac.package_id = ide2.package_id
+join relationship_types rty on rty.name = 'DESCRIBES'
+
+union all
+
+select
+doc.document_id             document_id,
+null                        package_id,
+pfi.package_file_id         package_file_id,
+ide1.identifier_id          left_identifier_id,
+rty.relationship_type_id    relationship_type_id,
+ide2.identifier_id          right_identifier_id
+from documents doc
+join packages pac on doc.package_id = pac.package_id
+left join packages_files pfi on pfi.package_id = pac.package_id
+join identifiers ide1 on doc.document_id = ide1.document_id
+     and ide1.id_string = 'SPDXRef-DOCUMENT'
+join identifiers ide2 on pfi.package_file_id = ide2.package_file_id
+join relationship_types rty on rty.name = 'DESCRIBES'
+;
+
+
+create view
+v_rel_described_by
+as
+select
+v.document_id,
+v.package_id,
+v.package_file_id,
+v.right_identifier_id as left_identifier_id,
+rty2.relationship_type_id    relationship_type_id,
+v.left_identifier_id as right_identifier_id
+from v_rel_describes v
+join relationship_types rty2 on rty2.name = 'DESCRIBED_BY'
+;
+
+
+create view
+v_dupes
+as
+select
+pfi.package_id              package_id,
+fil.sha1                    sha1,
+count(pfi.package_file_id)  times_in_package
+from packages_files pfi
+join files fil on pfi.file_id = fil.file_id
+group by pfi.package_id, fil.sha1
+having count(pfi.package_file_id) > 1
+;
