@@ -29,7 +29,7 @@ printf "ok.\n"
 printf "$SELF: Checking for cp2foss..."
 which cp2foss > /dev/null
 if [[ "$?" != "0" ]]; then
-    printf "not found. Please install FOSSology >= 2.6 "
+    printf "not found. Please install FOSSology >= 2.5 "
     printf "from http://www.fossology.org\n"
     exit 1
 fi
