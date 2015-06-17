@@ -40,7 +40,7 @@ Dependencies
 ------------
 - Python 2.7.x
 - PostgreSQL 8.x or later version (can be on a separate machine)
-- <a href="http://www.fossology.org/">FOSSology</a> 2.6.x or later version
+- <a href="http://www.fossology.org/">FOSSology</a> 2.5.x or later version
 
 ### Python libraries
 

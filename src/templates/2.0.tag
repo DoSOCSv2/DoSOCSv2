@@ -15,7 +15,7 @@ ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
 {% for creator in document.creators %}
 Creator: {{ creator.creator }}
 {% endfor %}
-Created: {{ document.created_ts }}
+Created: {{ document.created_ts | utctimestamp }}
 CreatorComment: {{ document.creator_comment | text }}
 LicenseListVersion: {{ document.license_list_version }}
 
@@ -23,7 +23,7 @@ LicenseListVersion: {{ document.license_list_version }}
 ## Document Annotations
 {% for annotation in document.annotations %}
 Annotator: {{ annotation.creator }}
-AnnotationDate: {{ annotation.created_ts }}
+AnnotationDate: {{ annotation.created_ts | utctimestamp }}
 AnnotationComment: {{ annotation.comment | text }}
 AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
@@ -135,7 +135,7 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
-ExtractedText: {{ license.extracted_text }}
+ExtractedText: <text>{{ license.extracted_text }}</text>
 LicenseCrossReference: {{ license.cross_reference }}
 LicenseComment: {{ license.comment | text }}
 {% endfor %}
