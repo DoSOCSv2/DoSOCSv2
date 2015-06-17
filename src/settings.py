@@ -33,4 +33,4 @@ settings = {
 }
 
 # version string used throughout program
-VERSION = '0.001'
+VERSION = '0.002'
