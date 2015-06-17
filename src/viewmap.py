@@ -16,7 +16,12 @@ view_names = {
     'v_file_contributors',
     'v_files_licenses',
     'v_packages_all_licenses_in_files',
-    'v_relationships'
+    'v_relationships',
+    'v_rel_contains',
+    'v_rel_contained_by',
+    'v_rel_describes',
+    'v_rel_described_by',
+    'v_dupes'
     }
 
 def viewmap(db):

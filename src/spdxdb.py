@@ -21,11 +21,13 @@ import os
 from settings import settings
 import scanners
 import util
+import viewmap
 
 
 class Transaction:
     def __init__(self, db):
         self.db = db
+        self.views = viewmap.viewmap(db)
 
     def __enter__(self):
         return self
@@ -199,24 +201,50 @@ class Transaction:
         identifier_ids.append(package_identifier.identifier_id)
         return identifier_ids
 
-    def rel_type_lookup(self, type_name):
-        return (
-            self.db.relationship_types
-            .filter(self.db.relationship_types.name == type_name)
-            .one()
-            )
+    def create_relationship(self, left_id, rel_type, right_id):
+        relationship_params = {
+            'left_identifier_id': left_id,
+            'relationship_type_id': rel_type,
+            'right_identifier_id': right_id,
+            'relationship_comment': ''
+        }
+        self.db.relationships.insert(**relationship_params)
+        self.db.flush()
 
-    def create_relationships(self, rel_type_name, left_ids, right_ids):
-        rel_type_id = self.rel_type_lookup(rel_type_name).relationship_type_id
-        for left_id in left_ids:
-            for right_id in right_ids:
-                relationship_params = {
-                    'left_identifier_id': left_id,
-                    'relationship_type_id': rel_type_id,
-                    'right_identifier_id': right_id,
-                    'relationship_comment': ''
-                    }
-                self.db.relationships.insert(**relationship_params)
+    def autocreate_relationships(self, doc_id):
+        contains = (
+            self.views['v_rel_contains']
+            .filter(self.views['v_rel_contains'].left_document_id == doc_id)
+            .all()
+            )
+        contained_by = (
+            self.views['v_rel_contained_by']
+            .filter(self.views['v_rel_contained_by'].left_document_id == doc_id)
+            .all()
+            )
+        describes = (
+            self.views['v_rel_describes']
+            .filter(self.views['v_rel_describes'].document_id == doc_id)
+            .all()
+            )
+        described_by = (
+            self.views['v_rel_described_by']
+            .filter(self.views['v_rel_described_by'].document_id == doc_id)
+            .all()
+            )
+        all_rows = (
+            contains,
+            contained_by,
+            describes,
+            described_by
+            )
+        for iterable in all_rows:
+            for row in iterable:
+                self.create_relationship(
+                    row.left_identifier_id,
+                    row.relationship_type_id,
+                    row.right_identifier_id
+                    )
         self.db.flush()
 
     def create_document(self, package_id, **kwargs):
@@ -261,8 +289,7 @@ class Transaction:
         describes_ids = self.create_all_identifiers(doc_namespace_id, package_id)
         self.db.flush()
         # create known relationships
-        self.create_relationships('DESCRIBES', [doc_identifier_id], describes_ids)
-        self.create_relationships('DESCRIBED_BY', describes_ids, [doc_identifier_id])
+        self.autocreate_relationships(new_document.document_id)
         self.db.flush()
         return new_document
 
