@@ -51,10 +51,11 @@ files (
 -- license/file many-to-many
 create table if not exists
 files_licenses (
-    file_id                 serial,
+    file_license_id         serial,
+    file_id                 integer not null,
     license_id              integer not null,
     extracted_text          text not null,
-    primary key (file_id, license_id),
+    primary key (file_license_id),
     foreign key (file_id) references files (file_id),
     foreign key (license_id) references licenses (license_id)
 );
@@ -181,9 +182,10 @@ external_refs (
 -- document/creator many-to-many
 create table if not exists
 documents_creators (
+    document_creator_id     serial,
     document_id             integer not null,
     creator_id              integer not null,
-    primary key (document_id, creator_id),
+    primary key (document_creator_id),
     foreign key (document_id) references documents (document_id),
     foreign key (creator_id) references creators (creator_id)
 );
