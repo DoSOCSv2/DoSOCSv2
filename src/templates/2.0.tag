@@ -135,7 +135,7 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
-ExtractedText: {{ license.extracted_text }}
+ExtractedText: <text>{{ license.extracted_text }}</text>
 LicenseCrossReference: {{ license.cross_reference }}
 LicenseComment: {{ license.comment | text }}
 {% endfor %}
