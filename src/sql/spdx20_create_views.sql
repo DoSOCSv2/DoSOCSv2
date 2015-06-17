@@ -35,7 +35,7 @@ select
 ann.annotation_id           annotation_id,
 ann.document_id             document_id,
 cre.creator_text            creator,
-ann.created_ts              created_ts,
+ann.created_ts at time zone 'utc'          as created_ts,
 ann.comment                 "comment",
 aty.name                    "type",
 ide.id_string               id_string
@@ -138,7 +138,8 @@ ide.id_string               id_string,
 doc.name                    "name",
 dns.uri                     uri,
 doc.license_list_version    license_list_version,
-doc.created_ts              created_ts,
+doc.created_ts at time zone 'utc'
+                            as created_ts,
 doc.creator_comment         creator_comment,
 doc.document_comment        document_comment
 from documents doc

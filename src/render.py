@@ -1,3 +1,5 @@
+import time
+
 import jinja2
 import util
 import viewmap
@@ -18,10 +20,15 @@ def _filter_noassertion(value):
     return value if value else 'NOASSERTION'
 
 
+def _filter_utctimestamp(value):
+    return time.strftime('%FT%TZ', value.timetuple())
+
+
 jinja2_env = jinja2.Environment(trim_blocks=True, lstrip_blocks=True)
 jinja2_env.filters['text'] = _filter_text
 jinja2_env.filters['text_default'] = _filter_text_default
 jinja2_env.filters['noassertion'] = _filter_noassertion
+jinja2_env.filters['utctimestamp'] = _filter_utctimestamp
 
 
 def render_template(templatefile, context):
