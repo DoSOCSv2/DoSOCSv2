@@ -91,7 +91,6 @@ class Transaction:
         if file is not None:
             return file
         file = self._create_file(path, sha1)
-        #print(path)
         if scanner is not None:
             shortnames_found = [item.license for item in scanner.scan(path)]
             licenses_found = [
@@ -213,23 +212,23 @@ class Transaction:
 
     def autocreate_relationships(self, doc_id):
         contains = (
-            self.views['v_rel_contains']
-            .filter(self.views['v_rel_contains'].left_document_id == doc_id)
+            self.views['v_auto_contains']
+            .filter(self.views['v_auto_contains'].document_id == doc_id)
             .all()
             )
         contained_by = (
-            self.views['v_rel_contained_by']
-            .filter(self.views['v_rel_contained_by'].left_document_id == doc_id)
+            self.views['v_auto_contained_by']
+            .filter(self.views['v_auto_contained_by'].document_id == doc_id)
             .all()
             )
         describes = (
-            self.views['v_rel_describes']
-            .filter(self.views['v_rel_describes'].document_id == doc_id)
+            self.views['v_auto_describes']
+            .filter(self.views['v_auto_describes'].document_id == doc_id)
             .all()
             )
         described_by = (
-            self.views['v_rel_described_by']
-            .filter(self.views['v_rel_described_by'].document_id == doc_id)
+            self.views['v_auto_described_by']
+            .filter(self.views['v_auto_described_by'].document_id == doc_id)
             .all()
             )
         all_rows = (

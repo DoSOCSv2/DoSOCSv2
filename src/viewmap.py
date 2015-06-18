@@ -17,10 +17,10 @@ view_names = {
     'v_files_licenses',
     'v_packages_all_licenses_in_files',
     'v_relationships',
-    'v_rel_contains',
-    'v_rel_contained_by',
-    'v_rel_describes',
-    'v_rel_described_by',
+    'v_auto_contains',
+    'v_auto_contained_by',
+    'v_auto_describes',
+    'v_auto_described_by',
     'v_dupes'
     }
 
