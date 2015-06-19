@@ -257,8 +257,6 @@ v_auto_contains
 as
 select
 doc.document_id                 document_id,
-pac.package_id                  package_id,
-pfi.package_file_id             package_file_id,
 ide1.identifier_id              left_identifier_id,
 rty.relationship_type_id        relationship_type_id,
 ide2.identifier_id              right_identifier_id
@@ -278,8 +276,6 @@ v_auto_contained_by
 as
 select
 v.document_id               document_id,
-v.package_id                package_id,
-v.package_file_id           package_file_id,
 v.right_identifier_id       left_identifier_id,
 rty2.relationship_type_id   relationship_type_id,
 v.left_identifier_id        right_identifier_id
@@ -293,8 +289,6 @@ v_auto_describes
 as
 select
 doc.document_id             document_id,
-pac.package_id              package_id,
-null                        package_file_id,
 ide1.identifier_id          left_identifier_id,
 rty.relationship_type_id    relationship_type_id,
 ide2.identifier_id          right_identifier_id
@@ -309,8 +303,6 @@ union all
 
 select
 doc.document_id             document_id,
-null                        package_id,
-pfi.package_file_id         package_file_id,
 ide1.identifier_id          left_identifier_id,
 rty.relationship_type_id    relationship_type_id,
 ide2.identifier_id          right_identifier_id
@@ -329,8 +321,6 @@ v_auto_described_by
 as
 select
 v.document_id               document_id,
-v.package_id                package_id,
-v.package_file_id           package_file_id,
 v.right_identifier_id       left_identifier_id,
 rty2.relationship_type_id   relationship_type_id,
 v.left_identifier_id        right_identifier_id

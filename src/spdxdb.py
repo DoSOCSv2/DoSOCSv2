@@ -210,35 +210,23 @@ class Transaction:
         self.db.relationships.insert(**relationship_params)
         self.db.flush()
 
+    def _view_fetch_by_docid(self, view_name, doc_id):
+        return (
+            self.views[view_name]
+            .filter(self.views[view_name].document_id == doc_id)
+            .all()
+            )
+
     def autocreate_relationships(self, doc_id):
-        contains = (
-            self.views['v_auto_contains']
-            .filter(self.views['v_auto_contains'].document_id == doc_id)
-            .all()
-            )
-        contained_by = (
-            self.views['v_auto_contained_by']
-            .filter(self.views['v_auto_contained_by'].document_id == doc_id)
-            .all()
-            )
-        describes = (
-            self.views['v_auto_describes']
-            .filter(self.views['v_auto_describes'].document_id == doc_id)
-            .all()
-            )
-        described_by = (
-            self.views['v_auto_described_by']
-            .filter(self.views['v_auto_described_by'].document_id == doc_id)
-            .all()
-            )
-        all_rows = (
-            contains,
-            contained_by,
-            describes,
-            described_by
-            )
-        for iterable in all_rows:
-            for row in iterable:
+        view_names = [
+            'v_auto_contains',
+            'v_auto_contained_by',
+            'v_auto_describes',
+            'v_auto_described_by'
+            ]
+        for view_name in view_names:
+            rows = self._view_fetch_by_docid(view_name, doc_id)
+            for row in rows:
                 self.create_relationship(
                     row.left_identifier_id,
                     row.relationship_type_id,
