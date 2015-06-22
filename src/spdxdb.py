@@ -78,7 +78,7 @@ class Transaction:
         self.db.flush()
         return new_file
 
-    def scan_file(self, path, scanner=scanners.nomos):
+    def scan_file(self, path, scanner=scanners.nomos, known_sha1=None):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
@@ -86,7 +86,7 @@ class Transaction:
         If the file is cached, return the cached file object, and do not
         scan.
         '''
-        sha1 = util.sha1(path)
+        sha1 = known_sha1 or util.sha1(path)
         file = util.lookup_by_sha1(self.db.files, sha1)
         if file is not None:
             return file
@@ -113,6 +113,50 @@ class Transaction:
         self.db.flush()
         return file
 
+    def scan_directory(self, path, scanner=scanners.nomos, alt_name=None):
+        ver_code, hashes = util.get_dir_hashes(path)
+        package = (self.db.packages
+            .filter(self.db.packages.verification_code == ver_code)
+            .first()
+            )
+        if package is not None:
+            return package
+        package_params = {
+            'name': alt_name or os.path.basename(os.path.abspath(path)),
+            'version': '',
+            'file_name': os.path.basename(os.path.abspath(path)),
+            'supplier_id': None,
+            'originator_id': None,
+            'download_location': None,
+            'verification_code': ver_code,
+            'ver_code_excluded_file_id': None,
+            'sha1': None,
+            'home_page': None,
+            'source_info': '',
+            'concluded_license_id': None,
+            'declared_license_id': None,
+            'license_comment': '',
+            'copyright_text': None,
+            'summary': '',
+            'description': '',
+            'comment': ''
+            }
+        package = self.db.packages.insert(**package_params)
+        self.db.flush()
+        for (filepath, sha1) in hashes.iteritems():
+            fileobj = self.scan_file(filepath, scanner, known_sha1=sha1)
+            package_file_params = {
+                'package_id': package.package_id,
+                'file_id': fileobj.file_id,
+                'concluded_license_id': None,
+                'file_name': os.path.join(os.curdir, os.path.relpath(filepath, start=path)),
+                'license_comment': ''
+                }
+            self.db.packages_files.insert(**package_file_params)
+        self.db.flush()
+        return package
+
+
     def scan_package(self, path, scanner=scanners.nomos):
         '''Scan package for licenses. Add it and all files to the DB.
 
@@ -120,6 +164,8 @@ class Transaction:
 
         Only scan if the package is not already cached (by SHA-1).
         '''
+        if os.path.isdir(path):
+            return self.scan_directory(path, scanner=scanner)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
