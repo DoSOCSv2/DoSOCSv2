@@ -15,18 +15,20 @@
 
 '''Miscellaneous utility functions.'''
 
+from __future__ import print_function
+
 from contextlib import contextmanager
 import hashlib
 import os
 import re
 import shutil
+import sys
 import tarfile
 import tempfile
 import uuid
 import zipfile
 
 import magic
-
 
 def spdx_filetype(filename):
     '''Try to guess the SPDX filetype of the file.'''

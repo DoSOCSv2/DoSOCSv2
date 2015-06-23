@@ -17,22 +17,25 @@
 # limitations under the License.
 
 '''Usage:
-{0} [options] (FILE | -i DOCID | -c PACKAGEID)
-{0} [--init | --init-noconfirm]
-{0} --help
+{0} generate (PACKAGE-ID)
+{0} init [--no-confirm]
+{0} print (DOC-ID)
+{0} scan [-n] (PATH)
+{0} (--help | --version)
 
-Options:
-  -c, --create=PACKAGEID      Create and store document from an
-                                already-scanned package
-  -i, --doc-id=DOCID          Generate SPDX document from database
-                                (required if FILE argument not specified)
+Commands:
+  generate      Generate SPDX document data in the database for a
+                  particular package
+  init          Drop and create all tables, then initialize with static
+                  data (destructive, will prompt first)
+  print         Render and print a document to standard output
+  scan          Scan an archive file or directory
+
+Options for 'scan':
   -n, --no-license-scan       Do not scan for license information
-  -p, --print=FORMAT          Print SPDX document in specified format
-                                (Currently only `tag' is supported)
-      --init                  Drop and create all tables, then initialize
-                                with static data (destructive, will
-                                prompt first)
-      --init-noconfirm        Same as --init, but don't prompt
+
+Options for 'init':
+      --no-confirm            Don't prompt first
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -40,6 +43,7 @@ Report bugs to <tgurney@unomaha.edu>.
 from __future__ import print_function
 from settings import settings, VERSION
 from spdxdb import Transaction
+import dbinit
 import docopt
 import os
 import render
@@ -52,18 +56,18 @@ format_map = {
 #    'rdf': 'templates/2.0.rdf',
 }
 
-PROGNAME = os.path.basename(sys.argv[0])
-
 
 def msg(text, **kwargs):
-    print(PROGNAME + ': ' + text, **kwargs)
+    print('dosocs2' + ': ' + text, **kwargs)
     sys.stdout.flush()
 
 
-def dbinit():
-    # importing these modules only when needed, for performance
-    import dbinit
-    db = sqlsoup.SQLSoup(settings['connection-uri'])
+def errmsg(text, **kwargs):
+    print('dosocs2' + ': ' + text, file=sys.stderr, **kwargs)
+    sys.stdout.flush()
+
+
+def initialize(db):
     url = 'http://spdx.org/licenses/'
     msg('dropping all views...', end='')
     result = dbinit.drop_all_views(db)
@@ -83,9 +87,9 @@ def dbinit():
     msg('loading licenses...', end='')
     result = dbinit.load_licenses(db, url)
     if not result:
-        print('error!')
-        msg('failed to download and load the license list')
-        msg('check your connection to ' + url + ' and make sure it is the correct page')
+        errmsg('error!')
+        errmsg('failed to download and load the license list')
+        errmsg('check your connection to ' + url + ' and make sure it is the correct page')
         return False
     else:
         print('ok.')
@@ -111,68 +115,53 @@ def dbinit():
 
 
 def main():
-    argv = docopt.docopt(doc=__doc__.format(PROGNAME), version=VERSION)
+    argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=VERSION)
 
-    if argv['--init'] or argv['--init-noconfirm']:
-        if not argv['--init-noconfirm']:
-            msg('preparing to initialize the database')
-            msg('all existing data will be deleted!')
-            msg('make sure you are connected to the internet before continuing.')
-            msg('type the word "YES" (all uppercase) to commit.')
+    doc_id = argv['DOC-ID']
+    document = None
+    db = sqlsoup.SQLSoup(settings['connection-uri'])
+    license_scan = not argv['--no-license-scan']
+    package_id = argv['PACKAGE-ID']
+    package_path = argv['PATH']
+    output_format = 'tag'
+
+    if argv['init']:
+        if not argv['--no-confirm']:
+            errmsg('preparing to initialize the database')
+            errmsg('all existing data will be deleted!')
+            errmsg('make sure you are connected to the internet before continuing.')
+            errmsg('type the word "YES" (all uppercase) to commit.')
             answer = raw_input()
             if answer != 'YES':
-                msg('canceling operation.')
+                errmsg('canceling operation.')
                 sys.exit(1)
-        if dbinit():
+        if initialize(db):
             sys.exit(0)
         else:
             sys.exit(1)
-
-    if not any([argv['--doc-id'], argv['FILE'], argv['--create']]):
-        msg("you must specify a document ID, package ID, or file")
-        msg("try `" + PROGNAME + " --help' for more information.")
-        sys.exit(1)
-
-    package_path = argv['FILE']
-    docid = argv['--doc-id']
-    package_id = argv['--create']
-    license_scan = not argv['--no-license-scan']
-    output_format = argv['--print']
-
-    if output_format not in ('tag', 'rdf', None):
-        msg("unknown output format '" + output_format + "'")
-        msg("try `" + PROGNAME + " --help' for more information.")
-        sys.exit(1)
-
-    document = None  # remove later??
-    db = sqlsoup.SQLSoup(settings['connection-uri'])
-
-    if docid is not None:
+    elif argv['print']:
         with Transaction(db) as t:
-            document = t.fetch('documents', docid)
+            document = t.fetch('documents', doc_id)
         if document is None:
-            msg('docid {} not found in the database.'.format(docid))
+            errmsg('document id {} not found in the database.'.format(doc_id))
             sys.exit(1)
-    elif package_id is not None:
+        print(render.render_document(db, doc_id, format_map[output_format]))
+    elif argv['generate']:
         with Transaction(db) as t:
             package = t.fetch('packages', package_id)
             if package is None:
-                msg('package id {} not found in the database.'.format(package_id))
+                errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
             document = t.create_document(package_id)
         if output_format is None:
             print('document_id: ' + str(document.document_id))
-    else:
+    elif argv['scan']:
         with Transaction(db) as t:
             if license_scan:
                 package = t.scan_package(package_path)
             else:
                 package = t.scan_package(package_path, scanner=scanners.dummy)
-        if output_format is None:
-            print('package_id: ' + str(package.package_id))
-
-    if document is not None and output_format is not None:
-        print(render.render_document(db, docid, format_map[output_format]))
+        print('package_id: ' + str(package.package_id))
 
 
 if __name__ == "__main__":
