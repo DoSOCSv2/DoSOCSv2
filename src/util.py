@@ -15,18 +15,20 @@
 
 '''Miscellaneous utility functions.'''
 
+from __future__ import print_function
+
 from contextlib import contextmanager
 import hashlib
 import os
 import re
 import shutil
+import sys
 import tarfile
 import tempfile
 import uuid
 import zipfile
 
 import magic
-
 
 def spdx_filetype(filename):
     '''Try to guess the SPDX filetype of the file.'''
@@ -125,7 +127,7 @@ def rows_to_dicts(rows):
 
 def lookup_by_sha1(table, sha1):
     '''Lookup object by SHA-1 sum and return the object, or None.
-    
+
     'table' argument must be a table object as created by SQLSoup.
     '''
     # Maybe shouldn't be using first() here?
@@ -138,3 +140,25 @@ def lookup_by_sha1(table, sha1):
 def friendly_namespace_suffix(doc_name):
     '''Return a namespace suffix based on an SPDX document name.'''
     return '/' + doc_name + '-' + str(uuid.uuid4())
+
+
+def allpaths(path):
+    for (root, dirnames, filenames) in os.walk(path):
+        for dirname in dirnames:
+            yield os.path.join(root, dirname)
+        for filename in filenames:
+            yield os.path.join(root, filename)
+
+
+def get_dir_hashes(path, excluded_hashes=None):
+    '''Return a (str, dict) pair: (ver_code, {filepath: sha1})
+
+    ver_code: Package verification code for the directory `path`
+    filepath: Relative path to a file
+    sha1: SHA-1 hex string for that file
+    '''
+    hashes = {relpath: sha1(relpath)
+              for relpath in allpaths(path)
+              if os.path.isfile(relpath)
+              }
+    return (gen_ver_code(hashes.values(), excluded_hashes), hashes)

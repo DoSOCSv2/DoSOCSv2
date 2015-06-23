@@ -21,11 +21,13 @@ import os
 from settings import settings
 import scanners
 import util
+import viewmap
 
 
 class Transaction:
     def __init__(self, db):
         self.db = db
+        self.views = viewmap.viewmap(db)
 
     def __enter__(self):
         return self
@@ -76,7 +78,7 @@ class Transaction:
         self.db.flush()
         return new_file
 
-    def scan_file(self, path, scanner=scanners.nomos):
+    def scan_file(self, path, scanner=scanners.nomos, known_sha1=None):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
@@ -84,12 +86,11 @@ class Transaction:
         If the file is cached, return the cached file object, and do not
         scan.
         '''
-        sha1 = util.sha1(path)
+        sha1 = known_sha1 or util.sha1(path)
         file = util.lookup_by_sha1(self.db.files, sha1)
         if file is not None:
             return file
         file = self._create_file(path, sha1)
-        #print(path)
         if scanner is not None:
             shortnames_found = [item.license for item in scanner.scan(path)]
             licenses_found = [
@@ -112,6 +113,50 @@ class Transaction:
         self.db.flush()
         return file
 
+    def scan_directory(self, path, scanner=scanners.nomos, alt_name=None):
+        ver_code, hashes = util.get_dir_hashes(path)
+        package = (self.db.packages
+            .filter(self.db.packages.verification_code == ver_code)
+            .first()
+            )
+        if package is not None:
+            return package
+        package_params = {
+            'name': alt_name or os.path.basename(os.path.abspath(path)),
+            'version': '',
+            'file_name': os.path.basename(os.path.abspath(path)),
+            'supplier_id': None,
+            'originator_id': None,
+            'download_location': None,
+            'verification_code': ver_code,
+            'ver_code_excluded_file_id': None,
+            'sha1': None,
+            'home_page': None,
+            'source_info': '',
+            'concluded_license_id': None,
+            'declared_license_id': None,
+            'license_comment': '',
+            'copyright_text': None,
+            'summary': '',
+            'description': '',
+            'comment': ''
+            }
+        package = self.db.packages.insert(**package_params)
+        self.db.flush()
+        for (filepath, sha1) in hashes.iteritems():
+            fileobj = self.scan_file(filepath, scanner, known_sha1=sha1)
+            package_file_params = {
+                'package_id': package.package_id,
+                'file_id': fileobj.file_id,
+                'concluded_license_id': None,
+                'file_name': os.path.join(os.curdir, os.path.relpath(filepath, start=path)),
+                'license_comment': ''
+                }
+            self.db.packages_files.insert(**package_file_params)
+        self.db.flush()
+        return package
+
+
     def scan_package(self, path, scanner=scanners.nomos):
         '''Scan package for licenses. Add it and all files to the DB.
 
@@ -119,6 +164,8 @@ class Transaction:
 
         Only scan if the package is not already cached (by SHA-1).
         '''
+        if os.path.isdir(path):
+            return self.scan_directory(path, scanner=scanner)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
@@ -199,24 +246,38 @@ class Transaction:
         identifier_ids.append(package_identifier.identifier_id)
         return identifier_ids
 
-    def rel_type_lookup(self, type_name):
+    def create_relationship(self, left_id, rel_type, right_id):
+        relationship_params = {
+            'left_identifier_id': left_id,
+            'relationship_type_id': rel_type,
+            'right_identifier_id': right_id,
+            'relationship_comment': ''
+        }
+        self.db.relationships.insert(**relationship_params)
+        self.db.flush()
+
+    def _view_fetch_by_docid(self, view_name, doc_id):
         return (
-            self.db.relationship_types
-            .filter(self.db.relationship_types.name == type_name)
-            .one()
+            self.views[view_name]
+            .filter(self.views[view_name].document_id == doc_id)
+            .all()
             )
 
-    def create_relationships(self, rel_type_name, left_ids, right_ids):
-        rel_type_id = self.rel_type_lookup(rel_type_name).relationship_type_id
-        for left_id in left_ids:
-            for right_id in right_ids:
-                relationship_params = {
-                    'left_identifier_id': left_id,
-                    'relationship_type_id': rel_type_id,
-                    'right_identifier_id': right_id,
-                    'relationship_comment': ''
-                    }
-                self.db.relationships.insert(**relationship_params)
+    def autocreate_relationships(self, doc_id):
+        view_names = [
+            'v_auto_contains',
+            'v_auto_contained_by',
+            'v_auto_describes',
+            'v_auto_described_by'
+            ]
+        for view_name in view_names:
+            rows = self._view_fetch_by_docid(view_name, doc_id)
+            for row in rows:
+                self.create_relationship(
+                    row.left_identifier_id,
+                    row.relationship_type_id,
+                    row.right_identifier_id
+                    )
         self.db.flush()
 
     def create_document(self, package_id, **kwargs):
@@ -261,8 +322,7 @@ class Transaction:
         describes_ids = self.create_all_identifiers(doc_namespace_id, package_id)
         self.db.flush()
         # create known relationships
-        self.create_relationships('DESCRIBES', [doc_identifier_id], describes_ids)
-        self.create_relationships('DESCRIBED_BY', describes_ids, [doc_identifier_id])
+        self.autocreate_relationships(new_document.document_id)
         self.db.flush()
         return new_document
 
