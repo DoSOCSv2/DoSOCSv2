@@ -51,7 +51,9 @@ PackageSupplier: {{ package.supplier | noassertion }}
 PackageOriginator: {{ package.originator | noassertion }}
 PackageDownloadLocation: {{ package.download_location | noassertion }}
 PackageVerificationCode: {{ package.verification_code }}
+{% if package.checksum != None %}
 PackageChecksum: SHA1: {{ package.checksum }}
+{% endif %}
 PackageHomePage: {{ package.home_page | noassertion }}
 {% if package.source_info %}
 PackageSourceInfo: {{ package.source_info }}
