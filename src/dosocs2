@@ -153,15 +153,14 @@ def main():
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
             document = t.create_document(package_id)
-        if output_format is None:
-            print('document_id: ' + str(document.document_id))
+            print('(package_id {}): document_id: {}'.format(package_id, document.document_id))
     elif argv['scan']:
         with Transaction(db) as t:
             if license_scan:
                 package = t.scan_package(package_path)
             else:
                 package = t.scan_package(package_path, scanner=scanners.dummy)
-        print('package_id: ' + str(package.package_id))
+        print('{}: package_id: {}'.format(package_path, package.package_id))
 
 
 if __name__ == "__main__":
