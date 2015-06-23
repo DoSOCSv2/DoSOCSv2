@@ -18,10 +18,10 @@
 import itertools
 import os
 
-from settings import settings
-import scanners
-import util
-import viewmap
+from .settings import settings
+from . import scanners
+from . import util
+from . import viewmap
 
 
 class Transaction:

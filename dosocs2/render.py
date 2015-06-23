@@ -1,8 +1,8 @@
 import time
 
 import jinja2
-import util
-import viewmap
+from . import util
+from . import viewmap
 
 
 def _filter_text(value):

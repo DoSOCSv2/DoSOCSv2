@@ -25,7 +25,7 @@ from collections import namedtuple
 import re
 import subprocess
 
-import settings
+from . import settings
 
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 

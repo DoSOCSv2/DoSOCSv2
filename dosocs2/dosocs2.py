@@ -41,15 +41,18 @@ Report bugs to <tgurney@unomaha.edu>.
 '''
 
 from __future__ import print_function
-from settings import settings, VERSION
-from spdxdb import Transaction
-import dbinit
-import docopt
+
 import os
-import render
-import scanners  # for the dummy scanner
-import sqlsoup
 import sys
+
+import docopt
+import sqlsoup
+
+from .spdxdb import Transaction
+from .settings import settings, VERSION
+from . import dbinit
+from . import render
+from . import scanners  # for the dummy scanner
 
 format_map = {
     'tag': 'templates/2.0.tag',
