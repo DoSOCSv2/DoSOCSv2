@@ -28,7 +28,7 @@ setup(
         'sqlsoup'
         ],
 
-    package_data={'dosocs2': ['sql/*', 'templates/*']},
+    package_data={'dosocs2': ['sql/*', 'templates/*', 'default/*']},
 
     entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
 

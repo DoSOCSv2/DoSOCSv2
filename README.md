@@ -50,20 +50,20 @@ Dependencies
 - [python-magic](https://github.com/ahupp/python-magic)
 - [SQLSoup](https://sqlsoup.readthedocs.org/en/latest/)
 
-The included `install.sh` will install all Python libraries for you.
+All Python dependencies are handled by the setup script.
 
 Installation
 ------------
 
 First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
-is in no way a requirement. Now then...
+is in no way a requirement.
 
-Clone this repository and `cd` to it, then run the install script.
+Clone the repository and use `pip` to install it as a package. If you are not
+inside a virtualenv you will probably have to run `pip` as root.
 
     $ git clone https://github.com/ttgurney/dosocs2
-    $ cd dosocs2
-    $ ./install.sh
+    $ pip install -e dosocs2
 
 You will have to create the `spdx` (or whatever you want to call it) role and
 database yourself (although I recommend setting a different password than the
@@ -72,37 +72,40 @@ one given...):
     postgres=# create role spdx with login password 'spdx';
     postgres=# create database spdx with owner spdx;
 
-Then edit `src/settings.py` and make sure you are pointed to the correct
+
+Generate an initial config file:
+
+    $ dosocs2 newconfig
+    dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
+
+Then open up the config file and make sure you are pointed to the correct
 PostgreSQL server, with a valid username/password. You also need to set the
 path of the default `nomos` scanner (part of FOSSology) if it is not already
 correct.
 
-Finally, you have to run `dosocs2 --init` to create all necessary tables and
-views. That's it!
+Finally, to create all necessary tables and views in the database:
+
+    $ dosocs2 dbinit
 
 
 Usage
 -----
 
-NOTE: The current interface is clunky and subject to change.
-
 To scan a package and store its information in the database:
 
-    $ dosocs2 package.tar.gz
+    $ dosocs2 scan package.tar.gz
     package_id: 456
 
 No document has been created yet. To create one in the database (specifying the
 package ID):
 
-    $ dosocs2 -c 456
+    $ dosocs2 generate 456
     document_id: 123
 
-Then, to compile and output the document:
+Then, to compile and output the document in tag-value format:
 
-    $ dosocs2 -i 123 -p tag
+    $ dosocs2 print 123
     [... document output here ...]
-
-Currently only 'tag' format is supported.
 
 
 History
