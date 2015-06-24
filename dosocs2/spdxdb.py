@@ -201,7 +201,7 @@ class Transaction:
             for relpath, abspath in itertools.izip(relpaths, abspaths):
                 if not os.path.isfile(abspath):
                     continue
-                fileobj = self.scan_file(abspath, scanner)
+                fileobj = self.scan_file(abspath, scanner_name)
                 hashes.append(fileobj.sha1)
                 package_file_params = {
                     'package_id': package.package_id,

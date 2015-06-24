@@ -70,7 +70,7 @@ def tempextract(path):
                 tf.extractall(path=tempdir)
             yield (tempdir, relpaths)
         elif zipfile.is_zipfile(path):
-            with zipfile.open(path) as zf:
+            with zipfile.ZipFile(path) as zf:
                 relpaths = zf.namelist()
                 zf.extractall(path=tempdir)
             yield (tempdir, relpaths)
