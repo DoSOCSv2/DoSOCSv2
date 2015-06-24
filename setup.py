@@ -16,7 +16,7 @@ setup(
         'Topic :: Software Development :: Documentation',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 2.7',
-    ],
+        ],
 
     keywords='spdx license licenses',
     packages=['dosocs2'],
@@ -28,18 +28,9 @@ setup(
         'sqlsoup'
         ],
 
-    package_data={
-        'dosocs2': ['sql/*', 'templates/*'],
-    },
+    package_data={'dosocs2': ['sql/*', 'templates/*']},
 
-    # To provide executable scripts, use entry points in preference to the
-    # "scripts" keyword. Entry points provide cross-platform support and allow
-    # pip to create the appropriate form of executable for the target platform.
-    entry_points={
-        'console_scripts': [
-            'dosocs2=dosocs2.dosocs2:main',
-        ],
-    },
+    entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
 
-    zip_safe = False,
+    zip_safe=False,
 )
