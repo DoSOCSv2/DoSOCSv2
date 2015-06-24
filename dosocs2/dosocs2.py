@@ -20,6 +20,7 @@
 {0} generate (PACKAGE-ID)
 {0} dbinit [--no-confirm]
 {0} newconfig
+{0} oneshot (PATH)
 {0} print (DOC-ID)
 {0} scan [-n] (PATH)
 {0} (--help | --version)
@@ -31,6 +32,8 @@ Commands:
                   (destructive, will prompt first)
   newconfig     Generate new configuration file, overwriting
                   existing one
+  oneshot       Scan, generate document, and print document in one
+                  command
   print         Render and print a document to standard output
   scan          Scan an archive file or directory
 
@@ -177,6 +180,26 @@ def main():
             else:
                 package = t.scan_package(package_path, scanner=scanners.dummy)
         print('{}: package_id: {}'.format(package_path, package.package_id))
+
+    elif argv['oneshot']:
+        with Transaction(db) as t:
+            package = t.scan_package(package_path)
+            package_id = package.package_id
+            sys.stderr.write('{}: package_id: {}\n'.format(package_path, package_id))
+        with Transaction(db) as t:
+            document = (
+                db.documents
+                .filter(db.documents.package_id == package_id)
+                .first()
+                )
+            if document:
+                doc_id = document.document_id
+            else:
+                document = t.create_document(package_id)
+                doc_id = document.document_id
+            sys.stderr.write('{}: document_id: {}\n'.format(package_path, doc_id))
+        print(render.render_document(db, doc_id, format_map[output_format]))     
+
 
 
 if __name__ == "__main__":
