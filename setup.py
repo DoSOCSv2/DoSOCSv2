@@ -2,8 +2,6 @@ from setuptools import setup
 
 setup(
     name='dosocs2',
-
-    # Versions should comply with PEP440.
     version='0.1.0',
     description='SPDX 2.0 document creation and storage',
     long_description='',

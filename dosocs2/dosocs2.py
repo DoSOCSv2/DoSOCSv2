@@ -43,6 +43,7 @@ Report bugs to <tgurney@unomaha.edu>.
 from __future__ import print_function
 
 import os
+import pkg_resources
 import sys
 
 import docopt
@@ -55,7 +56,7 @@ from . import render
 from . import scanners  # for the dummy scanner
 
 format_map = {
-    'tag': 'templates/2.0.tag',
+    'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
 #    'rdf': 'templates/2.0.rdf',
 }
 
