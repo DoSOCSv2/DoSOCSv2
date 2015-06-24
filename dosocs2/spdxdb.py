@@ -43,7 +43,8 @@ class Transaction:
 
         Return the new or existing license object in any case.
         '''
-        existing_license = (self.db.licenses
+        existing_license = (
+            self.db.licenses
             .filter(self.db.licenses.short_name == short_name)
             .first()
             )
@@ -62,7 +63,8 @@ class Transaction:
         return new_license
 
     def _create_file(self, path, sha1):
-        file_type_id = (self.db.file_types
+        file_type_id = (
+            self.db.file_types
             .filter(self.db.file_types.name == util.spdx_filetype(path))
             .one().file_type_id
             )
@@ -115,7 +117,8 @@ class Transaction:
 
     def scan_directory(self, path, scanner=scanners.nomos, alt_name=None):
         ver_code, hashes = util.get_dir_hashes(path)
-        package = (self.db.packages
+        package = (
+            self.db.packages
             .filter(self.db.packages.verification_code == ver_code)
             .first()
             )
@@ -155,7 +158,6 @@ class Transaction:
             self.db.packages_files.insert(**package_file_params)
         self.db.flush()
         return package
-
 
     def scan_package(self, path, scanner=scanners.nomos):
         '''Scan package for licenses. Add it and all files to the DB.
@@ -220,7 +222,8 @@ class Transaction:
         return document_namespace
 
     def create_all_identifiers(self, document_namespace_id, package_id):
-        all_files = (self.db.packages_files
+        all_files = (
+            self.db.packages_files
             .filter(self.db.packages_files.package_id == package_id)
             .all()
             )
@@ -282,7 +285,8 @@ class Transaction:
 
     def create_document(self, package_id, **kwargs):
         package = self.db.packages.get(package_id)
-        data_license = (self.db.licenses
+        data_license = (
+            self.db.licenses
             .filter(self.db.licenses.short_name == 'CC0-1.0')
             .one()
             )
