@@ -18,8 +18,8 @@
 import itertools
 import os
 
-from .settings import settings
-from . import scanners
+from .scanners import scanners
+from . import config
 from . import util
 from . import viewmap
 
@@ -80,7 +80,7 @@ class Transaction:
         self.db.flush()
         return new_file
 
-    def scan_file(self, path, scanner=scanners.nomos, known_sha1=None):
+    def scan_file(self, path, scanner_name='nomos', known_sha1=None):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
@@ -93,17 +93,18 @@ class Transaction:
         if file is not None:
             return file
         file = self._create_file(path, sha1)
-        if scanner is not None:
-            shortnames_found = [item.license for item in scanner.scan(path)]
+        if scanner_name is not None:
+            scan = scanners[scanner_name]
+            shortnames_found = [item.license for item in scan(path)]
             licenses_found = [
-                self.lookup_or_add_license(shortname, 'found by ' + scanner.name)
+                self.lookup_or_add_license(shortname, 'found by ' + scanner_name)
                 for shortname in shortnames_found
                 ]
             if len(shortnames_found) > 0:
                 license_name_list = ','.join(shortnames_found)
-                scanner_comment = scanner.name + ': ' + license_name_list
+                scanner_comment = scanner_name + ': ' + license_name_list
             else:
-                scanner_comment = scanner.name + ': ' + 'No licenses found'
+                scanner_comment = scanner_name + ': ' + 'No licenses found'
             file.comment = scanner_comment
             for license in licenses_found:
                 file_license_params = {
@@ -115,7 +116,7 @@ class Transaction:
         self.db.flush()
         return file
 
-    def scan_directory(self, path, scanner=scanners.nomos, alt_name=None):
+    def scan_directory(self, path, scanner_name='nomos', alt_name=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
@@ -147,7 +148,7 @@ class Transaction:
         package = self.db.packages.insert(**package_params)
         self.db.flush()
         for (filepath, sha1) in hashes.iteritems():
-            fileobj = self.scan_file(filepath, scanner, known_sha1=sha1)
+            fileobj = self.scan_file(filepath, scanner_name, known_sha1=sha1)
             package_file_params = {
                 'package_id': package.package_id,
                 'file_id': fileobj.file_id,
@@ -159,7 +160,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner=scanners.nomos):
+    def scan_package(self, path, scanner_name='nomos'):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -167,7 +168,7 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner=scanner)
+            return self.scan_directory(path, scanner_name)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
@@ -216,7 +217,7 @@ class Transaction:
 
     def create_document_namespace(self, doc_name):
         suffix = util.friendly_namespace_suffix(doc_name)
-        uri = settings['namespace-prefix'] + suffix
+        uri = config.namespace_prefix + suffix
         document_namespace = self.db.document_namespaces.insert(uri=uri)
         self.db.flush()
         return document_namespace

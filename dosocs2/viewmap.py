@@ -1,6 +1,5 @@
 '''Database view mappings for SQLSoup.'''
 from sqlalchemy import Table
-from .settings import settings
 
 '''All views produced by viewmap().'''
 view_names = {

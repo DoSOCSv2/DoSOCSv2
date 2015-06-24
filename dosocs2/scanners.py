@@ -22,36 +22,30 @@ that returns a list of ScannerResult objects.
 '''
 
 from collections import namedtuple
+from .config import config
 import re
 import subprocess
 
-from . import settings
-
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 
+def nomos(filename):
+    args = (config['nomos']['path'], filename)
+    output = subprocess.check_output(args)
+    licenses = []
+    pattern = re.compile('File (.+?) contains license\(s\) (.+)')
+    for line in output.split('\n'):
+        m = re.match(pattern, line)
+        if m is None:
+            continue
+        for subitem in m.group(2).split(','):
+            result = ScannerResult(file_path=m.group(1), license=subitem)
+            licenses.append(result)
+    return [l for l in licenses if l.license != 'No_license_found']
 
-class nomos:
-    name = 'nomos'
+def dummy(filename):
+    return []
 
-    @staticmethod
-    def scan(filename):
-        args = (settings.scanner['nomos'], filename)
-        output = subprocess.check_output(args)
-        licenses = []
-        pattern = re.compile('File (.+?) contains license\(s\) (.+)')
-        for line in output.split('\n'):
-            m = re.match(pattern, line)
-            if m is None:
-                continue
-            for subitem in m.group(2).split(','):
-                result = ScannerResult(file_path=m.group(1), license=subitem)
-                licenses.append(result)
-        return [l for l in licenses if l.license != 'No_license_found']
-
-
-class dummy:
-    name = 'dummy'
-
-    @staticmethod
-    def scan(filename):
-        return []
+scanners = {
+    'nomos': nomos,
+    'dummy': dummy
+    }
