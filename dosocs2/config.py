@@ -22,8 +22,7 @@ def create_user_config(overwrite=False):
     return True
 
 _parser = RawConfigParser()
-if not _parser.read(DOSOCS2_CONFIG_PATH):
-    _parser.read(DEFAULT_CONFIG_PATH)
+_parser.read([DEFAULT_CONFIG_PATH, DOSOCS2_CONFIG_PATH])
 config = {section: dict(_parser.items(section)) for section in _parser.sections()}
 connection_uri = '{dbms}://{user}:{password}@{host}:{port}/{database}'.format(**config['database'])
 namespace_prefix = '{dbms}://{host}:{port}/{database}/'.format(**config['database'])
