@@ -26,8 +26,10 @@ backwards-incompatible changes until a proper release.
 * License expression syntax is not supported.
 * Deprecated fields from SPDX 1.2 (reviewer info and file dependencies) are not supported.
 
+
 License and Copyright
 ---------------------
+
 dosocs2 is copyright © 2014-2015 University of Nebraska at Omaha and other
 contributors.
 
@@ -38,6 +40,7 @@ Creative Commons Attribution Share-Alike 3.0 license (see CC-BY-SA-3.0).
 
 Dependencies
 ------------
+
 - Python 2.7.x
 - PostgreSQL 8.x or later version (can be on a separate machine)
 - <a href="http://www.fossology.org/">FOSSology</a> 2.5.x or later version
@@ -51,6 +54,7 @@ Dependencies
 - [SQLSoup](https://sqlsoup.readthedocs.org/en/latest/)
 
 All Python dependencies are handled by the setup script.
+
 
 Installation
 ------------
@@ -91,6 +95,21 @@ Finally, to create all necessary tables and views in the database:
 Usage
 -----
 
+The simplest use case is scanning a package, generating a
+document, and printing the document in one shot:
+
+    $ dosocs2 oneshot package.tar.gz
+    document_id: 1
+    package_id: 1
+    [... document output here ...]
+
+Also works on directories:
+
+    $ dosocs2 oneshot ./path/to/directory
+
+The scan results and other collected metadata are saved in the database
+so that subsequent document generations will be much faster.
+
 To scan a package and store its information in the database:
 
     $ dosocs2 scan package.tar.gz
@@ -110,6 +129,7 @@ Then, to compile and output the document in tag-value format:
 
 History
 -------
+
 dosocs2 owes its name and concept to the
 [DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zach
 McFarland, which in turn was spun off from the `do_spdx` plugin for Yocto
@@ -121,4 +141,5 @@ larger feature set, and a more modular implementation, among other changes.
 
 Maintainers
 -----------
+
 [Thomas T. Gurney](https://github.com/ttgurney)
