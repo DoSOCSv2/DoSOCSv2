@@ -28,8 +28,12 @@ def update_config(other_config_path=None):
     global namespace_prefix
     _parser = RawConfigParser()
     _parser.read([DEFAULT_CONFIG_PATH, other_config_path or DOSOCS2_CONFIG_PATH])
-    config = {section: dict(_parser.items(section)) for section in _parser.sections()}
-    connection_uri = '{dbms}://{user}:{password}@{host}:{port}/{database}'.format(**config['database'])
-    namespace_prefix = '{dbms}://{host}:{port}/{database}'.format(**config['database'])
+    config = {section: dict(_parser.items(section))
+              for section in _parser.sections()
+              }
+    uri_fmt = '{dbms}://{user}:{password}@{host}:{port}/{database}'
+    connection_uri = uri_fmt.format(**config['database'])
+    prefix_fmt = '{dbms}://{host}:{port}/{database}'
+    namespace_prefix = prefix_fmt.format(**config['database'])
 
 update_config()

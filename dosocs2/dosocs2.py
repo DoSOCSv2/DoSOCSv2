@@ -109,7 +109,9 @@ def initialize(db):
     if not result:
         errmsg('error!')
         errmsg('failed to download and load the license list')
-        errmsg('check your connection to ' + url + ' and make sure it is the correct page')
+        errmsg('check your connection to ' + url +
+               ' and make sure it is the correct page'
+               )
         return False
     else:
         print('ok.')
