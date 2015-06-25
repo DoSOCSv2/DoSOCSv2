@@ -17,8 +17,9 @@
 # limitations under the License.
 
 '''Usage:
-{0} generate [-c FILE] (PACKAGE-ID)
+{0} configtest [-c FILE]
 {0} dbinit [-c FILE] [--no-confirm]
+{0} generate [-c FILE] (PACKAGE-ID)
 {0} newconfig
 {0} oneshot [-c FILE] [-p NAME] [-s SCANNER] (PATH)
 {0} print [-c FILE] (DOC-ID)
@@ -27,10 +28,11 @@
 {0} (--help | --version)
 
 Commands:
-  generate      Generate SPDX document data in the database for a
-                  particular package
+  configtest    Check configuration
   dbinit        Create tables, views, and initial config file
                   (destructive, will prompt first)
+  generate      Generate SPDX document data in the database for a
+                  particular package
   newconfig     Create a copy of the default configuration at
                   $XDG_CONFIG_HOME/dosocs2/dosocs2.conf
                   (overwrite existing config)
@@ -138,22 +140,43 @@ def initialize(db):
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
+    db = sqlsoup.SQLSoup(config.connection_uri)
     doc_id = argv['DOC-ID']
     document = None
-    db = sqlsoup.SQLSoup(config.connection_uri)
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
     output_format = 'tag'
     alt_name = argv['--package-name']
+    alt_config = argv['--config']
     this_scanner = argv['--scanner'] or config.config['dosocs2']['default_scanner']
     if this_scanner not in scanners.scanners:
         errmsg("'{}' is not a known scanner".format(this_scanner))
         sys.exit(1)
 
     if argv['--config']:
-        config.update_config(argv['--config'])
+        try:
+            os.stat(alt_config)
+        except EnvironmentError as ex:
+            errmsg('{}: {}'.format(alt_config, ex.strerror))
+            sys.exit(1)
+        config.update_config(alt_config)
 
-    if argv['newconfig']:
+    if argv['configtest']:
+        print('\n' + 79 * '-' + '\n')
+        print('Config at: {}'.format(config.config_location(alt_config)))
+        print('\n' + 79 * '-' + '\n')
+        print('Effective configuration:\n')
+        print('# begin dosocs2 config')
+        config.dump_to_file(sys.stdout)
+        print('# end dosocs2 config')
+        print('\n' + 79 * '-' + '\n')
+        print('Testing database connection...', end='')
+        sys.stdout.flush()
+        db.execute('select 1;')
+        print('ok.')
+        sys.exit(0)
+
+    elif argv['newconfig']:
         config_path = config.DOSOCS2_CONFIG_PATH
         configresult = config.create_user_config()
         if not configresult:
