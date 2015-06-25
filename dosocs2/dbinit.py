@@ -15,6 +15,7 @@
 
 '''dosocs2 database initialization.'''
 
+import pkg_resources
 import re
 import sys
 import urllib2
@@ -151,16 +152,20 @@ def execute_sql_in_file(path, db):
 
 
 def drop_all_tables(db):
-    return execute_sql_in_file('sql/spdx20_drop_tables.sql', db)
+    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_drop_tables.sql')
+    return execute_sql_in_file(filename, db)
 
 
 def create_all_tables(db):
-    return execute_sql_in_file('sql/spdx20_create_tables.sql', db)
+    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_create_tables.sql')
+    return execute_sql_in_file(filename, db)
 
 
 def drop_all_views(db):
-    return execute_sql_in_file('sql/spdx20_drop_views.sql', db)
+    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_drop_views.sql')
+    return execute_sql_in_file(filename, db)
 
 
 def create_all_views(db):
-    return execute_sql_in_file('sql/spdx20_create_views.sql', db)
+    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_create_views.sql')
+    return execute_sql_in_file(filename, db)

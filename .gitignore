@@ -3,3 +3,6 @@ __pycache__/
 venv/
 *.sw[a-z]
 junk/
+build/
+dist/
+*.egg-info/
