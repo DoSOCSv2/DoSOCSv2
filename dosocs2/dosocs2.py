@@ -20,9 +20,10 @@
 {0} generate (PACKAGE-ID)
 {0} dbinit [--no-confirm]
 {0} newconfig
-{0} oneshot (PATH)
+{0} oneshot [-p NAME] [-s SCANNERS] (PATH)
 {0} print (DOC-ID)
-{0} scan [-n] (PATH)
+{0} scan [-n] [-p NAME] [-s SCANNERS] (PATH)
+{0} scanners
 {0} (--help | --version)
 
 Commands:
@@ -36,12 +37,16 @@ Commands:
                   command
   print         Render and print a document to standard output
   scan          Scan an archive file or directory
-
-Options for 'scan':
-  -n, --no-license-scan       Do not scan for license information
+  scanners      List available scanners
 
 Options for 'init':
       --no-confirm            Don't prompt first
+
+Options for 'scan', 'oneshot':
+  -p, --package-name=NAME     Specify name for new package (otherwise
+                                create name from filename)
+  -s, --scanner=SCANNER       Specify scanner to use
+                                ('dosocs2 scanners' to see choices)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -59,7 +64,7 @@ from .spdxdb import Transaction
 from . import config
 from . import dbinit
 from . import render
-from . import scanners  # for the dummy scanner
+from . import scanners
 
 __version__ = '0.1.0'
 
@@ -130,10 +135,14 @@ def main():
     doc_id = argv['DOC-ID']
     document = None
     db = sqlsoup.SQLSoup(config.connection_uri)
-    license_scan = not argv['--no-license-scan']
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
     output_format = 'tag'
+    alt_name = argv['--package-name']
+    this_scanner = argv['--scanner'] or config.config['dosocs2']['default_scanner']
+    if this_scanner not in scanners.scanners:
+        errmsg("'{}' is not a known scanner".format(this_scanner))
+        sys.exit(1)
 
     if argv['newconfig']:
         config_path = config.DOSOCS2_CONFIG_PATH
@@ -143,7 +152,15 @@ def main():
         else:
             msg('wrote config file to {}'.format(config_path))
         sys.exit(0 if configresult else 1)
-    
+
+    elif argv['scanners']:
+        for s in sorted(scanners.scanners):
+            if config.config['dosocs2']['default_scanner'] == s:
+                print(s + ' [default]')
+            else:
+                print(s)
+        sys.exit(0)
+
     elif argv['dbinit']:
         if not argv['--no-confirm']:
             errmsg('preparing to initialize the database')
@@ -155,7 +172,7 @@ def main():
                 errmsg('canceling operation.')
                 sys.exit(1)
         sys.exit(0 if initialize(db) else 1)
-   
+
     elif argv['print']:
         with Transaction(db) as t:
             document = t.fetch('documents', doc_id)
@@ -163,7 +180,7 @@ def main():
             errmsg('document id {} not found in the database.'.format(doc_id))
             sys.exit(1)
         print(render.render_document(db, doc_id, format_map[output_format]))
-    
+
     elif argv['generate']:
         with Transaction(db) as t:
             package = t.fetch('packages', package_id)
@@ -172,18 +189,15 @@ def main():
                 sys.exit(1)
             document = t.create_document(package_id)
             print('(package_id {}): document_id: {}'.format(package_id, document.document_id))
-    
+
     elif argv['scan']:
         with Transaction(db) as t:
-            if license_scan:
-                package = t.scan_package(package_path)
-            else:
-                package = t.scan_package(package_path, scanner=scanners.dummy)
+            package = t.scan_package(package_path, this_scanner, alt_name)
         print('{}: package_id: {}'.format(package_path, package.package_id))
 
     elif argv['oneshot']:
         with Transaction(db) as t:
-            package = t.scan_package(package_path)
+            package = t.scan_package(package_path, this_scanner, alt_name)
             package_id = package.package_id
             sys.stderr.write('{}: package_id: {}\n'.format(package_path, package_id))
         with Transaction(db) as t:
@@ -198,7 +212,7 @@ def main():
                 document = t.create_document(package_id)
                 doc_id = document.document_id
             sys.stderr.write('{}: document_id: {}\n'.format(package_path, doc_id))
-        print(render.render_document(db, doc_id, format_map[output_format]))     
+        print(render.render_document(db, doc_id, format_map[output_format]))
 
 
 

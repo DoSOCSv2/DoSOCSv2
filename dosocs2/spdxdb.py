@@ -160,7 +160,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner_name='nomos'):
+    def scan_package(self, path, scanner_name='nomos', alt_name=None):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -168,13 +168,13 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner_name)
+            return self.scan_directory(path, scanner_name, alt_name)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
         package_params = {
-            'name': util.package_friendly_name(os.path.basename(path)),
+            'name': alt_name or util.package_friendly_name(os.path.basename(path)),
             'version': '',
             'file_name': os.path.basename(path),
             'supplier_id': None,
