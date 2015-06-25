@@ -17,13 +17,13 @@
 # limitations under the License.
 
 '''Usage:
-{0} generate (PACKAGE-ID)
-{0} dbinit [--no-confirm]
+{0} generate [-c FILE] (PACKAGE-ID)
+{0} dbinit [-c FILE] [--no-confirm]
 {0} newconfig
-{0} oneshot [-p NAME] [-s SCANNERS] (PATH)
-{0} print (DOC-ID)
-{0} scan [-n] [-p NAME] [-s SCANNERS] (PATH)
-{0} scanners
+{0} oneshot [-c FILE] [-p NAME] [-s SCANNERS] (PATH)
+{0} print [-c FILE] (DOC-ID)
+{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNERS] (PATH)
+{0} scanners [-c FILE]
 {0} (--help | --version)
 
 Commands:
@@ -31,13 +31,17 @@ Commands:
                   particular package
   dbinit        Create tables, views, and initial config file
                   (destructive, will prompt first)
-  newconfig     Generate new configuration file, overwriting
-                  existing one
+  newconfig     Create a copy of the default configuration at
+                  $XDG_CONFIG_HOME/dosocs2/dosocs2.conf
+                  (overwrite existing config)
   oneshot       Scan, generate document, and print document in one
                   command
   print         Render and print a document to standard output
   scan          Scan an archive file or directory
   scanners      List available scanners
+
+General options:
+  -c, --config=FILE           Alternate config file
 
 Options for 'init':
       --no-confirm            Don't prompt first
@@ -143,6 +147,9 @@ def main():
     if this_scanner not in scanners.scanners:
         errmsg("'{}' is not a known scanner".format(this_scanner))
         sys.exit(1)
+
+    if argv['--config']:
+        config.update_config(argv['--config'])
 
     if argv['newconfig']:
         config_path = config.DOSOCS2_CONFIG_PATH
