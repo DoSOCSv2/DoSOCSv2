@@ -20,9 +20,9 @@
 {0} generate [-c FILE] (PACKAGE-ID)
 {0} dbinit [-c FILE] [--no-confirm]
 {0} newconfig
-{0} oneshot [-c FILE] [-p NAME] [-s SCANNERS] (PATH)
+{0} oneshot [-c FILE] [-p NAME] [-s SCANNER] (PATH)
 {0} print [-c FILE] (DOC-ID)
-{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNERS] (PATH)
+{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] (PATH)
 {0} scanners [-c FILE]
 {0} (--help | --version)
 
