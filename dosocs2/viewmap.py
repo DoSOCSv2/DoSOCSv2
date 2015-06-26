@@ -20,7 +20,6 @@ view_names = {
     'v_auto_contained_by',
     'v_auto_describes',
     'v_auto_described_by',
-    'v_dupes'
     }
 
 def viewmap(db):

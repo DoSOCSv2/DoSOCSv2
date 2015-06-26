@@ -15,4 +15,3 @@ drop view if exists v_auto_contains cascade;
 drop view if exists v_auto_contained_by cascade;
 drop view if exists v_auto_describes cascade;
 drop view if exists v_auto_described_by cascade;
-drop view if exists v_dupes;
