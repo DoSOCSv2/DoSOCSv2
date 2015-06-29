@@ -36,6 +36,7 @@ from .config import config
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 _nomos_pattern = re.compile('File (.+?) contains license\(s\) (.+)')
 
+
 def nomos(filename):
     ignore_pattern = config['nomos'].get('ignore')
     if ignore_pattern:
@@ -53,6 +54,7 @@ def nomos(filename):
             licenses.append(result)
     return [l for l in licenses if l.license != 'No_license_found']
 
+
 def nomos_deep(filename):
     if util.archive_type(filename):
         results = []
@@ -67,11 +69,19 @@ def nomos_deep(filename):
     else:
         return nomos(filename)
 
+
+def nomos_poms_only(filename):
+    if filename == 'pom.xml' or filename.endswith('.pom'):
+        return nomos(filename)
+    else:
+        return None
+
 def dummy(filename):
     return None
 
 scanners = {
     'nomos': nomos,
     'nomos_deep': nomos_deep,
+    'nomos_poms_only': nomos_poms_only,
     'dummy': dummy
     }
