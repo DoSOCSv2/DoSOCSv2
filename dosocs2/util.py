@@ -69,20 +69,31 @@ def sha1(filename):
     return checksum
 
 
+def archive_type(path):
+    if tarfile.is_tarfile(path):
+        return 'tar'
+    elif zipfile.is_zipfile(path):
+        return 'zip'
+    else:
+        return None
+
 @contextmanager
 def tempextract(path):
     try:
         tempdir = tempfile.mkdtemp()
-        if tarfile.is_tarfile(path):
+        ar_type = archive_type(path)
+        if ar_type == 'tar':
             with tarfile.open(path) as tf:
                 relpaths = tf.getnames()
                 tf.extractall(path=tempdir)
             yield (tempdir, relpaths)
-        elif zipfile.is_zipfile(path):
+        elif ar_type == 'zip':
             with zipfile.ZipFile(path) as zf:
                 relpaths = zf.namelist()
                 zf.extractall(path=tempdir)
             yield (tempdir, relpaths)
+        else:
+            raise TypeError('{} is not an archive file'.format(path))
     finally:
         shutil.rmtree(tempdir)
 
