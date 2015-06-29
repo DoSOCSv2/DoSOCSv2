@@ -62,7 +62,7 @@ class Transaction:
         self.db.flush()
         return new_license
 
-    def _create_file(self, path, sha1):
+    def create_file(self, path, sha1):
         file_type_id = (
             self.db.file_types
             .filter(self.db.file_types.name == util.spdx_filetype(path))
@@ -80,7 +80,22 @@ class Transaction:
         self.db.flush()
         return new_file
 
-    def scan_file(self, path, scanner_name='nomos', known_sha1=None):
+    def store_scan_result(self, scanner_name, scan_result, path_file_id_map):
+        for path in scan_result:
+            licenses_found = [
+                self.lookup_or_add_license(shortname, 'found by ' + scanner_name)
+                for shortname in scan_result[path]
+                ]
+            for license in licenses_found:
+                file_license_params = {
+                    'file_id': path_file_id_map[path],
+                    'license_id': license.license_id,
+                    'extracted_text': '',
+                    }
+                self.db.files_licenses.insert(**file_license_params)
+        self.db.flush()
+
+    def scan_file(self, path, scanner_name, known_sha1=None):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
@@ -92,35 +107,13 @@ class Transaction:
         file = util.lookup_by_sha1(self.db.files, sha1)
         if file is not None:
             return file
-        file = self._create_file(path, sha1)
-        scan = scanners[scanner_name]
-        scan_result = scan(path)
-        if scan_result is None:
-            scanner_comment = scanner_name + ': ' + 'File not scanned'
-            licenses_found = []
-        else:
-            shortnames_found = [item.license for item in scan(path)]
-            licenses_found = [
-                self.lookup_or_add_license(shortname, 'found by ' + scanner_name)
-                for shortname in shortnames_found
-                ]
-            if len(shortnames_found) > 0:
-                license_name_list = ','.join(shortnames_found)
-                scanner_comment = scanner_name + ': ' + license_name_list
-            else:
-                scanner_comment = scanner_name + ': ' + 'No licenses found'
-        file.comment = scanner_comment
-        for license in licenses_found:
-            file_license_params = {
-                'file_id': file.file_id,
-                'license_id': license.license_id,
-                'extracted_text': '',
-                }
-            self.db.files_licenses.insert(**file_license_params)
-        self.db.flush()
+        file = self.create_file(path, sha1)
+        scanner = scanners[scanner_name]()
+        scan_result = scanner.scan_file(path)
+        self.store_scan_result(scanner_name, scan_result, {path: file.file_id})
         return file
 
-    def scan_directory(self, path, scanner_name='nomos', alt_name=None):
+    def scan_directory(self, path, scanner_name, alt_name=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
