@@ -34,7 +34,7 @@ from . import util
 from .config import config
 
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
-_nomos_pattern = re.compile('File (.+?) contains license\(s\) (.+)')
+_nomos_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
 
 
 def nomos(filename):
@@ -76,8 +76,10 @@ def nomos_poms_only(filename):
     else:
         return None
 
+
 def dummy(filename):
     return None
+
 
 scanners = {
     'nomos': nomos,
