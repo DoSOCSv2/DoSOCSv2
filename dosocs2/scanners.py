@@ -15,10 +15,14 @@
 
 '''Interfaces to external scanning tools.
 
-The expected format is one class per scanner. Each class must have an
-attribute 'name'; this is the name that will be attached to the raw scanner
-output as stored in the database. It must also have a single method scan()
-that returns a list of ScannerResult objects.
+The expected format is one function per scanner, that must either return
+a list of ScannerResult objects, or None:
+
+scan(filename) -> [ScannerResult] or None
+
+A return value of None indicates that the input file was not scanned. A
+return value of [] indicates that the input file was scanned but no license
+information was found.
 '''
 
 from collections import namedtuple
@@ -29,10 +33,14 @@ import subprocess
 ScannerResult = namedtuple('ScannerResult', ('file_path', 'license'))
 
 def nomos(filename):
+    ignore_pattern = config['nomos'].get('ignore')
+    if ignore_pattern:
+        if re.match(ignore_pattern, filename):
+            return None
     args = (config['nomos']['path'], filename)
     output = subprocess.check_output(args)
     licenses = []
-    pattern = re.compile('File (.+?) contains license\(s\) (.+)')
+    pattern = 'File (.+?) contains license\(s\) (.+)'
     for line in output.split('\n'):
         m = re.match(pattern, line)
         if m is None:
@@ -43,7 +51,7 @@ def nomos(filename):
     return [l for l in licenses if l.license != 'No_license_found']
 
 def dummy(filename):
-    return []
+    return None
 
 scanners = {
     'nomos': nomos,
