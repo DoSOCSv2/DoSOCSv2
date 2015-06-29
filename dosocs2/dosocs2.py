@@ -17,31 +17,42 @@
 # limitations under the License.
 
 '''Usage:
-{0} generate (PACKAGE-ID)
-{0} dbinit [--no-confirm]
+{0} configtest [-c FILE]
+{0} dbinit [-c FILE] [--no-confirm]
+{0} generate [-c FILE] (PACKAGE-ID)
 {0} newconfig
-{0} oneshot (PATH)
-{0} print (DOC-ID)
-{0} scan [-n] (PATH)
+{0} oneshot [-c FILE] [-p NAME] [-s SCANNER] (PATH)
+{0} print [-c FILE] (DOC-ID)
+{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] (PATH)
+{0} scanners [-c FILE]
 {0} (--help | --version)
 
 Commands:
-  generate      Generate SPDX document data in the database for a
-                  particular package
+  configtest    Check configuration
   dbinit        Create tables, views, and initial config file
                   (destructive, will prompt first)
-  newconfig     Generate new configuration file, overwriting
-                  existing one
+  generate      Generate SPDX document data in the database for a
+                  particular package
+  newconfig     Create a copy of the default configuration at
+                  $XDG_CONFIG_HOME/dosocs2/dosocs2.conf
+                  (overwrite existing config)
   oneshot       Scan, generate document, and print document in one
                   command
   print         Render and print a document to standard output
   scan          Scan an archive file or directory
+  scanners      List available scanners
 
-Options for 'scan':
-  -n, --no-license-scan       Do not scan for license information
+General options:
+  -c, --config=FILE           Alternate config file
 
 Options for 'init':
       --no-confirm            Don't prompt first
+
+Options for 'scan', 'oneshot':
+  -p, --package-name=NAME     Specify name for new package (otherwise
+                                create name from filename)
+  -s, --scanner=SCANNER       Specify scanner to use
+                                ('dosocs2 scanners' to see choices)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -59,9 +70,9 @@ from .spdxdb import Transaction
 from . import config
 from . import dbinit
 from . import render
-from . import scanners  # for the dummy scanner
+from . import scanners
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
@@ -100,7 +111,9 @@ def initialize(db):
     if not result:
         errmsg('error!')
         errmsg('failed to download and load the license list')
-        errmsg('check your connection to ' + url + ' and make sure it is the correct page')
+        errmsg('check your connection to ' + url +
+               ' and make sure it is the correct page'
+               )
         return False
     else:
         print('ok.')
@@ -127,15 +140,43 @@ def initialize(db):
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
+    db = sqlsoup.SQLSoup(config.connection_uri)
     doc_id = argv['DOC-ID']
     document = None
-    db = sqlsoup.SQLSoup(config.connection_uri)
-    license_scan = not argv['--no-license-scan']
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
     output_format = 'tag'
+    alt_name = argv['--package-name']
+    alt_config = argv['--config']
+    this_scanner = argv['--scanner'] or config.config['dosocs2']['default_scanner']
+    if this_scanner not in scanners.scanners:
+        errmsg("'{}' is not a known scanner".format(this_scanner))
+        sys.exit(1)
 
-    if argv['newconfig']:
+    if argv['--config']:
+        try:
+            os.stat(alt_config)
+        except EnvironmentError as ex:
+            errmsg('{}: {}'.format(alt_config, ex.strerror))
+            sys.exit(1)
+        config.update_config(alt_config)
+
+    if argv['configtest']:
+        print('\n' + 79 * '-' + '\n')
+        print('Config at: {}'.format(config.config_location(alt_config)))
+        print('\n' + 79 * '-' + '\n')
+        print('Effective configuration:\n')
+        print('# begin dosocs2 config')
+        config.dump_to_file(sys.stdout)
+        print('# end dosocs2 config')
+        print('\n' + 79 * '-' + '\n')
+        print('Testing database connection...', end='')
+        sys.stdout.flush()
+        db.execute('select 1;')
+        print('ok.')
+        sys.exit(0)
+
+    elif argv['newconfig']:
         config_path = config.DOSOCS2_CONFIG_PATH
         configresult = config.create_user_config()
         if not configresult:
@@ -143,7 +184,15 @@ def main():
         else:
             msg('wrote config file to {}'.format(config_path))
         sys.exit(0 if configresult else 1)
-    
+
+    elif argv['scanners']:
+        for s in sorted(scanners.scanners):
+            if config.config['dosocs2']['default_scanner'] == s:
+                print(s + ' [default]')
+            else:
+                print(s)
+        sys.exit(0)
+
     elif argv['dbinit']:
         if not argv['--no-confirm']:
             errmsg('preparing to initialize the database')
@@ -155,7 +204,7 @@ def main():
                 errmsg('canceling operation.')
                 sys.exit(1)
         sys.exit(0 if initialize(db) else 1)
-   
+
     elif argv['print']:
         with Transaction(db) as t:
             document = t.fetch('documents', doc_id)
@@ -163,7 +212,7 @@ def main():
             errmsg('document id {} not found in the database.'.format(doc_id))
             sys.exit(1)
         print(render.render_document(db, doc_id, format_map[output_format]))
-    
+
     elif argv['generate']:
         with Transaction(db) as t:
             package = t.fetch('packages', package_id)
@@ -172,18 +221,15 @@ def main():
                 sys.exit(1)
             document = t.create_document(package_id)
             print('(package_id {}): document_id: {}'.format(package_id, document.document_id))
-    
+
     elif argv['scan']:
         with Transaction(db) as t:
-            if license_scan:
-                package = t.scan_package(package_path)
-            else:
-                package = t.scan_package(package_path, scanner=scanners.dummy)
+            package = t.scan_package(package_path, this_scanner, alt_name)
         print('{}: package_id: {}'.format(package_path, package.package_id))
 
     elif argv['oneshot']:
         with Transaction(db) as t:
-            package = t.scan_package(package_path)
+            package = t.scan_package(package_path, this_scanner, alt_name)
             package_id = package.package_id
             sys.stderr.write('{}: package_id: {}\n'.format(package_path, package_id))
         with Transaction(db) as t:
@@ -198,7 +244,7 @@ def main():
                 document = t.create_document(package_id)
                 doc_id = document.document_id
             sys.stderr.write('{}: document_id: {}\n'.format(package_path, doc_id))
-        print(render.render_document(db, doc_id, format_map[output_format]))     
+        print(render.render_document(db, doc_id, format_map[output_format]))
 
 
 

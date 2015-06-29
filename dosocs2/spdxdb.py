@@ -93,8 +93,12 @@ class Transaction:
         if file is not None:
             return file
         file = self._create_file(path, sha1)
-        if scanner_name is not None:
-            scan = scanners[scanner_name]
+        scan = scanners[scanner_name]
+        scan_result = scan(path)
+        if scan_result is None:
+            scanner_comment = scanner_name + ': ' + 'File not scanned'
+            licenses_found = []
+        else:
             shortnames_found = [item.license for item in scan(path)]
             licenses_found = [
                 self.lookup_or_add_license(shortname, 'found by ' + scanner_name)
@@ -105,14 +109,14 @@ class Transaction:
                 scanner_comment = scanner_name + ': ' + license_name_list
             else:
                 scanner_comment = scanner_name + ': ' + 'No licenses found'
-            file.comment = scanner_comment
-            for license in licenses_found:
-                file_license_params = {
-                    'file_id': file.file_id,
-                    'license_id': license.license_id,
-                    'extracted_text': '',
-                    }
-                self.db.files_licenses.insert(**file_license_params)
+        file.comment = scanner_comment
+        for license in licenses_found:
+            file_license_params = {
+                'file_id': file.file_id,
+                'license_id': license.license_id,
+                'extracted_text': '',
+                }
+            self.db.files_licenses.insert(**file_license_params)
         self.db.flush()
         return file
 
@@ -160,7 +164,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner_name='nomos'):
+    def scan_package(self, path, scanner_name='nomos', alt_name=None):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -168,13 +172,13 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner_name)
+            return self.scan_directory(path, scanner_name, alt_name)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
         package_params = {
-            'name': util.package_friendly_name(os.path.basename(path)),
+            'name': alt_name or util.package_friendly_name(os.path.basename(path)),
             'version': '',
             'file_name': os.path.basename(path),
             'supplier_id': None,

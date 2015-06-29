@@ -327,17 +327,3 @@ v.left_identifier_id        right_identifier_id
 from v_auto_describes v
 join relationship_types rty2 on rty2.name = 'DESCRIBED_BY'
 ;
-
-
-create view
-v_dupes
-as
-select
-pfi.package_id              package_id,
-fil.sha1                    sha1,
-count(pfi.package_file_id)  times_in_package
-from packages_files pfi
-join files fil on pfi.file_id = fil.file_id
-group by pfi.package_id, fil.sha1
-having count(pfi.package_file_id) > 1
-;

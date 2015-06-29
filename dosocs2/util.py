@@ -30,23 +30,32 @@ import zipfile
 
 import magic
 
+def is_source(magic_string):
+    return (
+        ' source' in magic_string and ' text' in magic_string or
+        ' script' in magic_string and ' text' in magic_string or
+        ' program' in magic_string and ' text' in magic_string or
+        ' shell script' in magic_string or
+        ' text executable' in magic_string or
+        'HTML' in magic_string and 'text' in magic_string or
+        'XML' in magic_string and 'text' in magic_string
+        )
+
+def is_binary(magic_string):
+    return (
+        ' executable' in magic_string or
+        ' relocatable' in magic_string or
+        ' shared object' in magic_string or
+        ' dynamically linked' in magic_string or
+        ' ar archive' in magic_string
+        )
 
 def spdx_filetype(filename):
     '''Try to guess the SPDX filetype of the file.'''
     magic_string = magic.from_file(filename)
-    if (' source' in magic_string and ' text' in magic_string or
-       ' script' in magic_string and ' text' in magic_string or
-       ' program' in magic_string and ' text' in magic_string or
-       ' shell script' in magic_string or
-       ' text executable' in magic_string or
-       'HTML' in magic_string and 'text' in magic_string or
-       'XML' in magic_string and 'text' in magic_string):
+    if is_source(magic_string):
         return 'SOURCE'
-    if (' executable' in magic_string or
-       ' relocatable' in magic_string or
-       ' shared object' in magic_string or
-       ' dynamically linked' in magic_string or
-       ' ar archive' in magic_string):
+    if is_binary(magic_string):
         return 'BINARY'
     if 'archive' in magic_string:
         return 'ARCHIVE'
@@ -60,20 +69,31 @@ def sha1(filename):
     return checksum
 
 
+def archive_type(path):
+    if tarfile.is_tarfile(path):
+        return 'tar'
+    elif zipfile.is_zipfile(path):
+        return 'zip'
+    else:
+        return None
+
 @contextmanager
 def tempextract(path):
     try:
         tempdir = tempfile.mkdtemp()
-        if tarfile.is_tarfile(path):
+        ar_type = archive_type(path)
+        if ar_type == 'tar':
             with tarfile.open(path) as tf:
                 relpaths = tf.getnames()
                 tf.extractall(path=tempdir)
             yield (tempdir, relpaths)
-        elif zipfile.is_zipfile(path):
+        elif ar_type == 'zip':
             with zipfile.ZipFile(path) as zf:
                 relpaths = zf.namelist()
                 zf.extractall(path=tempdir)
             yield (tempdir, relpaths)
+        else:
+            raise TypeError('{} is not an archive file'.format(path))
     finally:
         shutil.rmtree(tempdir)
 
