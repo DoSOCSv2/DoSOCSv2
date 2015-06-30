@@ -38,16 +38,20 @@ class Transaction:
         else:
             self.db.rollback()
 
+    def lookup_license(self, short_name):
+        # use of first() reliant on unique constraint on short_name
+        return (
+            self.db.licenses
+            .filter(self.db.licenses.short_name == short_name)
+            .first()
+            )
+
     def lookup_or_add_license(self, short_name, comment=''):
         '''Add license to the database if it does not exist.
 
         Return the new or existing license object in any case.
         '''
-        existing_license = (
-            self.db.licenses
-            .filter(self.db.licenses.short_name == short_name)
-            .first()
-            )
+        existing_license = self.lookup_license(short_name)
         if existing_license is not None:
             return existing_license
         license_params = {
@@ -62,14 +66,14 @@ class Transaction:
         self.db.flush()
         return new_license
 
-    def create_file(self, path, sha1):
+    def create_file(self, path, known_sha1):
         file_type_id = (
             self.db.file_types
             .filter(self.db.file_types.name == util.spdx_filetype(path))
             .one().file_type_id
             )
         file_params = {
-            'sha1': sha1,
+            'sha1': known_sha1,
             'file_type_id': file_type_id,
             'copyright_text': None,
             'project_id': None,
