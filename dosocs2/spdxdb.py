@@ -292,7 +292,7 @@ class Transaction:
             .filter(self.db.licenses.short_name == 'CC0-1.0')
             .one()
             )
-        doc_name = kwargs.get('name') or util.package_friendly_name(package.file_name)
+        doc_name = kwargs.get('name') or package.name
         doc_namespace = self.create_document_namespace(doc_name)
         document_params = {
             'data_license_id': data_license.license_id,

@@ -19,9 +19,9 @@
 '''Usage:
 {0} configtest [-c FILE]
 {0} dbinit [-c FILE] [--no-confirm]
-{0} generate [-c FILE] (PACKAGE-ID)
+{0} generate [-c FILE] [-d NAME] (PACKAGE-ID)
 {0} newconfig
-{0} oneshot [-c FILE] [-p NAME] [-s SCANNER] (PATH)
+{0} oneshot [-c FILE] [-p NAME] [-d NAME] [-s SCANNER] (PATH)
 {0} print [-c FILE] (DOC-ID)
 {0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] (PATH)
 {0} scanners [-c FILE]
@@ -48,11 +48,15 @@ General options:
 Options for 'init':
       --no-confirm            Don't prompt first
 
+Options for 'generate', 'oneshot':
+  -d, --document-name=NAME    Name for new document (otherwise create name
+                                from package name)
+
 Options for 'scan', 'oneshot':
-  -p, --package-name=NAME     Specify name for new package (otherwise
-                                create name from filename)
-  -s, --scanner=SCANNER       Specify scanner to use
-                                ('dosocs2 scanners' to see choices)
+  -p, --package-name=NAME     Name for new package (otherwise create
+                                name from filename)
+  -s, --scanner=SCANNER       Scanner to use ('dosocs2 scanners' to see
+                                choices)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -149,6 +153,7 @@ def main():
     alt_name = argv['--package-name']
     alt_config = argv['--config']
     this_scanner = argv['--scanner'] or config.config['dosocs2']['default_scanner']
+    document_name = argv['--document-name'] or argv['--package-name']
     if this_scanner not in scanners.scanners:
         errmsg("'{}' is not a known scanner".format(this_scanner))
         sys.exit(1)
@@ -219,7 +224,7 @@ def main():
             if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
-            document = t.create_document(package_id)
+            document = t.create_document(package_id, name=document_name)
             print('(package_id {}): document_id: {}'.format(package_id, document.document_id))
 
     elif argv['scan']:
@@ -241,7 +246,7 @@ def main():
             if document:
                 doc_id = document.document_id
             else:
-                document = t.create_document(package_id)
+                document = t.create_document(package_id, name=document_name)
                 doc_id = document.document_id
             sys.stderr.write('{}: document_id: {}\n'.format(package_path, doc_id))
         print(render.render_document(db, doc_id, format_map[output_format]))
