@@ -53,15 +53,8 @@ class Nomos(Scanner):
     def __init__(self):
         self.exec_path = config['nomos']['path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
-        ignore_pattern = config['nomos'].get('ignore')
-        if ignore_pattern:
-            self.ignore_pattern = re.compile(ignore_pattern)
-        else:
-            self.ignore_pattern = None
 
     def scan_file(self, path):
-        if self.ignore_pattern and re.match(self.ignore_pattern, path):
-            return {}
         args = (self.exec_path, '-l', path)
         output = subprocess.check_output(args)
         scan_result = set()
