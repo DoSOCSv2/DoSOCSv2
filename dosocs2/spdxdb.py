@@ -18,7 +18,6 @@
 import itertools
 import os
 
-from .scanners import scanners
 from . import config
 from . import util
 from . import viewmap
@@ -99,7 +98,7 @@ class Transaction:
                 self.db.files_licenses.insert(**file_license_params)
         self.db.flush()
 
-    def scan_file(self, path, scanner_name, known_sha1=None):
+    def scan_file(self, path, scanner, known_sha1=None):
         '''Scan file for licenses, and add it to the DB if it does not exist.
 
         Return the file object.
@@ -112,12 +111,11 @@ class Transaction:
         if file is not None:
             return file
         file = self.create_file(path, sha1)
-        scanner = scanners[scanner_name]()
         scan_result = scanner.scan_file(path)
-        self.store_scan_result(scanner_name, scan_result, {path: file.file_id})
+        self.store_scan_result(scanner.name, scan_result, {path: file.file_id})
         return file
 
-    def scan_directory(self, path, scanner_name, alt_name=None):
+    def scan_directory(self, path, scanner, alt_name=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
@@ -149,7 +147,7 @@ class Transaction:
         package = self.db.packages.insert(**package_params)
         self.db.flush()
         for (filepath, sha1) in hashes.iteritems():
-            fileobj = self.scan_file(filepath, scanner_name, known_sha1=sha1)
+            fileobj = self.scan_file(filepath, scanner, known_sha1=sha1)
             package_file_params = {
                 'package_id': package.package_id,
                 'file_id': fileobj.file_id,
@@ -161,7 +159,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner_name='nomos', alt_name=None):
+    def scan_package(self, path, scanner, alt_name=None):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -169,7 +167,7 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner_name, alt_name)
+            return self.scan_directory(path, scanner, alt_name)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
@@ -202,7 +200,7 @@ class Transaction:
             for relpath, abspath in itertools.izip(relpaths, abspaths):
                 if not os.path.isfile(abspath):
                     continue
-                fileobj = self.scan_file(abspath, scanner_name)
+                fileobj = self.scan_file(abspath, scanner)
                 hashes.append(fileobj.sha1)
                 package_file_params = {
                     'package_id': package.package_id,

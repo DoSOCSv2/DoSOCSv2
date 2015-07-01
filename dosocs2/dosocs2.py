@@ -152,11 +152,7 @@ def main():
     output_format = 'tag'
     alt_name = argv['--package-name']
     alt_config = argv['--config']
-    this_scanner = argv['--scanner'] or config.config['dosocs2']['default_scanner']
     document_name = argv['--document-name'] or argv['--package-name']
-    if this_scanner not in scanners.scanners:
-        errmsg("'{}' is not a known scanner".format(this_scanner))
-        sys.exit(1)
 
     if argv['--config']:
         try:
@@ -165,6 +161,18 @@ def main():
             errmsg('{}: {}'.format(alt_config, ex.strerror))
             sys.exit(1)
         config.update_config(alt_config)
+
+    if argv['--scanner']:
+        this_scanner_name = argv['--scanner']
+    else:
+        this_scanner_name = config.config['dosocs2']['default_scanner']
+
+    try:
+        this_scanner = scanners.scanners[this_scanner_name]()
+    except KeyError:
+        errmsg("'{}' is not a known scanner".format(this_scanner))
+        sys.exit(1)
+
 
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')
