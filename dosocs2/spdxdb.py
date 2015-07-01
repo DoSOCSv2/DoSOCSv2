@@ -17,6 +17,7 @@
 
 import itertools
 import os
+import string
 
 from . import config
 from . import util
@@ -50,6 +51,8 @@ class Transaction:
 
         Return the new or existing license object in any case.
         '''
+        transtable = string.maketrans('()[]<>', '------')
+        short_name = string.translate(short_name, transtable)
         existing_license = self.lookup_license(short_name)
         if existing_license is not None:
             return existing_license
