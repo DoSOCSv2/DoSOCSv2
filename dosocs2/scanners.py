@@ -73,7 +73,7 @@ class Nomos(Scanner):
     def scan_directory(self, path):
         args = (self.exec_path, '-l', '-n', self.parallel, '-d', path)
         output = subprocess.check_output(args)
-        scan_result = defaultdict(set) 
+        scan_result = defaultdict(set)
         for line in output.split('\n'):
             m = re.match(self.search_pattern, line)
             if m is None:
