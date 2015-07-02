@@ -3,14 +3,14 @@ dosocs2
 
 dosocs2 is a command-line app for managing SPDX 2.0 documents and data. It can
 scan software packages (e.g. tarballs) to produce SPDX information, store that
-information in a relational database, and extract it in RDF or tag-value format
+information in a relational database, and extract it in tag-value format
 on request.
 
 [SPDX](http://www.spdx.org) is a standard format for communicating information
 about the licenses and copyrights associated with a software package. dosocs2
 makes use of the SPDX 2.0 standard, released in May 2015.
 
-dosocs2 is currently (June 2015) under heavy development; it should be
+dosocs2 is currently (July 2015) under heavy development; it should be
 considered experimental, not production-ready, and subject to frequent
 backwards-incompatible changes until a proper release.
 
@@ -64,7 +64,7 @@ First off, I recommend installing and running `dosocs2` inside a Python
 is in no way a requirement.
 
 Clone the repository and use `pip` to install it as a package. If you are not
-inside a virtualenv you will probably have to run `pip` as root.
+inside a virtualenv you may have to run `pip` as root.
 
     $ git clone https://github.com/ttgurney/dosocs2
     $ pip install -e dosocs2
