@@ -67,7 +67,7 @@ Clone the repository and use `pip` to install it as a package. If you are not
 inside a virtualenv you may have to run `pip` as root.
 
     $ git clone https://github.com/ttgurney/dosocs2
-    $ pip install -e dosocs2
+    $ pip install ./dosocs2
 
 You will have to create the `spdx` (or whatever you want to call it) role and
 database yourself (although I recommend setting a different password than the
