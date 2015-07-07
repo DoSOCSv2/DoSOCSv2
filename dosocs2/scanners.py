@@ -70,6 +70,8 @@ class Nomos(Scanner):
                 })
         return {path: scan_result}
 
+    # TODO: Rewrite to use os.walk since we cannot trust the output
+    # of nomos with -n or -d options
     def scan_directory(self, path):
         args = (self.exec_path, '-l', '-n', self.parallel, '-d', path)
         output = subprocess.check_output(args)
