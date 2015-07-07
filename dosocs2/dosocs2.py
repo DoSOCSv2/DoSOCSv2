@@ -76,7 +76,7 @@ from . import dbinit
 from . import render
 from . import scanners
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
