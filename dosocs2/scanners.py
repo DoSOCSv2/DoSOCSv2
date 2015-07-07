@@ -70,22 +70,12 @@ class Nomos(Scanner):
                 })
         return {path: scan_result}
 
-    # TODO: Rewrite to use os.walk since we cannot trust the output
-    # of nomos with -n or -d options
     def scan_directory(self, path):
-        args = (self.exec_path, '-l', '-n', self.parallel, '-d', path)
-        output = subprocess.check_output(args)
-        scan_result = defaultdict(set)
-        for line in output.split('\n'):
-            m = re.match(self.search_pattern, line)
-            if m is None:
-                continue
-            scan_result['path'].update({
-                lic_name
-                for lic_name in m.group(2).split(',')
-                if 'No_license_found' not in lic_name
-                })
-        return dict(scan_result)
+        scan_result = {}
+        for filepath in util.allpaths(path):
+            if os.path.isfile(filepath):
+                scan_result.update(self.scan_file(filepath))
+        return scan_result
 
 
 class NomosDeep(Scanner):
@@ -107,6 +97,14 @@ class NomosDeep(Scanner):
             return self._nomos.scan_file(path)
 
 
+    def scan_directory(self, path):
+        scan_result = {}
+        for filepath in util.allpaths(path):
+            if os.path.isfile(filepath):
+                scan_result.update(self.scan_file(filepath))
+        return scan_result
+
+
 class NomosPomsOnly(Scanner):
 
     name = 'nomos_poms_only'
@@ -114,11 +112,18 @@ class NomosPomsOnly(Scanner):
     def __init__(self):
         self._nomos = Nomos()
 
-    def scan_file(path):
+    def scan_file(self, path):
         if path == 'pom.xml' or path.endswith('.pom'):
             return self._nomos.scan_file(path)
         else:
             return {}
+
+    def scan_directory(self, path):
+        scan_result = {}
+        for filepath in util.allpaths(path):
+            if os.path.isfile(filepath):
+                scan_result.update(self.scan_file(filepath))
+        return scan_result
 
 
 class Dummy(Scanner):
