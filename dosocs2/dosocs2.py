@@ -208,7 +208,8 @@ def main():
 
     elif argv['dbinit']:
         if not argv['--no-confirm']:
-            errmsg('preparing to initialize the database')
+            dbname = config.config['database']['database']
+            errmsg('preparing to initialize database {}'.format(dbname))
             errmsg('all existing data will be deleted!')
             errmsg('make sure you are connected to the internet before continuing.')
             errmsg('type the word "YES" (all uppercase) to commit.')
