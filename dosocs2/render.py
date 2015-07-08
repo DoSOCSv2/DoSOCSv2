@@ -1,6 +1,7 @@
 import time
 
 import jinja2
+from . import config
 from . import util
 from . import viewmap
 
@@ -39,6 +40,7 @@ def render_template(templatefile, context):
 
 
 def render_document(db, docid, template_file):
+    render_relationships = util.bool_from_str(config.config['dosocs2']['render_relationships'])
     v = viewmap.viewmap(db)
     document = util.row_to_dict(
         v['v_documents']
@@ -61,7 +63,7 @@ def render_document(db, docid, template_file):
         .filter(v['v_annotations'].id_string == document['id_string'])
         .all()
         )
-    document['relationships'] = util.rows_to_dicts(
+    document['relationships'] = render_relationships and util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
         .filter(v['v_relationships'].left_id_string == document['id_string'])
@@ -83,7 +85,7 @@ def render_document(db, docid, template_file):
         .filter(v['v_annotations'].id_string == package['id_string'])
         .all()
         )
-    package['relationships'] = util.rows_to_dicts(
+    package['relationships'] = render_relationships and util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
         .filter(v['v_relationships'].left_id_string == package['id_string'])
@@ -112,12 +114,12 @@ def render_document(db, docid, template_file):
             .filter(v['v_annotations'].id_string == file['id_string'])
             .all()
             )
-        file['relationships'] = util.rows_to_dicts(
+        file['relationships'] = render_relationships and util.rows_to_dicts(
             v['v_relationships']
             .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
             .filter(v['v_relationships'].left_id_string == file['id_string'])
             .all()
-            )
+            ) or None
     licenses = util.rows_to_dicts(
         v['v_documents_unofficial_licenses']
         .filter(v['v_documents_unofficial_licenses'].document_id == document['document_id'])

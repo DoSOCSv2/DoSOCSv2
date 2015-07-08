@@ -183,3 +183,12 @@ def get_dir_hashes(path, excluded_hashes=None):
               if os.path.isfile(relpath)
               }
     return (gen_ver_code(hashes.values(), excluded_hashes), hashes)
+
+
+def bool_from_str(s):
+    if s.lower() == 'true':
+        return True
+    elif s.lower() == 'false':
+        return False
+    else:
+        raise ValueError('Expected a string like \'true\' or \'false\'')

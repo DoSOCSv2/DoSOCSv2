@@ -30,6 +30,7 @@ SPDXID: {{ annotation.id_string }}
 {% endfor %}
 
 
+{% if document.relationships != None %}
 ## Document Relationships
 {% for relationship in document.relationships %}
 Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
@@ -37,7 +38,7 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 RelationshipComment: {{ relationship.comment | text }}
     {% endif %}
 {% endfor %}
-
+{% endif %}
 
 ## Package Information
 
@@ -80,7 +81,7 @@ SPDXID: {{ annotation.id_string }}
 {% endfor %}
 {% endif %}
 
-{% if package.relationships %}
+{% if package.relationships != None %}
 ## Relationships
 {% for relationship in package.relationships %}
 Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
@@ -122,7 +123,7 @@ AnnotationType: {{ annotation.type }}
 SPDXID: {{ annotation.id_string }}
         {% endfor %}
     {% endif %}
-    {% if file.relationships %}
+    {% if file.relationships != None %}
 ## Relationships
         {% for relationship in file.relationships %}
 Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relationship.right_id_string }}
