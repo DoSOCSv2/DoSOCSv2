@@ -162,7 +162,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner, alt_name=None):
+    def scan_package(self, path, scanner, alt_name=None, alt_version=None):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -177,7 +177,7 @@ class Transaction:
             return package
         package_params = {
             'name': alt_name or util.package_friendly_name(os.path.basename(path)),
-            'version': '',
+            'version': alt_version or '',
             'file_name': os.path.basename(path),
             'supplier_id': None,
             'originator_id': None,

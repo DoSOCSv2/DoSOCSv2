@@ -21,9 +21,9 @@
 {0} dbinit [-c FILE] [--no-confirm]
 {0} generate [-c FILE] [-d NAME] (PACKAGE-ID)
 {0} newconfig
-{0} oneshot [-c FILE] [-p NAME] [-d NAME] [-s SCANNER] (PATH)
+{0} oneshot [-c FILE] [-p NAME] [-d NAME] [-s SCANNER] [-V VER] (PATH)
 {0} print [-c FILE] (DOC-ID)
-{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] (PATH)
+{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] [-V VER] (PATH)
 {0} scanners [-c FILE]
 {0} (--help | --version)
 
@@ -57,6 +57,8 @@ Options for 'scan', 'oneshot':
                                 name from filename)
   -s, --scanner=SCANNER       Scanner to use ('dosocs2 scanners' to see
                                 choices)
+  -V, --package-version=VER   Version string for new package (otherwise use
+                                empty string)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -153,6 +155,7 @@ def main():
     alt_name = argv['--package-name']
     alt_config = argv['--config']
     document_name = argv['--document-name'] or argv['--package-name']
+    alt_version = argv['--package-version'] or ''
 
     if argv['--config']:
         try:
@@ -238,12 +241,12 @@ def main():
 
     elif argv['scan']:
         with Transaction(db) as t:
-            package = t.scan_package(package_path, this_scanner, alt_name)
+            package = t.scan_package(package_path, this_scanner, alt_name, alt_version)
         print('{}: package_id: {}'.format(package_path, package.package_id))
 
     elif argv['oneshot']:
         with Transaction(db) as t:
-            package = t.scan_package(package_path, this_scanner, alt_name)
+            package = t.scan_package(package_path, this_scanner, alt_name, alt_version)
             package_id = package.package_id
             sys.stderr.write('{}: package_id: {}\n'.format(package_path, package_id))
         with Transaction(db) as t:
