@@ -1,0 +1,27 @@
+#!/usr/bin/env python2
+
+from __future__ import print_function
+
+import os
+import psycopg2
+import subprocess
+import sys
+
+last_seen = None
+packages = []
+
+directory = sys.argv[1]
+
+for subdir, dirnames, filenames in os.walk(directory):
+    if last_seen is not None and subdir.startswith(last_seen):
+        continue
+    for filename in filenames:
+        if filename.endswith(".pom") and '/.nexus/' not in subdir:
+            last_seen = subdir
+            packages.append((os.path.splitext(filename)[0], subdir))
+            continue
+
+for package_name, package_dir in sorted(packages):
+    print(package_name + '...', end='')
+    sys.stdout.flush()
+    subprocess.call(['dosocs2', 'scan', '-s', 'nomos_deep', '-p', package_name, package_dir])
