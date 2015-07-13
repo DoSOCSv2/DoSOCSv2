@@ -79,11 +79,12 @@ from . import dbinit
 from . import render
 from . import scanners
 
-__version__ = '0.5.0'
 
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
 }
+
+__version__ = '0.5.1-dev'
 
 
 def msg(text, **kwargs):
@@ -94,55 +95,6 @@ def msg(text, **kwargs):
 def errmsg(text, **kwargs):
     print('dosocs2' + ': ' + text, file=sys.stderr, **kwargs)
     sys.stdout.flush()
-
-
-def initialize(db):
-    url = 'http://spdx.org/licenses/'
-    msg('dropping all views...', end='')
-    result = dbinit.drop_all_views(db)
-    print('ok.')
-    msg('dropping all tables...', end='')
-    result = dbinit.drop_all_tables(db)
-    print('ok.')
-    msg('creating all tables...', end='')
-    result = dbinit.create_all_tables(db)
-    print('ok.')
-    msg('committing changes...', end='')
-    db.commit()
-    print('ok.')
-    msg('creating all views...', end='')
-    result = dbinit.create_all_views(db)
-    print('ok.')
-    msg('loading licenses...', end='')
-    result = dbinit.load_licenses(db, url)
-    if not result:
-        errmsg('error!')
-        errmsg('failed to download and load the license list')
-        errmsg('check your connection to ' + url +
-               ' and make sure it is the correct page'
-               )
-        return False
-    else:
-        print('ok.')
-    msg('loading creator types...', end='')
-    dbinit.load_creator_types(db)
-    print('ok.')
-    msg('loading default creator...', end='')
-    dbinit.load_default_creator(db, 'dosocs2-' + __version__)
-    print('ok.')
-    msg('loading annotation types...', end='')
-    dbinit.load_annotation_types(db)
-    print('ok.')
-    msg('loading file types...', end='')
-    dbinit.load_file_types(db)
-    print('ok.')
-    msg('loading relationship types...', end='')
-    dbinit.load_relationship_types(db)
-    print('ok.')
-    msg('committing changes...', end='')
-    db.commit()
-    print('ok.')
-    return True
 
 
 def main():
@@ -223,7 +175,7 @@ def main():
             if answer != 'YES':
                 errmsg('canceling operation.')
                 sys.exit(1)
-        sys.exit(0 if initialize(db) else 1)
+        sys.exit(0 if dbinit.initialize(db) else 1)
 
     elif argv['print']:
         with Transaction(db) as t:

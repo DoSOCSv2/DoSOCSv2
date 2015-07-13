@@ -30,6 +30,7 @@ import zipfile
 
 import magic
 
+
 def is_source(magic_string):
     return (
         ' source' in magic_string and ' text' in magic_string or
@@ -98,15 +99,6 @@ def tempextract(path):
         shutil.rmtree(tempdir)
 
 
-def gen_ver_code(hashes, excluded_hashes=None):
-    '''Generate and return SPDX package verification code.'''
-    if excluded_hashes is None:
-        excluded_hashes = set()
-    hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
-    hashblob = ''.join(sorted(hashes_less_excluded))
-    return hashlib.sha1(hashblob).hexdigest()
-
-
 def package_friendly_name(package_file_name):
     '''Return name of a package, without extension.'''
     newname = os.path.splitext(package_file_name)[0]
@@ -134,18 +126,6 @@ def gen_id_string(prefix='element', file_name=None, sha1=None):
     return '-'.join(pieces)
 
 
-def row_to_dict(row):
-    '''Convert SQLSoup row to a dictionary.'''
-    d = {}
-    for column in row._table.columns:
-        d[column.name] = getattr(row, column.name)
-    return d
-
-
-def rows_to_dicts(rows):
-    return [row_to_dict(row) for row in rows]
-
-
 def lookup_by_sha1(table, sha1):
     '''Lookup object by SHA-1 sum and return the object, or None.
 
@@ -171,6 +151,15 @@ def allpaths(path):
             yield os.path.join(root, filename)
 
 
+def gen_ver_code(hashes, excluded_hashes=None):
+    '''Generate and return SPDX package verification code.'''
+    if excluded_hashes is None:
+        excluded_hashes = set()
+    hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
+    hashblob = ''.join(sorted(hashes_less_excluded))
+    return hashlib.sha1(hashblob).hexdigest()
+
+
 def get_dir_hashes(path, excluded_hashes=None):
     '''Return a (str, dict) pair: (ver_code, {filepath: sha1})
 
@@ -185,10 +174,3 @@ def get_dir_hashes(path, excluded_hashes=None):
     return (gen_ver_code(hashes.values(), excluded_hashes), hashes)
 
 
-def bool_from_str(s):
-    if s.lower() == 'true':
-        return True
-    elif s.lower() == 'false':
-        return False
-    else:
-        raise ValueError('Expected a string like \'true\' or \'false\'')
