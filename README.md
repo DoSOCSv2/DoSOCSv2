@@ -63,10 +63,10 @@ First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
 is in no way a requirement.
 
-Clone the repository and use `pip` to install it as a package. If you are not
-inside a virtualenv you may have to run `pip` as root.
+Grab the latest release--or, if you are feeling adventurous, clone the
+repository--and use `pip` to install it as a package. If you are not inside a
+virtualenv you may have to run `pip` as root.
 
-    $ git clone https://github.com/ttgurney/dosocs2
     $ pip install ./dosocs2
 
 You will have to create the `spdx` (or whatever you want to call it) role and
