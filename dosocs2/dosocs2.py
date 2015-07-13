@@ -175,7 +175,7 @@ def main():
             if answer != 'YES':
                 errmsg('canceling operation.')
                 sys.exit(1)
-        sys.exit(0 if dbinit.initialize(db) else 1)
+        sys.exit(0 if dbinit.initialize(db, __version__) else 1)
 
     elif argv['print']:
         with Transaction(db) as t:

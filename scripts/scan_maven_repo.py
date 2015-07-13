@@ -27,8 +27,9 @@ for package_name, package_dir in sorted(packages):
     args = [
         'dosocs2', 'scan',
         '--scanner', 'nomos_deep',
-        '--package-name', package_name,
+        '--package-name', '-'.join(package_name.split('-')[:-1]),
         '--package-comment', 'package_type=maven',
+        '--package-version', package_name.split('-')[-1],
         package_dir
         ]
     subprocess.call(args)

@@ -118,7 +118,7 @@ class Transaction:
         self.store_scan_result(scanner.name, scan_result, {path: file.file_id})
         return file
 
-    def scan_directory(self, path, scanner, name=None):
+    def scan_directory(self, path, scanner, name=None, version=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
@@ -129,7 +129,7 @@ class Transaction:
             return package
         package_params = {
             'name': name or os.path.basename(os.path.abspath(path)),
-            'version': '',
+            'version': version or '',
             'file_name': os.path.basename(os.path.abspath(path)),
             'supplier_id': None,
             'originator_id': None,
@@ -170,7 +170,7 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner=scanner, name=name)
+            return self.scan_directory(path, scanner=scanner, name=name, version=version)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
