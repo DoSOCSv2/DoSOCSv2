@@ -24,4 +24,11 @@ for subdir, dirnames, filenames in os.walk(directory):
 for package_name, package_dir in sorted(packages):
     print(package_name + '...', end='')
     sys.stdout.flush()
-    subprocess.call(['dosocs2', 'scan', '-s', 'nomos_deep', '-p', package_name, package_dir])
+    args = [
+        'dosocs2', 'scan',
+        '--scanner', 'nomos_deep',
+        '--package-name', package_name,
+        '--package-comment', 'package_type=maven',
+        package_dir
+        ]
+    subprocess.call(args)

@@ -13,6 +13,6 @@ shopt -s nullglob
 for item in *.bz2 *.gz *.zip *.tar; do
    PVERSION=$(ls -1 $item | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?')
    PNAME=$(ls -1 $item | sed -r 's/-[0-9]+\.[0-9]+(\.[0-9]+)?.*//g')
-   dosocs2 scan --package-version=$PVERSION --package-name=$PNAME $item
+   dosocs2 scan --package-version=$PVERSION --package-name=$PNAME --package-comment="package_type=python" $item
 done
 shopt -u nullglob
