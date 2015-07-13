@@ -30,6 +30,7 @@ import zipfile
 
 import magic
 
+
 def is_source(magic_string):
     return (
         ' source' in magic_string and ' text' in magic_string or
