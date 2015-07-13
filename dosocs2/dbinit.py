@@ -15,6 +15,8 @@
 
 '''dosocs2 database initialization.'''
 
+from __future__ import print_function
+
 import pkg_resources
 import re
 import sys
