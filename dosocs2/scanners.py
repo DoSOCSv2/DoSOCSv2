@@ -53,10 +53,9 @@ class Nomos(Scanner):
     def __init__(self):
         self.exec_path = config['nomos']['path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
-        self.parallel = config['nomos'].get('parallel') or '2'
 
     def scan_file(self, path):
-        args = (self.exec_path, '-n', self.parallel, '-l', path)
+        args = (self.exec_path, '-l', path)
         output = subprocess.check_output(args)
         scan_result = set()
         for line in output.split('\n'):

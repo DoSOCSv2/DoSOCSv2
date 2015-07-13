@@ -46,7 +46,7 @@ class Transaction:
             .first()
             )
 
-    def lookup_or_add_license(self, short_name, comment=''):
+    def lookup_or_add_license(self, short_name, comment=None):
         '''Add license to the database if it does not exist.
 
         Return the new or existing license object in any case.
@@ -61,7 +61,7 @@ class Transaction:
             'name': None,
             'short_name': short_name,
             'cross_reference': '',
-            'comment': comment,
+            'comment': comment or '',
             'is_spdx_official': False,
             }
         new_license = self.db.licenses.insert(**license_params)
@@ -118,7 +118,7 @@ class Transaction:
         self.store_scan_result(scanner.name, scan_result, {path: file.file_id})
         return file
 
-    def scan_directory(self, path, scanner, alt_name=None):
+    def scan_directory(self, path, scanner, name=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
@@ -128,7 +128,7 @@ class Transaction:
         if package is not None:
             return package
         package_params = {
-            'name': alt_name or os.path.basename(os.path.abspath(path)),
+            'name': name or os.path.basename(os.path.abspath(path)),
             'version': '',
             'file_name': os.path.basename(os.path.abspath(path)),
             'supplier_id': None,
@@ -162,7 +162,7 @@ class Transaction:
         self.db.flush()
         return package
 
-    def scan_package(self, path, scanner, alt_name=None):
+    def scan_package(self, path, scanner, name=None, version=None, comment=None):
         '''Scan package for licenses. Add it and all files to the DB.
 
         Return the package object.
@@ -170,14 +170,14 @@ class Transaction:
         Only scan if the package is not already cached (by SHA-1).
         '''
         if os.path.isdir(path):
-            return self.scan_directory(path, scanner, alt_name)
+            return self.scan_directory(path, scanner=scanner, name=name)
         sha1 = util.sha1(path)
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
         package_params = {
-            'name': alt_name or util.package_friendly_name(os.path.basename(path)),
-            'version': '',
+            'name': name or util.package_friendly_name(os.path.basename(path)),
+            'version': version or '',
             'file_name': os.path.basename(path),
             'supplier_id': None,
             'originator_id': None,
@@ -193,7 +193,7 @@ class Transaction:
             'copyright_text': None,
             'summary': '',
             'description': '',
-            'comment': ''
+            'comment': comment or ''
             }
         package = self.db.packages.insert(**package_params)
         self.db.flush()
@@ -286,14 +286,14 @@ class Transaction:
                     )
         self.db.flush()
 
-    def create_document(self, package_id, **kwargs):
+    def create_document(self, package_id, name=None, comment=None):
         package = self.db.packages.get(package_id)
         data_license = (
             self.db.licenses
             .filter(self.db.licenses.short_name == 'CC0-1.0')
             .one()
             )
-        doc_name = kwargs.get('name') or package.name
+        doc_name = name or package.name
         doc_namespace = self.create_document_namespace(doc_name)
         document_params = {
             'data_license_id': data_license.license_id,
@@ -301,8 +301,8 @@ class Transaction:
             'name': doc_name,
             'document_namespace_id': doc_namespace.document_namespace_id,
             'license_list_version': '2.0',  # TODO: dynamically fill from database table
-            'creator_comment': kwargs.get('creator_comment') or '',
-            'document_comment': kwargs.get('document_comment') or '',
+            'creator_comment': name or '',
+            'document_comment': comment or '',
             'package_id': package_id
             }
         new_document = self.db.documents.insert(**document_params)

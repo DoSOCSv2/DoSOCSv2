@@ -17,14 +17,15 @@
 # limitations under the License.
 
 '''Usage:
-{0} configtest [-c FILE]
-{0} dbinit [-c FILE] [--no-confirm]
-{0} generate [-c FILE] [-d NAME] (PACKAGE-ID)
+{0} configtest [-f FILE]
+{0} dbinit [-f FILE] [--no-confirm]
+{0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
 {0} newconfig
-{0} oneshot [-c FILE] [-p NAME] [-d NAME] [-s SCANNER] (PATH)
-{0} print [-c FILE] (DOC-ID)
-{0} scan [-n] [-c FILE] [-p NAME] [-s SCANNER] (PATH)
-{0} scanners [-c FILE]
+{0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
+    [-s SCANNER] [-r VER] (PATH)
+{0} print [-f FILE] (DOC-ID)
+{0} scan [-c COMMENT] [-f FILE] [-n NAME] [-r VER] [-s SCANNER] (PATH)
+{0} scanners [-f FILE]
 {0} (--help | --version)
 
 Commands:
@@ -42,21 +43,23 @@ Commands:
   scan          Scan an archive file or directory
   scanners      List available scanners
 
-General options:
-  -c, --config=FILE           Alternate config file
-
-Options for 'init':
-      --no-confirm            Don't prompt first
-
-Options for 'generate', 'oneshot':
-  -d, --document-name=NAME    Name for new document (otherwise create name
+Options:
+  -C, --doc-comment=COMMENT   Comment for new document (otherwise use empty
+                                string)
+  -c, --package-comment=COMMENT
+                              Comment for new package (otherwise use empty
+                                string)
+  -f, --config=FILE           Alternate config file
+  -N, --doc-name=NAME         Name for new document (otherwise create name
                                 from package name)
-
-Options for 'scan', 'oneshot':
-  -p, --package-name=NAME     Name for new package (otherwise create
+  -n, --package-name=NAME     Name for new package (otherwise create
                                 name from filename)
+  -r, --package-version=VER   Version string for new package (otherwise use
+                                empty string)
   -s, --scanner=SCANNER       Scanner to use ('dosocs2 scanners' to see
                                 choices)
+      --no-confirm            Don't prompt before initializing database with
+                                'dbinit' (dangerous!)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -76,7 +79,7 @@ from . import dbinit
 from . import render
 from . import scanners
 
-__version__ = '0.4.1'
+__version__ = '0.5.0'
 
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
@@ -144,15 +147,18 @@ def initialize(db):
 
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
+    alt_config = argv['--config']
     db = sqlsoup.SQLSoup(config.connection_uri)
     doc_id = argv['DOC-ID']
     document = None
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
     output_format = 'tag'
-    alt_name = argv['--package-name']
-    alt_config = argv['--config']
-    document_name = argv['--document-name'] or argv['--package-name']
+    new_package_comment = argv['--package-comment'] or ''
+    new_package_name = argv['--package-name']
+    new_package_version = argv['--package-version'] or ''
+    new_doc_comment = argv['--doc-comment'] or ''
+    new_doc_name = argv['--doc-name'] or argv['--package-name']
 
     if argv['--config']:
         try:
@@ -208,7 +214,8 @@ def main():
 
     elif argv['dbinit']:
         if not argv['--no-confirm']:
-            errmsg('preparing to initialize the database')
+            dbname = config.config['database']['database']
+            errmsg('preparing to initialize database {}'.format(dbname))
             errmsg('all existing data will be deleted!')
             errmsg('make sure you are connected to the internet before continuing.')
             errmsg('type the word "YES" (all uppercase) to commit.')
@@ -227,24 +234,45 @@ def main():
         print(render.render_document(db, doc_id, format_map[output_format]))
 
     elif argv['generate']:
+        kwargs = {
+            'name': new_doc_name,
+            'comment': new_doc_comment
+            }
         with Transaction(db) as t:
             package = t.fetch('packages', package_id)
             if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
-            document = t.create_document(package_id, name=document_name)
-            print('(package_id {}): document_id: {}'.format(package_id, document.document_id))
+            document_id = t.create_document(package_id, **kwargs).document_id
+        fmt = '(package_id {}): document_id: {}'
+        print(fmt.format(package_id, document_id))
 
     elif argv['scan']:
+        kwargs = {
+            'scanner': this_scanner,
+            'name': new_package_name,
+            'version': new_package_version,
+            'comment': new_package_comment
+            }
         with Transaction(db) as t:
-            package = t.scan_package(package_path, this_scanner, alt_name)
+            package = t.scan_package(package_path, **kwargs)
         print('{}: package_id: {}'.format(package_path, package.package_id))
 
     elif argv['oneshot']:
+        kwargs = {
+            'scanner': this_scanner,
+            'name': new_package_name,
+            'version': new_package_version,
+            'comment': new_package_comment
+            }
         with Transaction(db) as t:
-            package = t.scan_package(package_path, this_scanner, alt_name)
-            package_id = package.package_id
-            sys.stderr.write('{}: package_id: {}\n'.format(package_path, package_id))
+            package_id = t.scan_package(package_path, **kwargs).package_id
+        fmt = '{}: package_id: {}\n'
+        sys.stderr.write(fmt.format(package_path, package_id))
+        kwargs = {
+            'name': new_doc_name,
+            'comment': new_doc_comment
+            }
         with Transaction(db) as t:
             document = (
                 db.documents
@@ -254,11 +282,10 @@ def main():
             if document:
                 doc_id = document.document_id
             else:
-                document = t.create_document(package_id, name=document_name)
-                doc_id = document.document_id
-            sys.stderr.write('{}: document_id: {}\n'.format(package_path, doc_id))
+                doc_id = t.create_document(package_id, **kwargs).document_id
+            fmt = '{}: document_id: {}\n'
+            sys.stderr.write(fmt.format(package_path, doc_id))
         print(render.render_document(db, doc_id, format_map[output_format]))
-
 
 
 if __name__ == "__main__":

@@ -1,6 +1,22 @@
+# <SPDX-License-Identifier: Apache-2.0>
+# Copyright (c) 2015 University of Nebraska Omaha and other contributors.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import time
 
 import jinja2
+from . import config
 from . import util
 from . import viewmap
 
@@ -39,6 +55,7 @@ def render_template(templatefile, context):
 
 
 def render_document(db, docid, template_file):
+    render_relationships = util.bool_from_str(config.config['dosocs2']['render_relationships'])
     v = viewmap.viewmap(db)
     document = util.row_to_dict(
         v['v_documents']
@@ -61,7 +78,7 @@ def render_document(db, docid, template_file):
         .filter(v['v_annotations'].id_string == document['id_string'])
         .all()
         )
-    document['relationships'] = util.rows_to_dicts(
+    document['relationships'] = render_relationships and util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
         .filter(v['v_relationships'].left_id_string == document['id_string'])
@@ -83,7 +100,7 @@ def render_document(db, docid, template_file):
         .filter(v['v_annotations'].id_string == package['id_string'])
         .all()
         )
-    package['relationships'] = util.rows_to_dicts(
+    package['relationships'] = render_relationships and util.rows_to_dicts(
         v['v_relationships']
         .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
         .filter(v['v_relationships'].left_id_string == package['id_string'])
@@ -112,12 +129,12 @@ def render_document(db, docid, template_file):
             .filter(v['v_annotations'].id_string == file['id_string'])
             .all()
             )
-        file['relationships'] = util.rows_to_dicts(
+        file['relationships'] = render_relationships and util.rows_to_dicts(
             v['v_relationships']
             .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
             .filter(v['v_relationships'].left_id_string == file['id_string'])
             .all()
-            )
+            ) or None
     licenses = util.rows_to_dicts(
         v['v_documents_unofficial_licenses']
         .filter(v['v_documents_unofficial_licenses'].document_id == document['document_id'])
