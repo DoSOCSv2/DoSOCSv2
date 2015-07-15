@@ -30,6 +30,7 @@ from collections import defaultdict
 
 from . import util
 from .config import config
+from . import depparse
 
 
 class Scanner(object):
@@ -39,10 +40,10 @@ class Scanner(object):
     def __init__(self):
         raise NotImplementedError
 
-    def scan_file(path):
+    def scan_file(self, path):
         raise NotImplementedError
 
-    def scan_directory(path):
+    def scan_directory(self, path):
         raise NotImplementedError
 
 
@@ -139,9 +140,41 @@ class Dummy(Scanner):
         return {}
 
 
+class DependencyCheck(Scanner):
+
+    name = 'dependency_check'
+
+    def __init__(self):
+        self.exec_path = config['dependency_check']['path']
+
+    def scan_directory(self, path):
+        with util.tempdir() as tempdir:
+            args = [
+                self.exec_path,
+                '--out', tempdir,
+                '--format', 'XML',
+                '--scan', path,
+                '--app', 'none'
+                ]
+            print(args)
+            if not util.bool_from_str(config['dependency_check'].get('always_update', False)):
+                args.append('--noupdate')
+            subprocess.check_call(args)
+            with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
+                xml_data = f.read()
+        print(xml_data)
+        result = depparse.parse_dependency_xml(xml_data)
+        print(result)
+        return {}
+
+    def scan_file(self, path):
+        return self.scan_directory(path)
+
+
 scanners = {
     'nomos': Nomos,
     'nomos_deep': NomosDeep,
     'nomos_poms_only': NomosPomsOnly,
+    'dependency_check': DependencyCheck,
     'dummy': Dummy
     }
