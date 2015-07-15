@@ -25,7 +25,8 @@ setup(
         'psycopg2',
         'python-magic',
         'docopt',
-        'sqlsoup'
+        'sqlsoup',
+        'xmltodict',
         ],
 
     package_data={'dosocs2': ['sql/*', 'templates/*', 'default/*']},
