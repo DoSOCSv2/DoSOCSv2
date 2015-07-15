@@ -31,6 +31,14 @@ import zipfile
 import magic
 
 
+def bool_from_str(s):
+    if s.lower() == 'true':
+        return True
+    elif s.lower() == 'false':
+        return False
+    else:
+        raise ValueError('Expected a string like \'true\' or \'false\'')
+
 def is_source(magic_string):
     return (
         ' source' in magic_string and ' text' in magic_string or
@@ -174,3 +182,12 @@ def get_dir_hashes(path, excluded_hashes=None):
     return (gen_ver_code(hashes.values(), excluded_hashes), hashes)
 
 
+@contextmanager
+def tempdir(*args, **kwargs):
+    d = None
+    try:
+        d = tempfile.mkdtemp(*args, **kwargs)
+        yield d
+    finally:
+        if d is not None:
+            shutil.rmtree(d)

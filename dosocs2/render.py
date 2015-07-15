@@ -20,15 +20,6 @@ from . import config
 from . import viewmap
 
 
-def bool_from_str(s):
-    if s.lower() == 'true':
-        return True
-    elif s.lower() == 'false':
-        return False
-    else:
-        raise ValueError('Expected a string like \'true\' or \'false\'')
-
-
 def row_to_dict(row):
     '''Convert SQLSoup row to a dictionary.'''
     d = {}
@@ -75,7 +66,7 @@ def render_template(templatefile, context):
 
 
 def render_document(db, docid, template_file):
-    render_relationships = bool_from_str(config.config['dosocs2']['render_relationships'])
+    render_relationships = util.bool_from_str(config.config['dosocs2']['render_relationships'])
     v = viewmap.viewmap(db)
     document = row_to_dict(
         v['v_documents']

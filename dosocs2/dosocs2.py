@@ -128,7 +128,7 @@ def main():
     try:
         this_scanner = scanners.scanners[this_scanner_name]()
     except KeyError:
-        errmsg("'{}' is not a known scanner".format(this_scanner))
+        errmsg("'{}' is not a known scanner".format(this_scanner_name))
         sys.exit(1)
 
 
