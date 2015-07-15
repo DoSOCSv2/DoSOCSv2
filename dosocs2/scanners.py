@@ -156,13 +156,9 @@ class DependencyCheck(Scanner):
                 '--scan', path,
                 '--app', 'none'
                 ]
-            print(args)
-            if not util.bool_from_str(config['dependency_check'].get('always_update', False)):
-                args.append('--noupdate')
             subprocess.check_call(args)
             with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
                 xml_data = f.read()
-        print(xml_data)
         result = depparse.parse_dependency_xml(xml_data)
         print(result)
         return {}

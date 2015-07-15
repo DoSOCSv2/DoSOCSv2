@@ -41,7 +41,8 @@ def get_cpes(dep):
 def parse_dependency_xml(xml_text):
     x = xmltodict.parse(xml_text)
     deps = []
-    for dep in as_list(x['analysis']['dependencies']['dependency']):
+    root_deps = x['analysis']['dependencies'] or {}
+    for dep in as_list(root_deps.get('dependency', list())):
         this_vulns = []
         if 'vulnerabilities' in dep:
             for vuln in as_list(dep['vulnerabilities']['vulnerability']):
