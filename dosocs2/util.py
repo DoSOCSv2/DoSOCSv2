@@ -39,6 +39,7 @@ def bool_from_str(s):
     else:
         raise ValueError('Expected a string like \'true\' or \'false\'')
 
+
 def is_source(magic_string):
     return (
         ' source' in magic_string and ' text' in magic_string or
@@ -50,6 +51,7 @@ def is_source(magic_string):
         'XML' in magic_string and 'text' in magic_string
         )
 
+
 def is_binary(magic_string):
     return (
         ' executable' in magic_string or
@@ -58,6 +60,7 @@ def is_binary(magic_string):
         ' dynamically linked' in magic_string or
         ' ar archive' in magic_string
         )
+
 
 def spdx_filetype(filename):
     '''Try to guess the SPDX filetype of the file.'''
@@ -85,6 +88,7 @@ def archive_type(path):
         return 'zip'
     else:
         return None
+
 
 @contextmanager
 def tempextract(path):

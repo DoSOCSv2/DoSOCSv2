@@ -22,6 +22,7 @@ view_names = {
     'v_auto_described_by',
     }
 
+
 def viewmap(db):
     '''Return a dictionary of views that can be queried like SQLSoup tables.'''
     views = {}

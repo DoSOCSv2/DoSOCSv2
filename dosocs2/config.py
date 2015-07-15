@@ -28,6 +28,7 @@ connection_uri = None
 namespace_prefix = None
 _parser = None
 
+
 def create_user_config(overwrite=True):
     try:
         os.makedirs(DOSOCS2_CONFIG_HOME)
@@ -56,10 +57,12 @@ def update_config(other_config_path=None):
     prefix_fmt = '{dbms}://{host}:{port}/{database}'
     namespace_prefix = prefix_fmt.format(**config['database'])
 
+
 def config_location(other_config_path=None):
     if os.path.exists(other_config_path or DOSOCS2_CONFIG_PATH):
         return other_config_path or DOSOCS2_CONFIG_PATH
     return DEFAULT_CONFIG_PATH
+
 
 def dump_to_file(fileobj):
     global _parser

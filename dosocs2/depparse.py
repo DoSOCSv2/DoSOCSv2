@@ -51,7 +51,7 @@ def parse_dependency_xml(xml_text):
                     'description': vuln.get('description', ''),
                     'severity': vuln.get('severity', 'N/A'),
                     'cvssScore': vuln.get('cvssScore', '0.0'),
-                    #'cpes': [extract_cpe(cpe) for cpe in as_list(vuln['vulnerableSoftware']['software'])]
+                    # 'cpes': [extract_cpe(cpe) for cpe in as_list(vuln['vulnerableSoftware']['software'])]
                     }
                 this_vulns.append(v)
         deps.append({

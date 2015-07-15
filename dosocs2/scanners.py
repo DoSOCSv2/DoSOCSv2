@@ -96,7 +96,6 @@ class NomosDeep(Scanner):
         else:
             return self._nomos.scan_file(path)
 
-
     def scan_directory(self, path):
         scan_result = {}
         for filepath in util.allpaths(path):

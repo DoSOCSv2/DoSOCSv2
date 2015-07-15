@@ -131,7 +131,6 @@ def main():
         errmsg("'{}' is not a known scanner".format(this_scanner_name))
         sys.exit(1)
 
-
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')
         print('Config at: {}'.format(config.config_location(alt_config)))

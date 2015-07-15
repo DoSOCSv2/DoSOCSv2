@@ -20,6 +20,7 @@ from . import config
 from . import viewmap
 from . import util
 
+
 def row_to_dict(row):
     '''Convert SQLSoup row to a dictionary.'''
     d = {}
