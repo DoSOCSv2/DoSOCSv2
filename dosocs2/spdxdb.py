@@ -118,7 +118,7 @@ class Transaction:
         self.store_scan_result(scanner.name, scan_result, {path: file.file_id})
         return file
 
-    def scan_directory(self, path, scanner, name=None, version=None):
+    def scan_directory(self, path, scanner, name=None, version=None, comment=None, file_name=None):
         ver_code, hashes = util.get_dir_hashes(path)
         package = (
             self.db.packages
@@ -130,7 +130,7 @@ class Transaction:
         package_params = {
             'name': name or os.path.basename(os.path.abspath(path)),
             'version': version or '',
-            'file_name': os.path.basename(os.path.abspath(path)),
+            'file_name': file_name or os.path.basename(os.path.abspath(path)),
             'supplier_id': None,
             'originator_id': None,
             'download_location': None,
@@ -175,45 +175,17 @@ class Transaction:
         package = util.lookup_by_sha1(self.db.packages, sha1)
         if package is not None:
             return package
-        package_params = {
-            'name': name or util.package_friendly_name(os.path.basename(path)),
-            'version': version or '',
-            'file_name': os.path.basename(path),
-            'supplier_id': None,
-            'originator_id': None,
-            'download_location': None,
-            'verification_code': '',  # filled in after file processing
-            'ver_code_excluded_file_id': None,
-            'sha1': sha1,
-            'home_page': None,
-            'source_info': '',
-            'concluded_license_id': None,
-            'declared_license_id': None,
-            'license_comment': '',
-            'copyright_text': None,
-            'summary': '',
-            'description': '',
-            'comment': comment or ''
-            }
-        package = self.db.packages.insert(**package_params)
-        self.db.flush()
         with util.tempextract(path) as (tempdir, relpaths):
-            abspaths = [os.path.join(tempdir, path) for path in relpaths]
-            hashes = []
-            for relpath, abspath in itertools.izip(relpaths, abspaths):
-                if not os.path.isfile(abspath):
-                    continue
-                fileobj = self.scan_file(abspath, scanner)
-                hashes.append(fileobj.sha1)
-                package_file_params = {
-                    'package_id': package.package_id,
-                    'file_id': fileobj.file_id,
-                    'concluded_license_id': None,
-                    'file_name': os.path.join(os.curdir, relpath),
-                    'license_comment': ''
-                    }
-                self.db.packages_files.insert(**package_file_params)
-        package.verification_code = util.gen_ver_code(hashes)
+            kwargs = {
+                'path': tempdir,
+                'scanner': scanner,
+                'name': name or util.package_friendly_name(os.path.basename(path)),
+                'version': version,
+                'comment': comment,
+                'file_name': os.path.basename(os.path.abspath(path))
+                }
+            package = self.scan_directory(**kwargs)
+        package.sha1 = sha1
         self.db.flush()
         return package
 
