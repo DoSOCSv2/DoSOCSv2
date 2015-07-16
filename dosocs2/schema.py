@@ -3,8 +3,8 @@ from sqlalchemy import Integer, String, Text, Boolean, DateTime
 from sqlalchemy import ForeignKeyConstraint, CheckConstraint, UniqueConstraint
 from sqlalchemy import func
 
-engine = create_engine('postgresql://spdx:spdx@localhost:5432/spdx', echo=True)
 meta = MetaData()
+engine = None
 
 licenses = Table('licenses', meta,
     Column('license_id', Integer, primary_key=True),
@@ -221,3 +221,11 @@ annotations = Table('annotations', meta,
     ForeignKeyConstraint(['identifier_id'], ['identifiers.identifier_id']),
     ForeignKeyConstraint(['creator_id'], ['creators.creator_id']),
     )
+
+
+def initialize(connection_string):
+    global engine
+    if engine is None:
+        engine = create_engine(connection_string, echo=True)
+    else:
+        return engine

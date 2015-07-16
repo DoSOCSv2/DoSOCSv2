@@ -71,13 +71,13 @@ import pkg_resources
 import sys
 
 import docopt
-import sqlsoup
 
 from .spdxdb import Transaction
 from . import config
 from . import dbinit
 from . import render
 from . import scanners
+from . import schema as db
 
 
 format_map = {
@@ -100,7 +100,7 @@ def errmsg(text, **kwargs):
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
-    db = sqlsoup.SQLSoup(config.connection_uri)
+    engine = db.initialize(config.connection_uri)
     doc_id = argv['DOC-ID']
     document = None
     package_id = argv['PACKAGE-ID']
@@ -174,7 +174,7 @@ def main():
             if answer != 'YES':
                 errmsg('canceling operation.')
                 sys.exit(1)
-        sys.exit(0 if dbinit.initialize(db, __version__) else 1)
+        sys.exit(0 if dbinit.initialize(__version__) else 1)
 
     elif argv['print']:
         with Transaction(db) as t:

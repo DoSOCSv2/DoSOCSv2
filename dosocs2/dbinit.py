@@ -23,6 +23,9 @@ import sys
 import urllib2
 import uuid
 
+from sqlalchemy.sql import select
+
+from . import schema as db
 
 def msg(text, **kwargs):
     print('dosocs2' + ': ' + text, **kwargs)
@@ -34,7 +37,7 @@ def errmsg(text, **kwargs):
     sys.stdout.flush()
 
 
-def load_file_types(db):
+def load_file_types(conn):
     filetypes = (
         'SOURCE',
         'BINARY',
@@ -49,10 +52,10 @@ def load_file_types(db):
         'OTHER'
         )
     for f in filetypes:
-        db.file_types.insert(name=f)
+        conn.execute(db.file_types.insert().values(name=f))
 
 
-def load_licenses(db, url='http://spdx.org/licenses/'):
+def load_licenses(conn, url='http://spdx.org/licenses/'):
     rows = scrape_site(url)
     sorted_rows = list(sorted(rows))
     if len(rows) == 0:
@@ -65,43 +68,44 @@ def load_licenses(db, url='http://spdx.org/licenses/'):
             'comment': '',
             'is_spdx_official': True,
             }
-        db.licenses.insert(**license_params)
+        conn.execute(db.licenses.insert().values(**license_params))
     return True
 
 
-def load_creator_types(db):
+def load_creator_types(conn):
     creator_types = (
         'Person',
         'Organization',
         'Tool'
         )
     for c in creator_types:
-        db.creator_types.insert(name=c)
+        conn.execute(db.creator_types.insert().values(name=c))
 
 
-def load_annotation_types(db):
+def load_annotation_types(conn):
     annotation_types = (
         'REVIEW',
         'OTHER'
         )
     for a in annotation_types:
-        db.annotation_types.insert(name=a)
+        conn.execute(db.annotation_types.insert().values(name=a))
 
 
-def load_default_creator(db, creator_string):
-    creator_type = (db.creator_types
-        .filter(db.creator_types.name == 'Tool')
-        .one()
+def load_default_creator(conn, creator_string):
+    query = (
+        select([db.creator_types.c.creator_type_id])
+        .where(db.creator_types.c.name == 'Tool')
         )
+    creator_type_id = conn.execute(query).fetchone()['creator_type_id']
     creator_params = {
-        'creator_type_id': creator_type.creator_type_id,
+        'creator_type_id': creator_type_id,
         'name': creator_string,
         'email': ''
         }
-    db.creators.insert(**creator_params)
+    conn.execute(db.creators.insert().values(**creator_params))
 
 
-def load_relationship_types(db):
+def load_relationship_types(conn):
     relationship_types = (
         'DESCRIBES',
         'DESCRIBED_BY',
@@ -135,7 +139,7 @@ def load_relationship_types(db):
         'OTHER'
         )
     for rt in relationship_types:
-        db.relationship_types.insert(name=rt)
+        conn.execute(db.relationship_types.insert().values(name=rt))
 
 
 def scrape_site(url):
@@ -156,77 +160,39 @@ def scrape_site(url):
     return completed_rows
 
 
-def execute_sql_in_file(path, db):
-    with open(path) as f:
-        query = f.read()
-    result = db.execute(query)
-    return result
-
-
-def drop_all_tables(db):
-    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_drop_tables.sql')
-    return execute_sql_in_file(filename, db)
-
-
-def create_all_tables(db):
-    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_create_tables.sql')
-    return execute_sql_in_file(filename, db)
-
-
-def drop_all_views(db):
-    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_drop_views.sql')
-    return execute_sql_in_file(filename, db)
-
-
-def create_all_views(db):
-    filename = pkg_resources.resource_filename('dosocs2', 'sql/spdx_create_views.sql')
-    return execute_sql_in_file(filename, db)
-
-
-def initialize(db, dosocs2_version):
+def initialize(dosocs2_version):
     url = 'http://spdx.org/licenses/'
-    msg('dropping all views...', end='')
-    result = drop_all_views(db)
+    msg('dropping and creating all tables...', end='')
+    db.meta.drop_all(db.engine)
+    db.meta.create_all(db.engine)
     print('ok.')
-    msg('dropping all tables...', end='')
-    result = drop_all_tables(db)
-    print('ok.')
-    msg('creating all tables...', end='')
-    result = create_all_tables(db)
-    print('ok.')
-    msg('committing changes...', end='')
-    db.commit()
-    print('ok.')
-    msg('creating all views...', end='')
-    result = create_all_views(db)
-    print('ok.')
-    msg('loading licenses...', end='')
-    result = load_licenses(db, url)
-    if not result:
-        errmsg('error!')
-        errmsg('failed to download and load the license list')
-        errmsg('check your connection to ' + url +
-               ' and make sure it is the correct page'
-               )
-        return False
-    else:
+    with db.engine.begin() as conn:
+        msg('loading licenses...', end='')
+        result = load_licenses(conn, url)
+        if not result:
+            errmsg('error!')
+            errmsg('failed to download and load the license list')
+            errmsg('check your connection to ' + url +
+                ' and make sure it is the correct page'
+                )
+            return False
+        else:
+            print('ok.')
+        msg('loading creator types...', end='')
+        load_creator_types(conn)
         print('ok.')
-    msg('loading creator types...', end='')
-    load_creator_types(db)
-    print('ok.')
-    msg('loading default creator...', end='')
-    load_default_creator(db, 'dosocs2-' + dosocs2_version)
-    print('ok.')
-    msg('loading annotation types...', end='')
-    load_annotation_types(db)
-    print('ok.')
-    msg('loading file types...', end='')
-    load_file_types(db)
-    print('ok.')
-    msg('loading relationship types...', end='')
-    load_relationship_types(db)
-    print('ok.')
-    msg('committing changes...', end='')
-    db.commit()
+        msg('loading default creator...', end='')
+        load_default_creator(conn, 'dosocs2-' + dosocs2_version)
+        print('ok.')
+        msg('loading annotation types...', end='')
+        load_annotation_types(conn)
+        print('ok.')
+        msg('loading file types...', end='')
+        load_file_types(conn)
+        print('ok.')
+        msg('loading relationship types...', end='')
+        load_relationship_types(conn)
+        print('ok.')
+        msg('committing changes...', end='')
     print('ok.')
     return True
