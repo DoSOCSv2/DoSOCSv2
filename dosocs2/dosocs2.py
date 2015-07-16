@@ -72,12 +72,12 @@ import sys
 
 import docopt
 
-from .spdxdb import Transaction
 from . import config
 from . import dbinit
 from . import render
 from . import scanners
 from . import schema as db
+from . import spdxdb
 
 
 format_map = {
