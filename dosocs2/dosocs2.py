@@ -100,7 +100,7 @@ def errmsg(text, **kwargs):
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
-    engine = db.initialize(config.connection_uri)
+    engine = db.initialize(config.config['dosocs2']['connection_uri'])
     doc_id = argv['DOC-ID']
     document = None
     package_id = argv['PACKAGE-ID']
@@ -166,8 +166,7 @@ def main():
 
     elif argv['dbinit']:
         if not argv['--no-confirm']:
-            dbname = config.config['database']['database']
-            errmsg('preparing to initialize database {}'.format(dbname))
+            errmsg('preparing to initialize the database')
             errmsg('all existing data will be deleted!')
             errmsg('make sure you are connected to the internet before continuing.')
             errmsg('type the word "YES" (all uppercase) to commit.')
