@@ -211,14 +211,14 @@ def create_document_namespace(conn, doc_name):
     doc_namespace['document_namespace_id'] = insert(conn, db.document_namespaces, doc_namespace)
     return doc_namespace
 
-def create_all_identifiers(conn, doc_namespace, package):
+def create_all_identifiers(conn, doc_namespace_id, package):
     all_files_query = (
         select([db.packages_files])
         .where(db.packages_files.c.package_id == package['package_id'])
         )
     identifier_ids = []
     package_id_params = {
-        'document_namespace_id': document_namespace_id,
+        'document_namespace_id': doc_namespace_id,
         'package_id': package['package_id'],
         'id_string': util.gen_id_string('package', package['file_name'], package['sha1'])
         }
@@ -227,9 +227,9 @@ def create_all_identifiers(conn, doc_namespace, package):
             select([db.files.c.sha1])
             .where(db.files.c.file_id == file['file_id'])
             )
-        filesha1 = conn.execute(filesha1_query).fetchone['sha1']
+        filesha1 = conn.execute(filesha1_query).fetchone()['sha1']
         file_id_params = {
-            'document_namespace_id': document_namespace_id,
+            'document_namespace_id': doc_namespace_id,
             'package_file_id': file['package_file_id'],
             'id_string': util.gen_id_string('file', file['file_name'], filesha1)
             }
@@ -277,7 +277,7 @@ def create_document(conn, package, name=None, comment=None):
         select([db.licenses.c.license_id])
         .where(db.licenses.c.short_name == 'CC0-1.0')
         )
-    data_license_id = conn.execute(data_license_query).fetchone()['data_license_id']
+    data_license_id = conn.execute(data_license_query).fetchone()['license_id']
     doc_name = name or package['name']
     doc_namespace_id = create_document_namespace(conn, doc_name)['document_namespace_id']
     new_document = {
@@ -297,7 +297,7 @@ def create_document(conn, package, name=None, comment=None):
     # TODO: don't hardcode this.
     document_creator_params = {
         'document_id': new_document_id,
-        'creator_id': default_creator_id
+        'creator_id': 1
         }
     insert(conn, db.documents_creators, document_creator_params)
     document_identifier_params = {
@@ -307,7 +307,7 @@ def create_document(conn, package, name=None, comment=None):
         }
     # create all identifiers
     insert(conn, db.identifiers, document_identifier_params)
-    create_all_identifiers(conn, doc_namespace_id, package['package_id'])
+    create_all_identifiers(conn, doc_namespace_id, package)
     # create known relationships
     # autocreate_relationships(conn, new_document_id)
     return new_document

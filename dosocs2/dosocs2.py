@@ -177,14 +177,12 @@ def main():
                 sys.exit(1)
         sys.exit(0 if dbinit.initialize(__version__) else 1)
 
-    # rewrite
     elif argv['print']:
-        with Transaction(db) as t:
-            document = t.fetch('documents', doc_id)
-        if document is None:
-            errmsg('document id {} not found in the database.'.format(doc_id))
-            sys.exit(1)
-        print(render.render_document(db, doc_id, format_map[output_format]))
+        with engine.begin() as conn:
+            if spdxdb.fetch(conn, db.documents, doc_id) is None:
+                errmsg('document id {} not found in the database.'.format(doc_id))
+                sys.exit(1)
+            print(render.render_document(conn, doc_id, format_map[output_format]))
 
     elif argv['generate']:
         kwargs = {
@@ -192,10 +190,11 @@ def main():
             'comment': new_doc_comment
             }
         with engine.begin() as conn:
-            if spdxdb.fetch(conn, db.packages, package_id) is None:
+            package = spdxdb.fetch(conn, db.packages, package_id) 
+            if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
-            document_id = spdxdb.create_document(package_id, **kwargs)['document_id']
+            document_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
         fmt = '(package_id {}): document_id: {}'
         print(fmt.format(package_id, document_id))
 
@@ -218,15 +217,15 @@ def main():
             'version': new_package_version,
             'comment': new_package_comment
             }
-        with Transaction(db) as t:
-            package_id = t.scan_package(package_path, **kwargs).package_id
+        with engine.begin() as conn:
+            package_id = spdxdb.scan_package(package_path, **kwargs)['package_id']
         fmt = '{}: package_id: {}\n'
         sys.stderr.write(fmt.format(package_path, package_id))
         kwargs = {
             'name': new_doc_name,
             'comment': new_doc_comment
             }
-        with Transaction(db) as t:
+        with engine.begin() as conn:
             document = (
                 db.documents
                 .filter(db.documents.package_id == package_id)
