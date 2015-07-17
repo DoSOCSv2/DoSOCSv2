@@ -227,5 +227,4 @@ def initialize(connection_string):
     global engine
     if engine is None:
         engine = create_engine(connection_string, echo=True)
-    else:
-        return engine
+    return engine

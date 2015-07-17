@@ -138,18 +138,6 @@ def gen_id_string(prefix='element', file_name=None, sha1=None):
     return '-'.join(pieces)
 
 
-def lookup_by_sha1(table, sha1):
-    '''Lookup object by SHA-1 sum and return the object, or None.
-
-    'table' argument must be a table object as created by SQLSoup.
-    '''
-    # Maybe shouldn't be using first() here?
-    # Freak occurence of sha1 collision probably won't happen.
-    # But if it does, this will give nondeterministic results.
-    # (although, you will have bigger problems...)
-    return table.filter(table.sha1 == sha1).first()
-
-
 def friendly_namespace_suffix(doc_name):
     '''Return a namespace suffix based on an SPDX document name.'''
     return '/' + doc_name + '-' + str(uuid.uuid4())

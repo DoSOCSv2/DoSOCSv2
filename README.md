@@ -51,7 +51,7 @@ Dependencies
 - [Jinja2](http://jinja.pocoo.org/)
 - [psycopg2](http://initd.org/psycopg/)
 - [python-magic](https://github.com/ahupp/python-magic)
-- [SQLSoup](https://sqlsoup.readthedocs.org/en/latest/)
+- [SQLAlchemy](http://www.sqlalchemy.org/)
 
 All Python dependencies are handled by the setup script.
 

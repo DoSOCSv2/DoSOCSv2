@@ -28,10 +28,26 @@ from . import util
 
 
 def insert(conn, table, params):
-    query = table.insert.values(**params)
+    query = table.insert().values(**params)
     result = conn.execute(query)
     [pkey] = result.inserted_primary_key
     return pkey
+
+
+def lookup_by_sha1(conn, table, sha1):
+    '''Lookup row by SHA-1 sum and return the row, or None.'''
+    # Freak occurence of sha1 collision probably won't happen.
+    # But if it does, this will give nondeterministic results.
+    # (although, you will have bigger problems then...)
+    query = (
+        select([table])
+        .where(table.c.sha1 == sha1)
+        )
+    result = conn.execute(query).fetchone()
+    if result is None:
+        return result
+    else:
+        return dict(**result)
 
 
 def lookup_license(conn, short_name):
@@ -39,7 +55,11 @@ def lookup_license(conn, short_name):
         select([db.licenses])
         .where(db.licenses.c.short_name == short_name)
         )
-    return dict(**conn.execute(query).fetchone())
+    result = conn.execute(query).fetchone()
+    if result is None:
+        return result
+    else:
+        return dict(**result)
 
 
 def lookup_or_add_license(conn, short_name, comment=None):
@@ -49,7 +69,7 @@ def lookup_or_add_license(conn, short_name, comment=None):
     '''
     transtable = string.maketrans('()[]<>', '------')
     short_name = string.translate(short_name, transtable)
-    existing_license = lookup_license(short_name)
+    existing_license = lookup_license(conn, short_name)
     if existing_license is not None:
         return existing_license
     new_license = {
@@ -69,7 +89,7 @@ def create_file(conn, path, known_sha1):
         select([db.file_types.c.file_type_id])
         .where(db.file_types.c.name == util.spdx_filetype(path))
         )
-    [file_type_id] = conn.execute(file_type_query).fetchone()
+    file_type_id = conn.execute(file_type_query).fetchone()['file_type_id']
     new_file = {
         'sha1': known_sha1,
         'file_type_id': file_type_id,
@@ -85,7 +105,7 @@ def create_file(conn, path, known_sha1):
 def store_scan_result(conn, scanner_name, scan_result, path_file_id_map):
     for path in scan_result:
         licenses_found = [
-            lookup_or_add_license(shortname, 'found by ' + scanner_name)
+            lookup_or_add_license(conn, shortname, 'found by ' + scanner_name)
             for shortname in scan_result[path]
             ]
         for license in licenses_found:
@@ -106,16 +126,17 @@ def scan_file(conn, path, scanner, known_sha1=None):
     scan.
     '''
     sha1 = known_sha1 or util.sha1(path)
-    file = util.lookup_by_sha1(db.files, sha1)
+    file = lookup_by_sha1(conn, db.files, sha1)
     if file is not None:
         return file
-    file = create_file(path, sha1)
+    file = create_file(conn, path, sha1)
     scan_result = scanner.scan_file(path)
-    self.store_scan_result(scanner.name, scan_result, {path: file['file_id']})
+    store_scan_result(conn, scanner.name, scan_result, {path: file['file_id']})
     return file
 
 
-def scan_directory(conn, path, scanner, name=None, version=None, comment=None, file_name=None, sha1=None):
+def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
+                   file_name=None, sha1=None):
     ver_code, hashes = util.get_dir_hashes(path)
     package = {
         'name': name or os.path.basename(os.path.abspath(path)),
@@ -139,7 +160,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None, f
         }
     package['package_id'] = insert(conn, db.packages, package)
     for (filepath, sha1) in hashes.iteritems():
-        fileobj = scan_file(filepath, scanner, known_sha1=sha1)
+        fileobj = scan_file(conn, filepath, scanner, known_sha1=sha1)
         package_file_params = {
             'package_id': package['package_id'],
             'file_id': fileobj['file_id'],
@@ -148,10 +169,9 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None, f
             'license_comment': ''
             }
         insert(conn, db.packages_files, package_file_params)
-    self.db.flush()
     return package
 
-def scan_package(self, path, scanner, name=None, version=None, comment=None):
+def scan_package(conn, path, scanner, name=None, version=None, comment=None):
     '''Scan package for licenses. Add it and all files to the DB.
 
     Return the package object.
@@ -159,9 +179,16 @@ def scan_package(self, path, scanner, name=None, version=None, comment=None):
     Only scan if the package is not already cached (by SHA-1).
     '''
     if os.path.isdir(path):
-        return self.scan_directory(path, scanner=scanner, name=name, version=version)
+        kwargs = {
+            'path': path,
+            'scanner': scanner,
+            'name': name,
+            'version': version,
+            'comment': comment
+            }
+        return scan_directory(conn, **kwargs)
     sha1 = util.sha1(path)
-    package = util.lookup_by_sha1(db.packages, sha1)
+    package = lookup_by_sha1(conn, db.packages, sha1)
     if package is not None:
         return package
     with util.tempextract(path) as (tempdir, relpaths):
@@ -174,55 +201,52 @@ def scan_package(self, path, scanner, name=None, version=None, comment=None):
             'file_name': os.path.basename(os.path.abspath(path)),
             'sha1': sha1
             }
-        package = scan_directory(**kwargs)
+        package = scan_directory(conn, **kwargs)
     return package
 
-def create_document_namespace(self, doc_name):
+def create_document_namespace(conn, doc_name):
     suffix = util.friendly_namespace_suffix(doc_name)
     uri = config.namespace_prefix + suffix
     doc_namespace = {'uri': uri}
     doc_namespace['document_namespace_id'] = insert(conn, db.document_namespaces, doc_namespace)
     return doc_namespace
 
-# must rewrite
-def create_all_identifiers(self, document_namespace_id, package_id):
-    all_files = (
-        self.db.packages_files
-        .filter(self.db.packages_files.package_id == package_id)
-        .all()
+def create_all_identifiers(conn, doc_namespace, package):
+    all_files_query = (
+        select([db.packages_files])
+        .where(db.packages_files.c.package_id == package['package_id'])
         )
     identifier_ids = []
-    package = self.db.packages.get(package_id)
     package_id_params = {
         'document_namespace_id': document_namespace_id,
-        'package_id': package_id,
-        'id_string': util.gen_id_string('package', package.file_name, package.sha1)
+        'package_id': package['package_id'],
+        'id_string': util.gen_id_string('package', package['file_name'], package['sha1'])
         }
-    for file in all_files:
-        filesha1 = self.db.files.get(file.file_id).sha1
+    for file in conn.execute(all_files_query):
+        filesha1_query = (
+            select([db.files.c.sha1])
+            .where(db.files.c.file_id == file['file_id'])
+            )
+        filesha1 = conn.execute(filesha1_query).fetchone['sha1']
         file_id_params = {
             'document_namespace_id': document_namespace_id,
-            'package_file_id': file.package_file_id,
-            'id_string': util.gen_id_string('file', file.file_name, filesha1)
+            'package_file_id': file['package_file_id'],
+            'id_string': util.gen_id_string('file', file['file_name'], filesha1)
             }
-        file_identifier = self.db.identifiers.insert(**file_id_params)
-        self.db.flush()
-        identifier_ids.append(file_identifier.identifier_id)
-    package_identifier = self.db.identifiers.insert(**package_id_params)
-    self.db.flush()
-    identifier_ids.append(package_identifier.identifier_id)
+        new_identifier_id = insert(conn, db.identifiers, file_id_params)
+        identifier_ids.append(new_identifier_id)
+    package_identifier_id = insert(conn, db.identifiers, package_id_params)
+    identifier_ids.append(package_identifier_id)
     return identifier_ids
 
-# must rewrite
-def create_relationship(self, left_id, rel_type, right_id):
+def create_relationship(conn, left_id, rel_type, right_id):
     relationship_params = {
         'left_identifier_id': left_id,
         'relationship_type_id': rel_type,
         'right_identifier_id': right_id,
         'relationship_comment': ''
     }
-    self.db.relationships.insert(**relationship_params)
-    self.db.flush()
+    insert(conn, db_relationships, relationship_params)
 
 # def _view_fetch_by_docid(self, view_name, doc_id):
 #     return (
@@ -248,54 +272,51 @@ def create_relationship(self, left_id, rel_type, right_id):
 #                 )
 #     self.db.flush()
 
-# must rewrite
-def create_document(self, package_id, name=None, comment=None):
-    package = self.db.packages.get(package_id)
-    data_license = (
-        self.db.licenses
-        .filter(self.db.licenses.short_name == 'CC0-1.0')
-        .one()
+def create_document(conn, package, name=None, comment=None):
+    data_license_query = (
+        select([db.licenses.c.license_id])
+        .where(db.licenses.c.short_name == 'CC0-1.0')
         )
-    doc_name = name or package.name
-    doc_namespace = self.create_document_namespace(doc_name)
-    document_params = {
-        'data_license_id': data_license.license_id,
+    data_license_id = conn.execute(data_license_query).fetchone()['data_license_id']
+    doc_name = name or package['name']
+    doc_namespace_id = create_document_namespace(conn, doc_name)['document_namespace_id']
+    new_document = {
+        'data_license_id': data_license_id,
         'spdx_version': 'SPDX-2.0',
         'name': doc_name,
-        'document_namespace_id': doc_namespace.document_namespace_id,
+        'document_namespace_id': doc_namespace_id,
         'license_list_version': '2.0',  # TODO: dynamically fill from database table
         'creator_comment': name or '',
         'document_comment': comment or '',
-        'package_id': package_id
+        'package_id': package['package_id']
         }
-    new_document = self.db.documents.insert(**document_params)
-    self.db.flush()
-    # default_creator_id should always be 1, because the default is
+    new_document_id = insert(conn, db.documents, new_document)
+    new_document['document_id'] = new_document_id
+    # default creator id should always be 1, because the default is
     # always the first creator row created.
     # TODO: don't hardcode this.
-    default_creator_id = 1
     document_creator_params = {
-        'document_id': new_document.document_id,
+        'document_id': new_document_id,
         'creator_id': default_creator_id
         }
-    self.db.documents_creators.insert(**document_creator_params)
+    insert(conn, db.documents_creators, document_creator_params)
     document_identifier_params = {
-        'document_namespace_id': doc_namespace.document_namespace_id,
-        'document_id': new_document.document_id,
+        'document_namespace_id': doc_namespace_id,
+        'document_id': new_document_id,
         'id_string': 'SPDXRef-DOCUMENT'
         }
     # create all identifiers
-    document_identifier = self.db.identifiers.insert(**document_identifier_params)
-    self.db.flush()
-    doc_namespace_id = doc_namespace.document_namespace_id
-    doc_identifier_id = document_identifier.identifier_id
-    describes_ids = self.create_all_identifiers(doc_namespace_id, package_id)
-    self.db.flush()
+    insert(conn, db.identifiers, document_identifier_params)
+    create_all_identifiers(conn, doc_namespace_id, package['package_id'])
     # create known relationships
-    # self.autocreate_relationships(new_document.document_id)
-    self.db.flush()
+    # autocreate_relationships(conn, new_document_id)
     return new_document
 
-# must rewrite
-def fetch(self, table_name, id):
-    return getattr(self.db, table_name).get(id)
+def fetch(conn, table, pkey):
+    [c] = list(table.primary_key)
+    query = select([table]).where(c == pkey)
+    result = conn.execute(query).fetchone()
+    if result is None:
+        return result
+    else:
+        return dict(**result)

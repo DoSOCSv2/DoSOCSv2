@@ -25,7 +25,7 @@ setup(
         'psycopg2',
         'python-magic',
         'docopt',
-        'sqlsoup',
+        'SQLAlchemy',
         'xmltodict',
         ],
 

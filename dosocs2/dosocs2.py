@@ -74,7 +74,7 @@ import docopt
 
 from . import config
 from . import dbinit
-from . import render
+#from . import render
 from . import scanners
 from . import schema as db
 from . import spdxdb
@@ -142,7 +142,8 @@ def main():
         print('\n' + 79 * '-' + '\n')
         print('Testing database connection...', end='')
         sys.stdout.flush()
-        db.execute('select 1;')
+        with engine.begin() as conn:
+            conn.execute('select 1;')
         print('ok.')
         sys.exit(0)
 
@@ -176,6 +177,7 @@ def main():
                 sys.exit(1)
         sys.exit(0 if dbinit.initialize(__version__) else 1)
 
+    # rewrite
     elif argv['print']:
         with Transaction(db) as t:
             document = t.fetch('documents', doc_id)
@@ -189,12 +191,11 @@ def main():
             'name': new_doc_name,
             'comment': new_doc_comment
             }
-        with Transaction(db) as t:
-            package = t.fetch('packages', package_id)
-            if package is None:
+        with engine.begin() as conn:
+            if spdxdb.fetch(conn, db.packages, package_id) is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
-            document_id = t.create_document(package_id, **kwargs).document_id
+            document_id = spdxdb.create_document(package_id, **kwargs)['document_id']
         fmt = '(package_id {}): document_id: {}'
         print(fmt.format(package_id, document_id))
 
@@ -205,10 +206,11 @@ def main():
             'version': new_package_version,
             'comment': new_package_comment
             }
-        with Transaction(db) as t:
-            package = t.scan_package(package_path, **kwargs)
-        print('{}: package_id: {}'.format(package_path, package.package_id))
+        with engine.begin() as conn:
+            package = spdxdb.scan_package(conn, package_path, **kwargs)
+        print('{}: package_id: {}'.format(package_path, package['package_id']))
 
+    # rewrite
     elif argv['oneshot']:
         kwargs = {
             'scanner': this_scanner,
