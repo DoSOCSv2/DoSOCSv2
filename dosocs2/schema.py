@@ -94,7 +94,8 @@ packages = Table('packages', meta,
     # SQLAlchemy can gracefully resolve it
     ForeignKeyConstraint(['ver_code_excluded_file_id'],
                          ['packages_files.package_file_id'],
-                         name='fk_package_packages_files'
+                         name='fk_package_packages_files',
+                         use_alter=True
                          )
     )
 
@@ -106,7 +107,7 @@ packages_files = Table('packages_files', meta,
     Column('license_comment', Text, nullable=False),
     Column('file_name', Text, nullable=False),
     UniqueConstraint('package_id', 'file_name', name='uc_package_id_file_name'),
-    ForeignKeyConstraint(['package_id'], ['packages.package_id']),
+    ForeignKeyConstraint(['package_id'], ['packages.package_id'], use_alter=True),
     ForeignKeyConstraint(['file_id'], ['files.file_id']),
     ForeignKeyConstraint(['concluded_license_id'], ['licenses.license_id'])
     )
@@ -223,8 +224,12 @@ annotations = Table('annotations', meta,
     )
 
 
-def initialize(connection_string):
+def initialize(connection_string, echo):
     global engine
     if engine is None:
-        engine = create_engine(connection_string, echo=True)
+        # because 'echo=False' is for some reason not allowed...
+        if echo is True:
+            engine = create_engine(connection_string, True)
+        else:
+            engine = create_engine(connection_string)
     return engine

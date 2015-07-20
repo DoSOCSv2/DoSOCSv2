@@ -37,13 +37,13 @@ def insert(conn, table, params):
 def lookup_by_sha1(conn, table, sha1):
     '''Lookup row by SHA-1 sum and return the row, or None.'''
     # Freak occurence of sha1 collision probably won't happen.
-    # But if it does, this will give nondeterministic results.
+    # But if it does, this will fail with 'too many values to unpack' 
     # (although, you will have bigger problems then...)
     query = (
         select([table])
         .where(table.c.sha1 == sha1)
         )
-    result = conn.execute(query).fetchone()
+    [result] = conn.execute(query).fetchall()
     if result is None:
         return result
     else:
@@ -55,7 +55,7 @@ def lookup_license(conn, short_name):
         select([db.licenses])
         .where(db.licenses.c.short_name == short_name)
         )
-    result = conn.execute(query).fetchone()
+    [result] = conn.execute(query).fetchall()
     if result is None:
         return result
     else:
@@ -315,6 +315,16 @@ def create_document(conn, package, name=None, comment=None):
 def fetch(conn, table, pkey):
     [c] = list(table.primary_key)
     query = select([table]).where(c == pkey)
+    [result] = conn.execute(query).fetchall()
+    if result is None:
+        return result
+    else:
+        return dict(**result)
+
+def get_doc_by_package_id(conn, package_id):
+    query = select([db.documents]).where(db.documents.c.package_id == package_id)
+    # could potentially return more than one
+    # but that's OK
     result = conn.execute(query).fetchone()
     if result is None:
         return result

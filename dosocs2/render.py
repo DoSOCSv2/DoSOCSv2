@@ -17,20 +17,8 @@ import time
 
 import jinja2
 from . import config
-from . import viewmap
+from . import queries
 from . import util
-
-
-def row_to_dict(row):
-    '''Convert SQLSoup row to a dictionary.'''
-    d = {}
-    for column in row._table.columns:
-        d[column.name] = getattr(row, column.name)
-    return d
-
-
-def rows_to_dicts(rows):
-    return [row_to_dict(row) for row in rows]
 
 
 def _filter_text(value):
@@ -59,6 +47,15 @@ jinja2_env.filters['noassertion'] = _filter_noassertion
 jinja2_env.filters['utctimestamp'] = _filter_utctimestamp
 
 
+def get_row(conn, query):
+    [row] = conn.execute(query).fetchall()
+    return dict(**row)
+
+
+def get_rows(conn, query):
+    return [dict(**row) for row in conn.execute(query)]
+
+
 def render_template(templatefile, context):
     with open(templatefile, 'r') as f:
         s = f.read()
@@ -66,92 +63,36 @@ def render_template(templatefile, context):
     return t.render(context)
 
 
-def render_document(db, docid, template_file):
+def render_document(conn, docid, template_file):
     render_relationships = util.bool_from_str(config.config['dosocs2']['render_relationships'])
-    v = viewmap.viewmap(db)
-    document = row_to_dict(
-        v['v_documents']
-        .filter(v['v_documents'].document_id == docid)
-        .one()
-        )
-    external_refs = rows_to_dicts(
-        v['v_external_refs']
-        .filter(v['v_external_refs'].document_id == docid)
-        .all()
-        )
-    document['creators'] = rows_to_dicts(
-        v['v_documents_creators']
-        .filter(v['v_documents_creators'].document_id == docid)
-        .all()
-        )
-    document['annotations'] = rows_to_dicts(
-        v['v_annotations']
-        .filter(v['v_annotations'].document_id == docid)
-        .filter(v['v_annotations'].id_string == document['id_string'])
-        .all()
-        )
-    document['relationships'] = render_relationships and rows_to_dicts(
-        v['v_relationships']
-        .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
-        .filter(v['v_relationships'].left_id_string == document['id_string'])
-        .all()
-        ) or None
-    package = row_to_dict(
-        v['v_documents_packages']
-        .filter(v['v_documents_packages'].document_id == docid)
-        .one()
-        )
-    package['license_info_from_files'] = rows_to_dicts(
-        v['v_packages_all_licenses_in_files']
-        .filter(v['v_packages_all_licenses_in_files'].package_id == package['package_id'])
-        .all()
-        ) or ['NOASSERTION']
-    package['annotations'] = rows_to_dicts(
-        v['v_annotations']
-        .filter(v['v_annotations'].document_id == docid)
-        .filter(v['v_annotations'].id_string == package['id_string'])
-        .all()
-        )
-    package['relationships'] = render_relationships and rows_to_dicts(
-        v['v_relationships']
-        .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
-        .filter(v['v_relationships'].left_id_string == package['id_string'])
-        .all()
-        ) or None
-    package['files'] = rows_to_dicts(
-        v['v_documents_files']
-        .filter(v['v_documents_files'].document_id == docid)
-        .filter(v['v_documents_files'].package_id == package['package_id'])
-        .all()
-        )
+    document = get_row(conn, queries.documents(docid))
+    external_refs = get_rows(conn, queries.external_refs(docid))
+    document['creators'] = get_rows(conn, queries.documents_creators(docid))
+    document['annotations'] = get_rows(conn, queries.annotations(docid, document['id_string']))
+    if render_relationships:
+        query = queries.relationships(document['document_namespace_id'], document['id_string'])
+        document['relationships'] = get_rows(conn, query)
+    else:
+        document['relationships'] = None
+    package = get_row(conn, queries.documents_packages(docid))
+    package['license_info_from_files'] = get_rows(conn, queries.packages_all_licenses_in_files(package['package_id'])) or ['NOASSERTION']
+    package['annotations'] = get_rows(conn, queries.annotations(docid, package['id_string']))
+    if render_relationships:
+        query = queries.relationships(document['document_namespace_id'], package['id_string'])
+        package['relationships'] = get_rows(conn, query)
+    else:
+        package['relationships'] = None
+    package['files'] = get_rows(conn, queries.documents_files(docid, package['package_id']))
     for file in package['files']:
-        file['license_info'] = rows_to_dicts(
-            v['v_files_licenses']
-            .filter(v['v_files_licenses'].file_id == file['file_id'])
-            .all()
-            )
-        file['contributors'] = rows_to_dicts(
-            v['v_file_contributors']
-            .filter(v['v_file_contributors'].file_id == file['file_id'])
-            .all()
-            )
-        file['annotations'] = rows_to_dicts(
-            v['v_annotations']
-            .filter(v['v_annotations'].document_id == docid)
-            .filter(v['v_annotations'].id_string == file['id_string'])
-            .all()
-            )
-        file['relationships'] = render_relationships and rows_to_dicts(
-            v['v_relationships']
-            .filter(v['v_relationships'].left_document_namespace_id == document['document_namespace_id'])
-            .filter(v['v_relationships'].left_id_string == file['id_string'])
-            .all()
-            ) or None
-    licenses = rows_to_dicts(
-        v['v_documents_unofficial_licenses']
-        .filter(v['v_documents_unofficial_licenses'].document_id == document['document_id'])
-        .all()
-        )
+        file['license_info'] = get_rows(conn, queries.files_licenses(file['file_id']))
+        file['contributors'] = get_rows(conn, queries.file_contributors(file['file_id']))
+        file['annotations'] = get_rows(conn, queries.annotations(docid, file['id_string']))
+        if render_relationships:
+            query = queries.relationships(document['document_namespace_id'], file['id_string'])
+            file['relationships'] = get_rows(conn, query)
+        else:
+            file['relationships'] = None
+    licenses = get_rows(conn, queries.documents_unofficial_licenses(docid))
     context = {
         'document': document,
         'external_refs': external_refs,

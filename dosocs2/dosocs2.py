@@ -74,7 +74,7 @@ import docopt
 
 from . import config
 from . import dbinit
-#from . import render
+from . import render
 from . import scanners
 from . import schema as db
 from . import spdxdb
@@ -100,7 +100,7 @@ def errmsg(text, **kwargs):
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
-    engine = db.initialize(config.config['dosocs2']['connection_uri'])
+    engine = db.initialize(config.config['dosocs2']['connection_uri'], config.config['dosocs2']['echo'])
     doc_id = argv['DOC-ID']
     document = None
     package_id = argv['PACKAGE-ID']
@@ -217,26 +217,24 @@ def main():
             'comment': new_package_comment
             }
         with engine.begin() as conn:
-            package_id = spdxdb.scan_package(package_path, **kwargs)['package_id']
+            package = spdxdb.scan_package(conn, package_path, **kwargs)
+            package_id = package['package_id']
         fmt = '{}: package_id: {}\n'
         sys.stderr.write(fmt.format(package_path, package_id))
-        kwargs = {
-            'name': new_doc_name,
-            'comment': new_doc_comment
-            }
         with engine.begin() as conn:
-            document = (
-                db.documents
-                .filter(db.documents.package_id == package_id)
-                .first()
-                )
+            document = spdxdb.get_doc_by_package_id(conn, package_id)
             if document:
-                doc_id = document.document_id
+                doc_id = document['document_id']
             else:
-                doc_id = t.create_document(package_id, **kwargs).document_id
+                kwargs = {
+                    'name': new_doc_name,
+                    'comment': new_doc_comment
+                    }
+                doc_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
             fmt = '{}: document_id: {}\n'
             sys.stderr.write(fmt.format(package_path, doc_id))
-        print(render.render_document(db, doc_id, format_map[output_format]))
+        with engine.begin() as conn:
+            print(render.render_document(conn, doc_id, format_map[output_format]))
 
 
 if __name__ == "__main__":
