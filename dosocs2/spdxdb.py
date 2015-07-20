@@ -43,7 +43,7 @@ def lookup_by_sha1(conn, table, sha1):
         select([table])
         .where(table.c.sha1 == sha1)
         )
-    [result] = conn.execute(query).fetchall()
+    [result] = conn.execute(query).fetchall() or [None]
     if result is None:
         return result
     else:
@@ -55,7 +55,7 @@ def lookup_license(conn, short_name):
         select([db.licenses])
         .where(db.licenses.c.short_name == short_name)
         )
-    [result] = conn.execute(query).fetchall()
+    [result] = conn.execute(query).fetchall() or [None]
     if result is None:
         return result
     else:
@@ -292,7 +292,7 @@ def create_document(conn, package, name=None, comment=None):
 def fetch(conn, table, pkey):
     [c] = list(table.primary_key)
     query = select([table]).where(c == pkey)
-    [result] = conn.execute(query).fetchall()
+    [result] = conn.execute(query).fetchall() or [None]
     if result is None:
         return result
     else:
