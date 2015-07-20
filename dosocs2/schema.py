@@ -107,7 +107,9 @@ packages_files = Table('packages_files', meta,
     Column('license_comment', Text, nullable=False),
     Column('file_name', Text, nullable=False),
     UniqueConstraint('package_id', 'file_name', name='uc_package_id_file_name'),
-    ForeignKeyConstraint(['package_id'], ['packages.package_id'], use_alter=True),
+    ForeignKeyConstraint(['package_id'], ['packages.package_id'],
+                         use_alter=True, name='fk_package_files_packages'
+                         ),
     ForeignKeyConstraint(['file_id'], ['files.file_id']),
     ForeignKeyConstraint(['concluded_license_id'], ['licenses.license_id'])
     )
