@@ -42,8 +42,8 @@ Dependencies
 ------------
 
 - Python 2.7.x
-- PostgreSQL 8.x or later version (can be on a separate machine)
 - <a href="http://www.fossology.org/">FOSSology</a> 2.5.x or later version
+- Optional: PostgreSQL 8.x or later version (can be on a separate machine)
 
 ### Python libraries
 
@@ -52,6 +52,7 @@ Dependencies
 - [psycopg2](http://initd.org/psycopg/)
 - [python-magic](https://github.com/ahupp/python-magic)
 - [SQLAlchemy](http://www.sqlalchemy.org/)
+- [xmltodict](https://github.com/martinblech/xmltodict)
 
 All Python dependencies are handled by the setup script.
 
@@ -69,6 +70,23 @@ virtualenv you may have to run `pip` as root.
 
     $ pip install ./dosocs2
 
+Generate an initial config file:
+
+    $ dosocs2 newconfig
+    dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
+
+The default config uses a SQLite database. Open up the config file and change
+the database file path in variable `connection_uri` to whatever path you
+like. You also need to set the path of the default `nomos` scanner (part of
+FOSSology) if it is not already correct.
+
+Finally, to create all necessary tables and views in the database:
+
+    $ dosocs2 dbinit
+
+
+### Using dosocs2 with PostgreSQL
+
 You will have to create the `spdx` (or whatever you want to call it) role and
 database yourself (although I recommend setting a different password than the
 one given...):
@@ -76,20 +94,12 @@ one given...):
     postgres=# create role spdx with login password 'spdx';
     postgres=# create database spdx with owner spdx;
 
+Then change the `connection_uri` variable in your `dosocs2.conf`:
 
-Generate an initial config file:
+    # connection_uri = postgresql://user:pass@host:port/database
+    connection_uri = postgresql://spdx:spdx@localhost:5432/spdx
 
-    $ dosocs2 newconfig
-    dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
-
-Then open up the config file and make sure you are pointed to the correct
-PostgreSQL server, with a valid username/password. You also need to set the
-path of the default `nomos` scanner (part of FOSSology) if it is not already
-correct.
-
-Finally, to create all necessary tables and views in the database:
-
-    $ dosocs2 dbinit
+Run `dosocs2 dbinit` again to set up, and you're good to go. 
 
 
 Usage
