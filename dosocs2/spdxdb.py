@@ -248,29 +248,6 @@ def create_relationship(conn, left_id, rel_type, right_id):
     }
     insert(conn, db_relationships, relationship_params)
 
-# def _view_fetch_by_docid(self, view_name, doc_id):
-#     return (
-#         self.views[view_name]
-#         .filter(self.views[view_name].document_id == doc_id)
-#         .all()
-#         )
-
-# def autocreate_relationships(self, doc_id):
-#     view_names = [
-#         'v_auto_contains',
-#         'v_auto_contained_by',
-#         'v_auto_describes',
-#         'v_auto_described_by'
-#         ]
-#     for view_name in view_names:
-#         rows = self._view_fetch_by_docid(view_name, doc_id)
-#         for row in rows:
-#             self.create_relationship(
-#                 row.left_identifier_id,
-#                 row.relationship_type_id,
-#                 row.right_identifier_id
-#                 )
-#     self.db.flush()
 
 def create_document(conn, package, name=None, comment=None):
     data_license_query = (
@@ -308,7 +285,7 @@ def create_document(conn, package, name=None, comment=None):
     # create all identifiers
     insert(conn, db.identifiers, document_identifier_params)
     create_all_identifiers(conn, doc_namespace_id, package)
-    # create known relationships
+    # TODO: create known relationships
     # autocreate_relationships(conn, new_document_id)
     return new_document
 
