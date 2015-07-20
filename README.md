@@ -77,7 +77,11 @@ Generate an initial config file:
 
 The default config uses a SQLite database. Open up the config file and change
 the database file path in variable `connection_uri` to whatever path you
-like. You also need to set the path of the default `nomos` scanner (part of
+like, e.g.:
+
+    connection_uri = sqlite:////home/tom/.dosocs2.sqlite3
+
+You also need to set the path of the default `nomos` scanner (part of
 FOSSology) if it is not already correct.
 
 Finally, to create all necessary tables and views in the database:
