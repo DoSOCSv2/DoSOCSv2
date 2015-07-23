@@ -110,10 +110,10 @@ class Dummy(Scanner):
     def __init__(self):
         pass
 
-    def scan_file(path):
+    def scan_file(self, path):
         return {}
 
-    def scan_directory(path):
+    def scan_directory(self, path):
         return {}
 
 
