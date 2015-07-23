@@ -104,27 +104,6 @@ class NomosDeep(Scanner):
         return scan_result
 
 
-class NomosPomsOnly(Scanner):
-
-    name = 'nomos_poms_only'
-
-    def __init__(self):
-        self._nomos = Nomos()
-
-    def scan_file(self, path):
-        if path == 'pom.xml' or path.endswith('.pom'):
-            return self._nomos.scan_file(path)
-        else:
-            return {}
-
-    def scan_directory(self, path):
-        scan_result = {}
-        for filepath in util.allpaths(path):
-            if os.path.isfile(filepath):
-                scan_result.update(self.scan_file(filepath))
-        return scan_result
-
-
 class Dummy(Scanner):
 
     name = 'dummy'
@@ -169,7 +148,6 @@ class DependencyCheck(Scanner):
 scanners = {
     'nomos': Nomos,
     'nomos_deep': NomosDeep,
-    'nomos_poms_only': NomosPomsOnly,
     'dependency_check': DependencyCheck,
     'dummy': Dummy
     }
