@@ -61,7 +61,25 @@ def parse_dependency_xml(xml_text):
             })
     return deps
 
-if __name__ == '__main__':
-    import pprint
-    import sys
-    pprint.pprint(parse_dependency_xml(sys.stdin.read()))
+
+class DependencyCheck():
+
+    name = 'dependency_check'
+
+    def __init__(self):
+        self.exec_path = config['dependency_check']['path']
+
+    def scan_directory(self, path):
+        with util.tempdir() as tempdir:
+            args = [
+                self.exec_path,
+                '--out', tempdir,
+                '--format', 'XML',
+                '--scan', path,
+                '--app', 'none'
+                ]
+            subprocess.check_call(args)
+            with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
+                xml_data = f.read()
+        result = parse_dependency_xml(xml_data)
+        return result

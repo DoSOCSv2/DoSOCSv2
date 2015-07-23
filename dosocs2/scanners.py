@@ -30,7 +30,6 @@ from collections import defaultdict
 
 from . import util
 from .config import config
-from . import depparse
 
 
 class Scanner(object):
@@ -118,36 +117,8 @@ class Dummy(Scanner):
         return {}
 
 
-class DependencyCheck(Scanner):
-
-    name = 'dependency_check'
-
-    def __init__(self):
-        self.exec_path = config['dependency_check']['path']
-
-    def scan_directory(self, path):
-        with util.tempdir() as tempdir:
-            args = [
-                self.exec_path,
-                '--out', tempdir,
-                '--format', 'XML',
-                '--scan', path,
-                '--app', 'none'
-                ]
-            subprocess.check_call(args)
-            with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
-                xml_data = f.read()
-        result = depparse.parse_dependency_xml(xml_data)
-        print(result)
-        return {}
-
-    def scan_file(self, path):
-        return self.scan_directory(path)
-
-
 scanners = {
     'nomos': Nomos,
     'nomos_deep': NomosDeep,
-    'dependency_check': DependencyCheck,
     'dummy': Dummy
     }
