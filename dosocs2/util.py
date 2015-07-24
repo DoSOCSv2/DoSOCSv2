@@ -171,7 +171,6 @@ def get_dir_hashes(path, excluded_hashes=None):
     if excluded_hashes is None:
         excluded_hashes = set()
     listing = list(sorted(allpaths(path)))
-    print(listing)
     hashes = {
         abspath: sha1(abspath)
         for abspath in listing
