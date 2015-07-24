@@ -137,7 +137,8 @@ def scan_file(conn, path, scanner, known_sha1=None):
 
 def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
                    file_name=None, sha1=None):
-    ver_code, hashes = util.get_dir_hashes(path)
+    # Passing sha1=None indicates a true directory, not a package
+    ver_code, hashes, listing_hash = util.get_dir_hashes(path)
     package = {
         'name': name or os.path.basename(os.path.abspath(path)),
         'version': version or '',
@@ -165,7 +166,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
             'package_id': package['package_id'],
             'file_id': fileobj['file_id'],
             'concluded_license_id': None,
-            'file_name': os.path.join(os.curdir, os.path.relpath(filepath, start=path)),
+            'file_name': util.abs_to_rel(path, filepath),
             'license_comment': ''
             }
         insert(conn, db.packages_files, package_file_params)

@@ -167,12 +167,33 @@ def get_dir_hashes(path, excluded_hashes=None):
     filepath: Relative path to a file
     sha1: SHA-1 hex string for that file
     '''
-    hashes = {relpath: sha1(relpath)
-              for relpath in allpaths(path)
-              if os.path.isfile(relpath)
-              }
-    return (gen_ver_code(hashes.values(), excluded_hashes), hashes)
+    if excluded_hashes is None:
+        excluded_hashes = set()
+    listing = list(sorted(allpaths(path)))
+    print(listing)
+    hashes = {
+        abspath: sha1(abspath)
+        for abspath in listing
+        if os.path.isfile(abspath)
+        }
+    relative_listing = (
+        abs_to_rel(path, abspath)
+        for abspath in listing
+        if os.path.isfile(abspath)
+        and hashes.get(abspath) not in excluded_hashes
+        )
+    rel_listing_hashes = (
+        hashlib.sha1(relpath).hexdigest()
+        for relpath in sorted(relative_listing)
+        )
+    return (gen_ver_code(hashes.values(), excluded_hashes),
+            hashes,
+            gen_ver_code(rel_listing_hashes, excluded_hashes)
+            )
 
+
+def abs_to_rel(startpath, path):
+    return os.path.join(os.curdir, os.path.relpath(path, start=startpath))
 
 @contextmanager
 def tempdir(*args, **kwargs):
