@@ -162,7 +162,7 @@ def gen_ver_code(hashes, excluded_hashes=None):
 
 def get_dir_hashes(path, excluded_hashes=None):
     '''Return a (str, dict, str) triple:
-    (ver_code, {filepath: sha1}, listing_code)
+    (ver_code, {filepath: sha1}, dir_code)
 
     ver_code: Package verification code for the directory `path`
     filepath: Relative path to a file
@@ -188,7 +188,7 @@ def get_dir_hashes(path, excluded_hashes=None):
         )
     return (gen_ver_code(hashes.values(), excluded_hashes),
             hashes,
-            gen_ver_code(rel_listing_hashes, excluded_hashes)
+            gen_ver_code(rel_listing_hashes)
             )
 
 

@@ -20,7 +20,7 @@ import itertools
 import os
 import string
 
-from sqlalchemy.sql import select
+from sqlalchemy.sql import select, and_
 
 from . import config
 from . import schema as db
@@ -37,7 +37,7 @@ def insert(conn, table, params):
 def lookup_by_sha1(conn, table, sha1):
     '''Lookup row by SHA-1 sum and return the row, or None.'''
     # Freak occurence of sha1 collision probably won't happen.
-    # But if it does, this will fail with 'too many values to unpack' 
+    # But if it does, this will fail with 'too many values to unpack'
     # (although, you will have bigger problems then...)
     query = (
         select([table])
@@ -138,7 +138,23 @@ def scan_file(conn, path, scanner, known_sha1=None):
 def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
                    file_name=None, sha1=None):
     # Passing sha1=None indicates a true directory, not a package
-    ver_code, hashes, listing_hash = util.get_dir_hashes(path)
+    ver_code, hashes, dir_code = util.get_dir_hashes(path)
+    # Use calculated directory code and package verification code to see
+    # if we have already scanned this one
+    # (Not applicable to true packages)
+    if sha1 is None:
+        found_pkg_query = (
+            select([db.packages])
+            .where(
+                and_(
+                    db.packages.c.dosocs2_dir_code == dir_code,
+                    db.packages.c.verification_code == ver_code
+                    )
+                )
+            )
+        [found_pkg] = conn.execute(found_pkg_query).fetchall() or [None]
+        if found_pkg is not None:
+            return found_pkg
     package = {
         'name': name or os.path.basename(os.path.abspath(path)),
         'version': version or '',
@@ -148,7 +164,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
         'download_location': None,
         'verification_code': ver_code,
         'ver_code_excluded_file_id': None,
-        'sha1': sha1,  # None is permitted here
+        'sha1': sha1, # None is permitted here, indicating a directory
         'home_page': None,
         'source_info': '',
         'concluded_license_id': None,
@@ -157,7 +173,8 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
         'copyright_text': None,
         'summary': '',
         'description': '',
-        'comment': ''
+        'comment': '',
+        'dosocs2_dir_code': None if sha1 is not None else dir_code
         }
     package['package_id'] = insert(conn, db.packages, package)
     for (filepath, sha1) in hashes.iteritems():

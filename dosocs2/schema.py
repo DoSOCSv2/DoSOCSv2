@@ -85,7 +85,14 @@ packages = Table('packages', meta,
     Column('summary', Text, nullable=False),
     Column('description', Text, nullable=False),
     Column('comment', Text, nullable=False),
+    Column('dosocs2_dir_code', String(40)),
     UniqueConstraint('sha1', name='uc_package_sha1'),
+    UniqueConstraint('verification_code', 'dosocs2_dir_code', name='uc_dir_code_ver_code'),
+    CheckConstraint('''
+    (cast(sha1 is not null as int) +
+     cast(dosocs2_dir_code is not null as int)
+     ) = 1
+    ''', name='uc_sha1_ds2_dir_code_exactly_one'),
     ForeignKeyConstraint(['supplier_id'], ['creators.creator_id']),
     ForeignKeyConstraint(['originator_id'], ['creators.creator_id']),
     ForeignKeyConstraint(['concluded_license_id'], ['licenses.license_id']),
