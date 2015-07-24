@@ -85,7 +85,14 @@ packages = Table('packages', meta,
     Column('summary', Text, nullable=False),
     Column('description', Text, nullable=False),
     Column('comment', Text, nullable=False),
+    Column('dosocs2_dir_code', String(40)),
     UniqueConstraint('sha1', name='uc_package_sha1'),
+    UniqueConstraint('verification_code', 'dosocs2_dir_code', name='uc_dir_code_ver_code'),
+    CheckConstraint('''
+    (cast(sha1 is not null as int) +
+     cast(dosocs2_dir_code is not null as int)
+     ) = 1
+    ''', name='uc_sha1_ds2_dir_code_exactly_one'),
     ForeignKeyConstraint(['supplier_id'], ['creators.creator_id']),
     ForeignKeyConstraint(['originator_id'], ['creators.creator_id']),
     ForeignKeyConstraint(['concluded_license_id'], ['licenses.license_id']),
@@ -223,6 +230,30 @@ annotations = Table('annotations', meta,
     ForeignKeyConstraint(['annotation_type_id'], ['annotation_types.annotation_type_id']),
     ForeignKeyConstraint(['identifier_id'], ['identifiers.identifier_id']),
     ForeignKeyConstraint(['creator_id'], ['creators.creator_id']),
+    )
+
+scanners = Table('scanners', meta,
+    Column('scanner_id', Integer, primary_key=True),
+    Column('name', String(255), nullable=False),
+    UniqueConstraint('name', name='uc_scanner_name')
+    )
+
+packages_scans = Table('packages_scans', meta,
+    Column('package_scan_id', Integer, primary_key=True),
+    Column('package_id', Integer, nullable=False),
+    Column('scanner_id', Integer, nullable=False),
+    ForeignKeyConstraint(['package_id'], ['packages.package_id']),
+    ForeignKeyConstraint(['scanner_id'], ['scanners.scanner_id']),
+    UniqueConstraint('package_id', 'scanner_id', name='uc_package_scanner_id')
+    )
+
+files_scans = Table('files_scans', meta,
+    Column('file_scan_id', Integer, primary_key=True),
+    Column('file_id', Integer, nullable=False),
+    Column('scanner_id', Integer, nullable=False),
+    ForeignKeyConstraint(['file_id'], ['files.file_id']),
+    ForeignKeyConstraint(['scanner_id'], ['scanners.scanner_id']),
+    UniqueConstraint('file_id', 'scanner_id', name='uc_file_scanner_id')
     )
 
 
