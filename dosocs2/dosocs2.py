@@ -209,7 +209,6 @@ def main():
             package = spdxdb.scan_package(conn, package_path, **kwargs)
         print('{}: package_id: {}'.format(package_path, package['package_id']))
 
-    # rewrite
     elif argv['oneshot']:
         kwargs = {
             'scanner': this_scanner,
