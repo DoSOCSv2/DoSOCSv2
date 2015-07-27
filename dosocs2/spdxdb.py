@@ -34,6 +34,8 @@ def insert(conn, table, params):
     [pkey] = result.inserted_primary_key
     return pkey
 
+def bulk_insert(conn, table, rows_list):
+    conn.execute(table.insert(), *rows_list)
 
 def lookup_by_sha1(conn, table, sha1):
     '''Lookup row by SHA-1 sum and return the row, or None.'''
@@ -178,6 +180,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
         'dosocs2_dir_code': None if sha1 is not None else dir_code
         }
     package['package_id'] = insert(conn, db.packages, package)
+    row_params = []
     for (filepath, sha1) in hashes.iteritems():
         fileobj = scan_file(conn, filepath, scanner, known_sha1=sha1)
         package_file_params = {
@@ -187,7 +190,8 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
             'file_name': util.abs_to_rel(path, filepath),
             'license_comment': ''
             }
-        insert(conn, db.packages_files, package_file_params)
+        row_params.append(package_file_params)
+    bulk_insert(conn, db.packages_files, row_params)
     return package
 
 
@@ -235,41 +239,33 @@ def create_document_namespace(conn, doc_name):
 
 def create_all_identifiers(conn, doc_namespace_id, package):
     all_files_query = (
-        select([db.packages_files])
+        select([
+            db.packages_files.c.package_file_id,
+            db.packages_files.c.file_name,
+            db.files.c.sha1
+            ])
+        .select_from(
+            db.packages_files
+            .join(db.files, db.packages_files.c.file_id == db.files.c.file_id)
+            )
         .where(db.packages_files.c.package_id == package['package_id'])
         )
     identifier_ids = []
     package_id_params = {
         'document_namespace_id': doc_namespace_id,
         'package_id': package['package_id'],
-        'id_string': util.gen_id_string('package', package['file_name'], package['sha1'])
+        'id_string': util.gen_id_string('package', package['file_name'], package['verification_code'])
         }
+    rows_list = []
     for file in conn.execute(all_files_query):
-        filesha1_query = (
-            select([db.files.c.sha1])
-            .where(db.files.c.file_id == file['file_id'])
-            )
-        filesha1 = conn.execute(filesha1_query).fetchone()['sha1']
         file_id_params = {
             'document_namespace_id': doc_namespace_id,
             'package_file_id': file['package_file_id'],
-            'id_string': util.gen_id_string('file', file['file_name'], filesha1)
+            'id_string': util.gen_id_string('file', file['file_name'], file['sha1'])
             }
-        new_identifier_id = insert(conn, db.identifiers, file_id_params)
-        identifier_ids.append(new_identifier_id)
+        rows_list.append(file_id_params)
+    bulk_insert(conn, db.identifiers, rows_list)
     package_identifier_id = insert(conn, db.identifiers, package_id_params)
-    identifier_ids.append(package_identifier_id)
-    return identifier_ids
-
-
-def create_relationship(conn, left_id, rel_type, right_id):
-    relationship_params = {
-        'left_identifier_id': left_id,
-        'relationship_type_id': rel_type,
-        'right_identifier_id': right_id,
-        'relationship_comment': ''
-    }
-    insert(conn, db.relationships, relationship_params)
 
 
 def autocreate_relationships(conn, docid):
@@ -280,14 +276,16 @@ def autocreate_relationships(conn, docid):
         # queries.auto_described_by(docid)
         )
     for q in qs:
+        row_params = []
         for row in conn.execute(q):
             kwargs = {
-                'conn': conn,
-                'left_id': row['left_identifier_id'],
-                'rel_type': row['relationship_type_id'],
-                'right_id': row['right_identifier_id']
+                'left_identifier_id': row['left_identifier_id'],
+                'relationship_type_id': row['relationship_type_id'],
+                'right_identifier_id': row['right_identifier_id'],
+                'relationship_comment': ''
                 }
-            create_relationship(**kwargs)
+            row_params.append(kwargs)
+        bulk_insert(conn, db.relationships, row_params)
 
 
 def create_document(conn, package, name=None, comment=None):
