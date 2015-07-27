@@ -277,7 +277,7 @@ def initialize(connection_string, echo):
     if engine is None:
         # because 'echo=False' is for some reason not allowed...
         if echo is True:
-            engine = create_engine(connection_string, True)
+            engine = create_engine(connection_string, echo=True)
         else:
             engine = create_engine(connection_string)
     return engine

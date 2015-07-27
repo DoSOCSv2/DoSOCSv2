@@ -78,6 +78,7 @@ from . import render
 from . import scanners
 from . import schema as db
 from . import spdxdb
+from . import util
 
 
 format_map = {
@@ -100,7 +101,7 @@ def errmsg(text, **kwargs):
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
-    engine = db.initialize(config.config['dosocs2']['connection_uri'], config.config['dosocs2']['echo'])
+    engine = db.initialize(config.config['dosocs2']['connection_uri'], util.bool_from_str(config.config['dosocs2']['echo']))
     doc_id = argv['DOC-ID']
     document = None
     package_id = argv['PACKAGE-ID']
