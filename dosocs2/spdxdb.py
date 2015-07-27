@@ -23,6 +23,7 @@ import string
 from sqlalchemy.sql import select, and_
 
 from . import config
+from . import queries
 from . import schema as db
 from . import util
 
@@ -189,6 +190,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
         insert(conn, db.packages_files, package_file_params)
     return package
 
+
 def scan_package(conn, path, scanner, name=None, version=None, comment=None):
     '''Scan package for licenses. Add it and all files to the DB.
 
@@ -222,12 +224,14 @@ def scan_package(conn, path, scanner, name=None, version=None, comment=None):
         package = scan_directory(conn, **kwargs)
     return package
 
+
 def create_document_namespace(conn, doc_name):
     suffix = util.friendly_namespace_suffix(doc_name)
     uri = config.config['dosocs2']['namespace_prefix'] + suffix
     doc_namespace = {'uri': uri}
     doc_namespace['document_namespace_id'] = insert(conn, db.document_namespaces, doc_namespace)
     return doc_namespace
+
 
 def create_all_identifiers(conn, doc_namespace_id, package):
     all_files_query = (
@@ -257,6 +261,7 @@ def create_all_identifiers(conn, doc_namespace_id, package):
     identifier_ids.append(package_identifier_id)
     return identifier_ids
 
+
 def create_relationship(conn, left_id, rel_type, right_id):
     relationship_params = {
         'left_identifier_id': left_id,
@@ -264,7 +269,25 @@ def create_relationship(conn, left_id, rel_type, right_id):
         'right_identifier_id': right_id,
         'relationship_comment': ''
     }
-    insert(conn, db_relationships, relationship_params)
+    insert(conn, db.relationships, relationship_params)
+
+
+def autocreate_relationships(conn, docid):
+    qs = (
+        queries.auto_contains(docid),
+        queries.auto_contained_by(docid),
+        # queries.auto_describes(docid),
+        # queries.auto_described_by(docid)
+        )
+    for q in qs:
+        for row in conn.execute(q):
+            kwargs = {
+                'conn': conn,
+                'left_id': row['left_identifier_id'],
+                'rel_type': row['relationship_type_id'],
+                'right_id': row['right_identifier_id']
+                }
+            create_relationship(**kwargs)
 
 
 def create_document(conn, package, name=None, comment=None):
@@ -304,8 +327,9 @@ def create_document(conn, package, name=None, comment=None):
     insert(conn, db.identifiers, document_identifier_params)
     create_all_identifiers(conn, doc_namespace_id, package)
     # TODO: create known relationships
-    # autocreate_relationships(conn, new_document_id)
+    autocreate_relationships(conn, new_document_id)
     return new_document
+
 
 def fetch(conn, table, pkey):
     [c] = list(table.primary_key)
@@ -315,6 +339,7 @@ def fetch(conn, table, pkey):
         return result
     else:
         return dict(**result)
+
 
 def get_doc_by_package_id(conn, package_id):
     query = select([db.documents]).where(db.documents.c.package_id == package_id)

@@ -132,7 +132,7 @@ def documents_files(docid, package_id):
         .join(fil)
         .join(fty)
         .join(ide,
-              (pac.c.package_id == ide.c.package_id) &
+              (pfi.c.package_file_id == ide.c.package_file_id) &
               (doc.c.document_namespace_id == ide.c.document_namespace_id)
               )
         .join(lic, pfi.c.concluded_license_id == lic.c.license_id, isouter=True)
@@ -343,18 +343,85 @@ def packages_all_licenses_in_files(package_id):
 
 
 def relationships(left_namespace_id, left_id_string):
-    # stub
-    return select([db.relationships]).where(False)
+    rel = db.relationships.alias()
+    rty = db.relationship_types.alias()
+    ide1 = db.identifiers.alias()
+    ide2 = db.identifiers.alias()
+    doc1 = db.documents.alias()
+    doc2 = db.documents.alias()
+    return (select([
+        rel.c.relationship_id,
+        ide1.c.id_string              .label('left_id_string'),
+        rty.c.name                    .label('type'),
+        ide2.c.id_string              .label('right_id_string'),
+        doc1.c.document_id            .label('left_document_id'),
+        doc2.c.document_id            .label('right_document_id'),
+        doc1.c.document_namespace_id  .label('left_document_namespace_id'),
+        doc2.c.document_namespace_id  .label('right_document_namespace_id'),
+        rel.c.relationship_comment    .label('comment')
+        ])
+    .select_from(
+        rel
+        .join(rty)
+        .join(ide1, rel.c.left_identifier_id == ide1.c.identifier_id)
+        .join(ide2, rel.c.right_identifier_id == ide2.c.identifier_id)
+        .join(doc1, ide1.c.document_namespace_id == doc1.c.document_namespace_id)
+        .join(doc2, ide2.c.document_namespace_id == doc2.c.document_namespace_id)
+    )
+    .where(
+        and_(
+            doc1.c.document_namespace_id == left_namespace_id,
+            ide1.c.id_string == left_id_string
+            )
+        )
+    )
 
 
-def auto_contains():
-    # stub
-    return select([db.relationships]).where(False)
+def auto_contains(docid):
+    rty = db.relationship_types.alias()
+    ide1 = db.identifiers.alias()
+    ide2 = db.identifiers.alias()
+    doc = db.documents.alias()
+    pac = db.packages.alias()
+    pfi = db.packages_files.alias()
+    return (select([
+        doc.c.document_id,
+        ide1.c.identifier_id        .label('left_identifier_id'),
+        rty.c.relationship_type_id,
+        ide2.c.identifier_id        .label('right_identifier_id'),
+        ])
+    .select_from(
+        doc
+        .join(pac, doc.c.package_id == pac.c.package_id)
+        .join(pfi, pac.c.package_id == pfi.c.package_id)
+        .join(ide1,
+              (pfi.c.package_id == ide1.c.package_id) &
+              (doc.c.document_namespace_id == ide1.c.document_namespace_id)
+              )
+        .join(ide2,
+              (pfi.c.package_file_id == ide2.c.package_file_id) &
+              (doc.c.document_namespace_id == ide2.c.document_namespace_id)
+              )
+        .join(rty, rty.c.name == 'CONTAINS')
+        )
+    .where(doc.c.document_id == docid)
+    )
 
 
-def auto_contained_by():
-    # stub
-    return select([db.relationships]).where(False)
+def auto_contained_by(docid):
+    v = auto_contains(docid).alias()
+    rty2 = db.relationship_types.alias()
+    return (select([
+        v.c.document_id,
+        v.c.right_identifier_id     .label('left_identifier_id'),
+        rty2.c.relationship_type_id,
+        v.c.left_identifier_id     .label('right_identifier_id')
+        ])
+    .select_from(
+        v.join(rty2, rty2.c.name == 'CONTAINED_BY')
+        )
+    .where(v.c.document_id == docid)
+    )
 
 
 def auto_describes():
