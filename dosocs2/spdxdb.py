@@ -74,7 +74,7 @@ def register_file(conn, path, known_sha1=None):
         'comment': '',
         'notice': ''
         }
-    file['file_id'] = insert(conn, db.files, new_file)
+    file['file_id'] = insert(conn, db.files, file)
     return file
 
 
