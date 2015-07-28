@@ -24,7 +24,7 @@
 {0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
     [-s SCANNER] [-r VER] (PATH)
 {0} print [-f FILE] (DOC-ID)
-{0} scan [-c COMMENT] [-f FILE] [-n NAME] [-r VER] [-s SCANNER] (PATH)
+{0} scan [-c COMMENT] [-f FILE] [-n NAME] [-r VER] [-s SCANNERS] (PATH)
 {0} scanners [-f FILE]
 {0} (--help | --version)
 
@@ -56,8 +56,8 @@ Options:
                                 name from filename)
   -r, --package-version=VER   Version string for new package (otherwise use
                                 empty string)
-  -s, --scanner=SCANNER       Scanner to use ('dosocs2 scanners' to see
-                                choices)
+  -s, --scanners=SCANNERS     Comma-separated list of scanners to use
+                                ('dosocs2 scanners' to see choices)
       --no-confirm            Don't prompt before initializing database with
                                 'dbinit' (dangerous!)
 
@@ -121,16 +121,20 @@ def main():
             sys.exit(1)
         config.update_config(alt_config)
 
-    if argv['--scanner']:
-        this_scanner_name = argv['--scanner']
+    if argv['--scanners']:
+        selected_scanners = []
+        for this_scanner_name in argv['--scanners'].split(','):
+            try:
+                this_scanner = scanners.scanners[this_scanner_name]
+            except KeyError:
+                errmsg("'{}' is not a known scanner".format(this_scanner_name))
+                sys.exit(1)
+            if this_scanner not in selected_scanners:
+                selected_scanners.append(this_scanner)
     else:
         this_scanner_name = config.config['dosocs2']['default_scanner']
-
-    try:
-        this_scanner = scanners.scanners[this_scanner_name]()
-    except KeyError:
-        errmsg("'{}' is not a known scanner".format(this_scanner_name))
-        sys.exit(1)
+        this_scanner = scanners.scanners[this_scanner_name]
+        selected_scanners = [this_scanner]
 
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')
@@ -200,27 +204,35 @@ def main():
 
     elif argv['scan']:
         kwargs = {
-            'scanner': this_scanner,
             'name': new_package_name,
             'version': new_package_version,
             'comment': new_package_comment
             }
         with engine.begin() as conn:
-            package = spdxdb.scan_package(conn, package_path, **kwargs)
+            package = spdxdb.register_package(conn, package_path, **kwargs)
         print('{}: package_id: {}'.format(package_path, package['package_id']))
+        for scanner in selected_scanners:
+            sys.stderr.write(scanner.name + '\n')
+            with engine.begin() as conn:
+                scanner_inst = scanner(conn)
+                scanner_inst.run(package['package_id'], os.path.abspath(package_path))
 
     elif argv['oneshot']:
         kwargs = {
-            'scanner': this_scanner,
             'name': new_package_name,
             'version': new_package_version,
             'comment': new_package_comment
             }
         with engine.begin() as conn:
-            package = spdxdb.scan_package(conn, package_path, **kwargs)
+            package = spdxdb.register_package(conn, package_path, **kwargs)
             package_id = package['package_id']
         fmt = '{}: package_id: {}\n'
         sys.stderr.write(fmt.format(package_path, package_id))
+        for scanner in selected_scanners:
+            sys.stderr.write(scanner.name + '\n')
+            with engine.begin() as conn:
+                scanner_inst = scanner(conn)
+                scanner_inst.run(self, package['package_id'], package_path)
         with engine.begin() as conn:
             document = spdxdb.get_doc_by_package_id(conn, package_id)
             if document:

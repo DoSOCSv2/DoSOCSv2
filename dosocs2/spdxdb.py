@@ -34,8 +34,11 @@ def insert(conn, table, params):
     [pkey] = result.inserted_primary_key
     return pkey
 
+
 def bulk_insert(conn, table, rows_list):
-    conn.execute(table.insert(), *rows_list)
+    if rows_list:
+        conn.execute(table.insert(), *rows_list)
+
 
 def lookup_by_sha1(conn, table, sha1):
     '''Lookup row by SHA-1 sum and return the row, or None.'''
@@ -53,97 +56,34 @@ def lookup_by_sha1(conn, table, sha1):
         return dict(**result)
 
 
-def lookup_license(conn, short_name):
-    query = (
-        select([db.licenses])
-        .where(db.licenses.c.short_name == short_name)
-        )
-    [result] = conn.execute(query).fetchall() or [None]
-    if result is None:
-        return result
-    else:
-        return dict(**result)
-
-
-def lookup_or_add_license(conn, short_name, comment=None):
-    '''Add license to the database if it does not exist.
-
-    Return the new or existing license object in any case.
-    '''
-    transtable = string.maketrans('()[]<>', '------')
-    short_name = string.translate(short_name, transtable)
-    existing_license = lookup_license(conn, short_name)
-    if existing_license is not None:
-        return existing_license
-    new_license = {
-        # correct long name is never known for found licenses
-        'name': None,
-        'short_name': short_name,
-        'cross_reference': '',
-        'comment': comment or '',
-        'is_spdx_official': False,
-        }
-    new_license['license_id'] = insert(conn, db.licenses, new_license)
-    return new_license
-
-
-def create_file(conn, path, known_sha1):
+def register_file(conn, path, known_sha1=None):
+    sha1 = known_sha1 or util.sha1(path)
+    file = lookup_by_sha1(conn, db.files, sha1)
+    if file is not None:
+        return file
     file_type_query = (
         select([db.file_types.c.file_type_id])
         .where(db.file_types.c.name == util.spdx_filetype(path))
         )
     file_type_id = conn.execute(file_type_query).fetchone()['file_type_id']
-    new_file = {
-        'sha1': known_sha1,
+    file = {
+        'sha1': sha1,
         'file_type_id': file_type_id,
         'copyright_text': None,
         'project_id': None,
         'comment': '',
         'notice': ''
         }
-    new_file['file_id'] = insert(conn, db.files, new_file)
-    return new_file
-
-
-def store_scan_result(conn, scanner_name, scan_result, path_file_id_map):
-    for path in scan_result:
-        licenses_found = [
-            lookup_or_add_license(conn, shortname, 'found by ' + scanner_name)
-            for shortname in scan_result[path]
-            ]
-        for license in licenses_found:
-            file_license_params = {
-                'file_id': path_file_id_map[path],
-                'license_id': license['license_id'],
-                'extracted_text': '',
-                }
-            insert(conn, db.files_licenses, file_license_params)
-
-
-def scan_file(conn, path, scanner, known_sha1=None):
-    '''Scan file for licenses, and add it to the DB if it does not exist.
-
-    Return the file object.
-
-    If the file is cached, return the cached file object, and do not
-    scan.
-    '''
-    sha1 = known_sha1 or util.sha1(path)
-    file = lookup_by_sha1(conn, db.files, sha1)
-    if file is not None:
-        return file
-    file = create_file(conn, path, sha1)
-    scan_result = scanner.scan_file(path)
-    store_scan_result(conn, scanner.name, scan_result, {path: file['file_id']})
+    file['file_id'] = insert(conn, db.files, new_file)
     return file
 
 
-def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
-                   file_name=None, sha1=None):
+def register_directory(conn, path, name=None, version=None, comment=None,
+                       file_name=None, sha1=None):
     # Passing sha1=None indicates a true directory, not a package
     ver_code, hashes, dir_code = util.get_dir_hashes(path)
     # Use calculated directory code and package verification code to see
-    # if we have already scanned this one
+    # if we have already registered this one
     # (Not applicable to true packages)
     if sha1 is None:
         found_pkg_query = (
@@ -182,7 +122,7 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
     package['package_id'] = insert(conn, db.packages, package)
     row_params = []
     for (filepath, sha1) in hashes.iteritems():
-        fileobj = scan_file(conn, filepath, scanner, known_sha1=sha1)
+        fileobj = register_file(conn, filepath, known_sha1=sha1)
         package_file_params = {
             'package_id': package['package_id'],
             'file_id': fileobj['file_id'],
@@ -195,22 +135,15 @@ def scan_directory(conn, path, scanner, name=None, version=None, comment=None,
     return package
 
 
-def scan_package(conn, path, scanner, name=None, version=None, comment=None):
-    '''Scan package for licenses. Add it and all files to the DB.
-
-    Return the package object.
-
-    Only scan if the package is not already cached (by SHA-1).
-    '''
+def register_package(conn, path, name=None, version=None, comment=None):
     if os.path.isdir(path):
         kwargs = {
             'path': path,
-            'scanner': scanner,
             'name': name,
             'version': version,
             'comment': comment
             }
-        return scan_directory(conn, **kwargs)
+        return register_directory(conn, **kwargs)
     sha1 = util.sha1(path)
     package = lookup_by_sha1(conn, db.packages, sha1)
     if package is not None:
@@ -218,14 +151,13 @@ def scan_package(conn, path, scanner, name=None, version=None, comment=None):
     with util.tempextract(path) as (tempdir, relpaths):
         kwargs = {
             'path': tempdir,
-            'scanner': scanner,
             'name': name or util.package_friendly_name(os.path.basename(path)),
             'version': version,
             'comment': comment,
             'file_name': os.path.basename(os.path.abspath(path)),
             'sha1': sha1
             }
-        package = scan_directory(conn, **kwargs)
+        package = register_directory(conn, **kwargs)
     return package
 
 
