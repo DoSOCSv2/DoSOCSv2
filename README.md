@@ -14,9 +14,8 @@ of all open-source software used in an organization.
 about the licenses and copyrights associated with a software package. dosocs2
 supports the SPDX 2.0 standard, released in May 2015.
 
-dosocs2 is currently (July 2015) under heavy development; it should be
-considered experimental, not production-ready, and subject to frequent
-backwards-incompatible changes until a proper release.
+dosocs2 is under heavy development; expect frequent backwards-incompatible
+changes until a 1.x.x release!
 
 ### Current deviations from SPDX 2.0 specification
 
