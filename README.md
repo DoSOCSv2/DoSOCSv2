@@ -11,8 +11,8 @@ and can even be used in the creation and continuous maintenance of an inventory
 of all open-source software used in an organization.
 
 [SPDX](http://www.spdx.org) is a standard format for communicating information
-about the licenses and copyrights associated with a software package. dosocs2
-supports the SPDX 2.0 standard, released in May 2015.
+about the contents of a software package, including license and copyright
+information. dosocs2 supports the SPDX 2.0 standard, released in May 2015.
 
 dosocs2 is under heavy development; expect frequent backwards-incompatible
 changes until a 1.x.x release!
