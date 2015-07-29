@@ -71,9 +71,10 @@ First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
 is not a requirement.
 
-Grab the latest release and use `pip` to install it as a package. If you are
-not inside a virtualenv you may have to run `pip` as root (not recommended!).
-Replace `0.x.x` with the latest release version number.
+[Grab the latest release](https://github.com/ttgurney/dosocs2/releases)
+and use `pip` to install it as a package. If you are not inside a virtualenv
+you may have to run `pip` as root (not recommended!). Replace `0.x.x` with
+the latest release version number.
 
     $ tar xf 0.x.x.tar.gz 
     $ pip install ./dosocs2-0.x.x
