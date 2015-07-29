@@ -1,14 +1,18 @@
 dosocs2
 =======
 
-dosocs2 is a command-line app for managing SPDX 2.0 documents and data. It can
-scan software packages (e.g. tarballs) to produce SPDX information, store that
-information in a relational database, and extract it in tag-value format
+dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
+scan source code distributions to produce SPDX information, store that
+information in a relational database, and extract it in a plain-text format
 on request.
+
+dosocs2 enables easy creation of a "bill of materials" for any software package,
+and can even be used in the creation and continuous maintenance of an inventory
+of all open-source software used in an organization.
 
 [SPDX](http://www.spdx.org) is a standard format for communicating information
 about the licenses and copyrights associated with a software package. dosocs2
-makes use of the SPDX 2.0 standard, released in May 2015.
+supports the SPDX 2.0 standard, released in May 2015.
 
 dosocs2 is currently (July 2015) under heavy development; it should be
 considered experimental, not production-ready, and subject to frequent
@@ -23,7 +27,8 @@ backwards-incompatible changes until a proper release.
 * Checksums are always assumed to be SHA-1. (SPDX 2.0 permits SHA-1, SHA-256,
   and MD5)
 * A file may be an artifact of only one project.
-* License expression syntax is not supported.
+* License expression syntax is not parsed; license expressions are interpreted as license
+  names that are not on the SPDX license list.
 * Deprecated fields from SPDX 1.2 (reviewer info and file dependencies) are not supported.
 
 
@@ -42,19 +47,22 @@ Dependencies
 ------------
 
 - Python 2.7.x
-- <a href="http://www.fossology.org/">FOSSology</a> 2.5.x or later version
+- [FOSSology](http://www.fossology.org/) 2.5.x or later version (for
+  license identification)
 - Optional: PostgreSQL 8.x or later version (can be on a separate machine)
 
 ### Python libraries
 
 - [docopt](http://docopt.org/)
 - [Jinja2](http://jinja.pocoo.org/)
-- [psycopg2](http://initd.org/psycopg/)
+- [psycopg2](http://initd.org/psycopg/) (if not using the PostgreSQL
+  configuration, this dependency can be safely removed from `setup.py`
+  prior to install)
 - [python-magic](https://github.com/ahupp/python-magic)
 - [SQLAlchemy](http://www.sqlalchemy.org/)
 - [xmltodict](https://github.com/martinblech/xmltodict)
 
-All Python dependencies are handled by the setup script.
+All Python dependencies are handled automatically by `pip`.
 
 
 Installation
@@ -62,15 +70,16 @@ Installation
 
 First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
-is in no way a requirement.
+is not a requirement.
 
-Grab the latest release--or, if you are feeling adventurous, clone the
-repository--and use `pip` to install it as a package. If you are not inside a
-virtualenv you may have to run `pip` as root.
+Grab the latest release and use `pip` to install it as a package. If you are
+not inside a virtualenv you may have to run `pip` as root (not recommended!).
+Replace `0.x.x` with the latest release version number.
 
-    $ pip install ./dosocs2
+    $ tar xf 0.x.x.tar.gz 
+    $ pip install ./dosocs2-0.x.x
 
-Generate an initial config file:
+After successful install, generate an initial config file:
 
     $ dosocs2 newconfig
     dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
@@ -79,10 +88,10 @@ The default config uses a SQLite database. Open up the config file and change
 the database file path in variable `connection_uri` to whatever path you
 like, e.g.:
 
-    connection_uri = sqlite:////home/tom/.dosocs2.sqlite3
+    connection_uri = sqlite:////home/tgurney/.dosocs2.sqlite3
 
-You also need to set the path of the default `nomos` scanner (part of
-FOSSology) if it is not already correct.
+If you have [FOSSology](http://www.fossology.org/) installed, you also need
+to set the path of the default `nomos` scanner if it is not already correct.
 
 Finally, to create all necessary tables and views in the database:
 
@@ -91,9 +100,9 @@ Finally, to create all necessary tables and views in the database:
 
 ### Using dosocs2 with PostgreSQL
 
-You will have to create the `spdx` (or whatever you want to call it) role and
-database yourself (although I recommend setting a different password than the
-one given...):
+You will have to create the `spdx` (or whatever name you want) role and
+database yourself.  I recommend setting a different password than the
+one given...:
 
     postgres=# create role spdx with login password 'spdx';
     postgres=# create database spdx with owner spdx;
