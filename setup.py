@@ -14,8 +14,10 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Documentation',
+        'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 2.7',
+        'Environment :: Console',
         ],
 
     keywords='spdx license licenses',
@@ -29,7 +31,7 @@ setup(
         'xmltodict',
         ],
 
-    package_data={'dosocs2': ['sql/*', 'templates/*', 'default/*']},
+    package_data={'dosocs2': ['templates/*', 'default/*']},
 
     entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
 
