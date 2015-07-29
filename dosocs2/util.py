@@ -22,7 +22,6 @@ import hashlib
 import os
 import re
 import shutil
-import sys
 import tarfile
 import tempfile
 import uuid

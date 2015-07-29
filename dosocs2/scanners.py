@@ -26,7 +26,7 @@ scan_directory(path) -> {str: {str}} or None
 import os
 import re
 import subprocess
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 
 from sqlalchemy import select, and_
 

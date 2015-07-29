@@ -194,7 +194,7 @@ def main():
             'comment': new_doc_comment
             }
         with engine.begin() as conn:
-            package = spdxdb.fetch(conn, db.packages, package_id) 
+            package = spdxdb.fetch(conn, db.packages, package_id)
             if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
@@ -232,7 +232,7 @@ def main():
             sys.stderr.write(scanner.name + '\n')
             with engine.begin() as conn:
                 scanner_inst = scanner(conn)
-                scanner_inst.run(self, package['package_id'], package_path)
+                scanner_inst.run(package['package_id'], package_path)
         with engine.begin() as conn:
             document = spdxdb.get_doc_by_package_id(conn, package_id)
             if document:

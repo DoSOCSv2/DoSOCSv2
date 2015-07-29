@@ -15,10 +15,7 @@
 # limitations under the License.
 
 
-import copy
-import itertools
 import os
-import string
 
 from sqlalchemy.sql import select, and_
 
@@ -182,7 +179,6 @@ def create_all_identifiers(conn, doc_namespace_id, package):
             )
         .where(db.packages_files.c.package_id == package['package_id'])
         )
-    identifier_ids = []
     package_id_params = {
         'document_namespace_id': doc_namespace_id,
         'package_id': package['package_id'],
@@ -197,7 +193,7 @@ def create_all_identifiers(conn, doc_namespace_id, package):
             }
         rows_list.append(file_id_params)
     bulk_insert(conn, db.identifiers, rows_list)
-    package_identifier_id = insert(conn, db.identifiers, package_id_params)
+    insert(conn, db.identifiers, package_id_params)
 
 
 def autocreate_relationships(conn, docid):

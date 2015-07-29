@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy.sql import select, case, label, and_
+from sqlalchemy.sql import select, case, and_
 from sqlalchemy import func
 from . import schema as db
+
 
 def license_approved_names():
     lic = db.licenses.alias()
@@ -90,7 +91,7 @@ def documents_creators(docid):
         cre.c.creator_text.label('creator')
         ])
     .select_from(
-        doc 
+        doc
         .join(dcr)
         .join(cre)
         )
@@ -105,7 +106,7 @@ def documents_files(docid, package_id):
     fil = db.files.alias()
     fty = db.file_types.alias()
     ide = db.identifiers.alias()
-    lic = license_approved_names().alias() 
+    lic = license_approved_names().alias()
     pro = db.projects.alias()
     return (select ([
         doc.c.document_id,
@@ -150,10 +151,9 @@ def documents_files(docid, package_id):
 def documents_packages(docid):
     doc = db.documents.alias()
     pac = db.packages.alias()
-    pfi = db.packages_files.alias()
     ide = db.identifiers.alias()
-    lic1 = license_approved_names().alias() 
-    lic2 = license_approved_names().alias() 
+    lic1 = license_approved_names().alias()
+    lic2 = license_approved_names().alias()
     cre1 = creators().alias()
     cre2 = creators().alias()
     return (select ([
@@ -196,7 +196,7 @@ def documents_packages(docid):
 
 def documents(docid):
     doc = db.documents.alias()
-    lic = license_approved_names().alias() 
+    lic = license_approved_names().alias()
     dns = db.document_namespaces.alias()
     ide = db.identifiers.alias()
     return (select ([
@@ -231,8 +231,8 @@ def documents_unofficial_licenses(docid):
     pac = db.packages.alias()
     pfi = db.packages_files.alias()
     fil = db.files.alias()
-    fli = db.files_licenses.alias() 
-    lic = db.licenses.alias() 
+    fli = db.files_licenses.alias()
+    lic = db.licenses.alias()
     return (select ([
         doc.c.document_id,
         lic.c.license_id,
@@ -297,8 +297,8 @@ def file_contributors(file_id):
 
 def files_licenses(file_id):
     fil = db.files.alias()
-    fli = db.files_licenses.alias() 
-    lic = license_approved_names().alias() 
+    fli = db.files_licenses.alias()
+    lic = license_approved_names().alias()
     return (select([
         fil.c.file_id,
         lic.c.short_name
@@ -317,8 +317,8 @@ def packages_all_licenses_in_files(package_id):
     pfi = db.packages_files.alias()
     fil = db.files.alias()
     fli = db.files_licenses.alias()
-    lic1 = license_approved_names().alias() 
-    lic2 = license_approved_names().alias() 
+    lic1 = license_approved_names().alias()
+    lic2 = license_approved_names().alias()
     return (select([
         pac.c.package_id,
         pac.c.name              .label('package_name'),

@@ -17,15 +17,14 @@
 
 from __future__ import print_function
 
-import pkg_resources
 import re
 import sys
 import urllib2
-import uuid
 
 from sqlalchemy.sql import select
 
 from . import schema as db
+
 
 def msg(text, **kwargs):
     print('dosocs2' + ': ' + text, **kwargs)
@@ -173,8 +172,8 @@ def initialize(dosocs2_version):
             errmsg('error!')
             errmsg('failed to download and load the license list')
             errmsg('check your connection to ' + url +
-                ' and make sure it is the correct page'
-                )
+                   ' and make sure it is the correct page'
+                   )
             return False
         else:
             print('ok.')
