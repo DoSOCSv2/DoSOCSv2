@@ -122,16 +122,6 @@ Run `dosocs2 dbinit` again to set up, and you're good to go.
 Usage
 -----
 
-dosocs2 divides its work into distinct steps:
-- Scanning a package to obtain SHA-1 digests and other basic
-  metadata
-- Scanning using any number of external scanning tools to obtain
-  further information, such as license, copyright, or
-  security vulnerability data.
-- Generating an SPDX document in relational form from available
-  data
-- Compiling an SPDX document to a textual format
-
 The simplest use case is scanning a package, generating a
 document, and printing an SPDX document in one shot:
 
@@ -155,8 +145,8 @@ To just scan a package and store its information in the database:
     dosocs2: running nomos on package 456
 
 In the default configuration, if a scanner is not specified, only `nomos`
-is run by default. One can use the `-s` option to explicitly specify
-which scanners to run:
+is run by default. It gathers license information, but is a bit slow.
+One can use the `-s` option to explicitly specify which scanners to run:
 
     $ dosocs2 scan -s nomos_deep,dependency_check package.tar.gz
     dosocs2: package_tar_gz: package_id: 456
@@ -173,6 +163,10 @@ Then, to compile and output the document in tag-value format:
 
     $ dosocs2 print 123
     [... document output here ...]
+
+Use `dosocs2 --help` to get the full help text. The `doc` directory
+here also provides more detailed information about how `dosocs2` works
+and how to use it.
 
 
 History
