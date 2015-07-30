@@ -98,18 +98,40 @@ def errmsg(text, **kwargs):
     sys.stdout.flush()
 
 
+def do_scan(engine, package_root, package_file_path=None, selected_scanners=None,
+            package_name=None, package_version='', package_comment=''):
+    if selected_scanners is None:
+        selected_scanners = ()
+    kwargs = {
+        'name': package_name,
+        'version': package_version,
+        'comment': package_comment,
+        'package_root': package_root,
+        'package_file_path': package_file_path,
+        }
+    with engine.begin() as conn:
+        package = spdxdb.register_package(conn, **kwargs)
+    sys.stderr.write('{}: package_id: {}'.format(package_file_path or package_root, package['package_id']))
+    for scanner in selected_scanners:
+        sys.stderr.write(scanner.name + '\n')
+        scanner_kwargs = {
+            'package_id': package['package_id'],
+            'package_root': package_root,
+            'package_file_path': package_file_path
+            }
+        with engine.begin() as conn:
+            scanner_inst = scanner(conn)
+            scanner_inst.run(**scanner_kwargs)
+    return package
+
+
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
     engine = db.initialize(config.config['dosocs2']['connection_uri'], util.bool_from_str(config.config['dosocs2']['echo']))
     doc_id = argv['DOC-ID']
-    document = None
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
-    output_format = 'tag'
-    new_package_comment = argv['--package-comment'] or ''
-    new_package_name = argv['--package-name']
-    new_package_version = argv['--package-version'] or ''
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
 
@@ -186,7 +208,7 @@ def main():
             if spdxdb.fetch(conn, db.documents, doc_id) is None:
                 errmsg('document id {} not found in the database.'.format(doc_id))
                 sys.exit(1)
-            print(render.render_document(conn, doc_id, format_map[output_format]))
+            print(render.render_document(conn, doc_id, format_map['tag']))
 
     elif argv['generate']:
         kwargs = {
@@ -200,34 +222,44 @@ def main():
                 sys.exit(1)
             document_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
         fmt = '(package_id {}): document_id: {}'
-        print(fmt.format(package_id, document_id))
+        sys.stderr.write(fmt.format(package_id, document_id))
 
     elif argv['scan']:
         kwargs = {
-            'name': new_package_name,
-            'version': new_package_version,
-            'comment': new_package_comment
+            'engine': engine,
+            'selected_scanners': selected_scanners,
+            'package_name': argv['--package-name'],
+            'package_version': argv['--package-version'],
+            'package_comment': argv['--package-comment']
             }
-        with engine.begin() as conn:
-            package = spdxdb.register_package(conn, package_path, **kwargs)
-        print('{}: package_id: {}'.format(package_path, package['package_id']))
-        for scanner in selected_scanners:
-            sys.stderr.write(scanner.name + '\n')
-            with engine.begin() as conn:
-                scanner_inst = scanner(conn)
-                scanner_inst.run(package['package_id'], os.path.abspath(package_path))
+        if os.path.isfile(package_path):
+            with util.tempextract(package_path) as (tempdir, _):
+                kwargs['package_root'] = tempdir
+                kwargs['package_file_path'] = package_path
+                do_scan(**kwargs)
+        else:
+            kwargs['package_root'] = package_path
+            kwargs['package_file_path'] = None
+            do_scan(**kwargs)
+
 
     elif argv['oneshot']:
         kwargs = {
-            'name': new_package_name,
-            'version': new_package_version,
-            'comment': new_package_comment
+            'engine': engine,
+            'selected_scanners': selected_scanners,
+            'package_name': argv['--package-name'],
+            'package_version': argv['--package-version'],
+            'package_comment': argv['--package-comment']
             }
-        with engine.begin() as conn:
-            package = spdxdb.register_package(conn, package_path, **kwargs)
-            package_id = package['package_id']
-        fmt = '{}: package_id: {}\n'
-        sys.stderr.write(fmt.format(package_path, package_id))
+        if os.path.isfile(package_path):
+            with util.tempextract(package_path) as (tempdir, _):
+                kwargs['package_root'] = tempdir
+                kwargs['package_file_path'] = package_path
+                package = do_scan(**kwargs)
+        else:
+            kwargs['package_root'] = package_path
+            kwargs['package_file_path'] = None
+            package = do_scan(**kwargs)
         for scanner in selected_scanners:
             sys.stderr.write(scanner.name + '\n')
             with engine.begin() as conn:
@@ -246,7 +278,7 @@ def main():
             fmt = '{}: document_id: {}\n'
             sys.stderr.write(fmt.format(package_path, doc_id))
         with engine.begin() as conn:
-            print(render.render_document(conn, doc_id, format_map[output_format]))
+            print(render.render_document(conn, doc_id, format_map['tag']))
 
 
 if __name__ == "__main__":

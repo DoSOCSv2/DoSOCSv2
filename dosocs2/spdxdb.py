@@ -75,36 +75,47 @@ def register_file(conn, path, known_sha1=None):
     return file
 
 
-def register_directory(conn, path, name=None, version=None, comment=None,
-                       file_name=None, sha1=None):
-    # Passing sha1=None indicates a true directory, not a package
-    ver_code, hashes, dir_code = util.get_dir_hashes(path)
-    # Use calculated directory code and package verification code to see
-    # if we have already registered this one
-    # (Not applicable to true packages)
-    if sha1 is None:
-        found_pkg_query = (
-            select([db.packages])
-            .where(
-                and_(
-                    db.packages.c.dosocs2_dir_code == dir_code,
-                    db.packages.c.verification_code == ver_code
-                    )
+def get_cached_dir_pkg(conn, dir_code, ver_code):
+    found_pkg_query = (
+        select([db.packages])
+        .where(
+            and_(
+                db.packages.c.dosocs2_dir_code == dir_code,
+                db.packages.c.verification_code == ver_code
                 )
             )
-        [found_pkg] = conn.execute(found_pkg_query).fetchall() or [None]
+        )
+    [found_pkg] = conn.execute(found_pkg_query).fetchall() or [None]
+    if found_pkg is not None:
+        return found_pkg
+
+
+def register_package(conn, package_root, name=None, version=None, comment=None,
+                     package_file_path=None):
+    # Attempt to get cached package row
+    if package_file_path is not None:
+        # "True package" may be cached by SHA-1 of entire package
+        sha1 = util.sha1(package_file_path)
+        package = lookup_by_sha1(conn, db.packages, sha1)
+        if package is not None:
+            return package
+    ver_code, hashes, dir_code = util.get_dir_hashes(package_root)
+    if package_file_path is None:
+        found_pkg = get_cached_dir_pkg(conn, dir_code, ver_code)
         if found_pkg is not None:
             return found_pkg
+        sha1 = None
+    # Create package row
+    basename = os.path.basename(os.path.abspath(package_file_path or package_root))
     package = {
-        'name': name or os.path.basename(os.path.abspath(path)),
+        'file_name': basename,
         'version': version or '',
-        'file_name': file_name or os.path.basename(os.path.abspath(path)),
         'supplier_id': None,
         'originator_id': None,
         'download_location': None,
         'verification_code': ver_code,
         'ver_code_excluded_file_id': None,
-        'sha1': sha1, # None is permitted here, indicating a directory
+        'sha1': sha1, # None is permitted here
         'home_page': None,
         'source_info': '',
         'concluded_license_id': None,
@@ -116,45 +127,24 @@ def register_directory(conn, path, name=None, version=None, comment=None,
         'comment': '',
         'dosocs2_dir_code': None if sha1 is not None else dir_code
         }
+    if package_file_path is None:
+        package['name'] = name or basename
+    else:
+        package['name'] = name or util.package_friendly_name(os.path.basename(package_file_path))
     package['package_id'] = insert(conn, db.packages, package)
+    # Create packages_files rows
     row_params = []
-    for (filepath, sha1) in hashes.iteritems():
-        fileobj = register_file(conn, filepath, known_sha1=sha1)
+    for (file_path, file_sha1) in hashes.iteritems():
+        fileobj = register_file(conn, file_path, known_sha1=file_sha1)
         package_file_params = {
             'package_id': package['package_id'],
             'file_id': fileobj['file_id'],
             'concluded_license_id': None,
-            'file_name': util.abs_to_rel(path, filepath),
+            'file_name': util.abs_to_rel(package_root, file_path),
             'license_comment': ''
             }
         row_params.append(package_file_params)
     bulk_insert(conn, db.packages_files, row_params)
-    return package
-
-
-def register_package(conn, path, name=None, version=None, comment=None):
-    if os.path.isdir(path):
-        kwargs = {
-            'path': path,
-            'name': name,
-            'version': version,
-            'comment': comment
-            }
-        return register_directory(conn, **kwargs)
-    sha1 = util.sha1(path)
-    package = lookup_by_sha1(conn, db.packages, sha1)
-    if package is not None:
-        return package
-    with util.tempextract(path) as (tempdir, relpaths):
-        kwargs = {
-            'path': tempdir,
-            'name': name or util.package_friendly_name(os.path.basename(path)),
-            'version': version,
-            'comment': comment,
-            'file_name': os.path.basename(os.path.abspath(path)),
-            'sha1': sha1
-            }
-        package = register_directory(conn, **kwargs)
     return package
 
 
@@ -262,7 +252,7 @@ def fetch(conn, table, pkey):
     query = select([table]).where(c == pkey)
     [result] = conn.execute(query).fetchall() or [None]
     if result is None:
-        return result
+        return None
     else:
         return dict(**result)
 
@@ -273,6 +263,6 @@ def get_doc_by_package_id(conn, package_id):
     # but that's OK
     result = conn.execute(query).fetchone()
     if result is None:
-        return result
+        return None
     else:
         return dict(**result)

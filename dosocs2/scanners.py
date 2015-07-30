@@ -61,10 +61,10 @@ class Scanner(object):
             file_list.append(WorkItem(**kwargs))
         return file_list
 
-    def run(self, package_id, package_path):
+    def run(self, package_id, package_root, package_file_path=None):
         # add package-level checking for "already done"
         self.register()
-        all_files = self.get_file_list(package_id, package_path)
+        all_files = self.get_file_list(package_id, package_root)
         processed_files = set()
         not_processed_files = set()
         for file in all_files:
@@ -73,7 +73,6 @@ class Scanner(object):
                 processed_files.add(file)
             else:
                 not_processed_files.add(file)
-        import pprint; pprint.pprint(processed_files)
         self.mark_done(processed_files)
 
     def process_file(self, file):
