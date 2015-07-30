@@ -122,8 +122,18 @@ Run `dosocs2 dbinit` again to set up, and you're good to go.
 Usage
 -----
 
+dosocs2 divides its work into distinct steps:
+- Scanning a package to obtain SHA-1 digests and other basic
+  metadata
+- Scanning using any number of external scanning tools to obtain
+  further information, such as license, copyright, or
+  security vulnerability data.
+- Generating an SPDX document in relational form from available
+  data
+- Compiling an SPDX document to a textual format
+
 The simplest use case is scanning a package, generating a
-document, and printing the document in one shot:
+document, and printing an SPDX document in one shot:
 
     $ dosocs2 oneshot package.tar.gz
     dosocs2: package.tar.gz: package_id: 1
@@ -138,7 +148,7 @@ Also works on directories:
 The scan results and other collected metadata are saved in the database
 so that subsequent document generations will be much faster.
 
-To scan a package and store its information in the database:
+To just scan a package and store its information in the database:
 
     $ dosocs2 scan package.tar.gz
     dosocs2: package_tar_gz: package_id: 456
