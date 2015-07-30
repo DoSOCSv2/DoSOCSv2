@@ -50,7 +50,7 @@ Dependencies
   license identification)
 
 Optional:
-- [OWASP Dependency Check](https://github.com/jeremylong/DependencyCheck)
+- [OWASP dependency-check](https://github.com/jeremylong/DependencyCheck)
   (for vulnerability identification)
 - PostgreSQL 8.x or later version (can be on a separate machine)
 
