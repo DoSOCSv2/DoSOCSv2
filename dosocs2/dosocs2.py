@@ -268,11 +268,6 @@ def main():
             kwargs['package_root'] = package_path
             kwargs['package_file_path'] = None
             package = do_scan(**kwargs)
-        for scanner in selected_scanners:
-            sys.stderr.write(scanner.name + '\n')
-            with engine.begin() as conn:
-                scanner_inst = scanner(conn)
-                scanner_inst.run(package['package_id'], package_path)
         with engine.begin() as conn:
             document = spdxdb.get_doc_by_package_id(conn, package_id)
             if document:
