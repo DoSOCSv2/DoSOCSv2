@@ -68,14 +68,15 @@ class Scanner(object):
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
         all_files = self.get_file_list(package_id, package_root)
         processed_files = {} 
-        not_processed_files = set()
+        files_to_mark = set()
         for file in all_files:
-            if not self.file_is_already_done(file):
+            already_done = self.file_is_already_done(file)
+            if rescan or not already_done:
                 processed_files[file] = self.process_file(file)
-            else:
-                not_processed_files.add(file)
+            if not already_done:
+                files_to_mark.add(file)
         self.store_results(processed_files)
-        self.mark_files_done(processed_files)
+        self.mark_files_done(files_to_mark)
 
     def process_file(self, file):
         # override in subclass

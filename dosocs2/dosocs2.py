@@ -22,9 +22,9 @@
 {0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
 {0} newconfig
 {0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
-    [-s SCANNERS] [-r VER] (PATH)
+    [-s SCANNERS] [-e VER] [-r] (PATH)
 {0} print [-f FILE] (DOC-ID)
-{0} scan [-c COMMENT] [-f FILE] [-n NAME] [-r VER] [-s SCANNERS] (PATH)
+{0} scan [-c COMMENT] [-f FILE] [-n NAME] [-e VER] [-s SCANNERS] [-r] (PATH)
 {0} scanners [-f FILE]
 {0} (--help | --version)
 
@@ -49,13 +49,15 @@ Options:
   -c, --package-comment=COMMENT
                               Comment for new package (otherwise use empty
                                 string)
+  -e, --package-version=VER   Version string for new package (otherwise use
+                                empty string)
   -f, --config=FILE           Alternate config file
   -N, --doc-name=NAME         Name for new document (otherwise create name
                                 from package name)
   -n, --package-name=NAME     Name for new package (otherwise create
                                 name from filename)
-  -r, --package-version=VER   Version string for new package (otherwise use
-                                empty string)
+  -r, --rescan                If any selected scanner already ran on a
+                                package/file, run it anyway
   -s, --scanners=SCANNERS     Comma-separated list of scanners to use
                                 ('dosocs2 scanners' to see choices)
       --no-confirm            Don't prompt before initializing database with
@@ -234,7 +236,8 @@ def main():
             'selected_scanners': selected_scanners,
             'package_name': argv['--package-name'],
             'package_version': argv['--package-version'],
-            'package_comment': argv['--package-comment']
+            'package_comment': argv['--package-comment'],
+            'rescan': argv['--rescan']
             }
         if os.path.isfile(package_path):
             with util.tempextract(package_path) as (tempdir, _):
@@ -253,7 +256,8 @@ def main():
             'selected_scanners': selected_scanners,
             'package_name': argv['--package-name'],
             'package_version': argv['--package-version'],
-            'package_comment': argv['--package-comment']
+            'package_comment': argv['--package-comment'],
+            'rescan': argv['--rescan']
             }
         if os.path.isfile(package_path):
             with util.tempextract(package_path) as (tempdir, _):
