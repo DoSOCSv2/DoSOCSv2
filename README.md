@@ -48,7 +48,11 @@ Dependencies
 - Python 2.7.x
 - [FOSSology](http://www.fossology.org/) 2.5.x or later version (for
   license identification)
-- Optional: PostgreSQL 8.x or later version (can be on a separate machine)
+
+Optional:
+- [OWASP Dependency Check](https://github.com/jeremylong/DependencyCheck)
+  (for vulnerability identification)
+- PostgreSQL 8.x or later version (can be on a separate machine)
 
 ### Python libraries
 
@@ -122,8 +126,9 @@ The simplest use case is scanning a package, generating a
 document, and printing the document in one shot:
 
     $ dosocs2 oneshot package.tar.gz
-    document_id: 1
-    package_id: 1
+    dosocs2: package.tar.gz: package_id: 1
+    dosocs2: running nomos on package 1
+    dosocs2: package.tar.gz: document_id: 1
     [... document output here ...]
 
 Also works on directories:
@@ -136,13 +141,23 @@ so that subsequent document generations will be much faster.
 To scan a package and store its information in the database:
 
     $ dosocs2 scan package.tar.gz
-    package_id: 456
+    dosocs2: package_tar_gz: package_id: 456
+    dosocs2: running nomos on package 456
 
-No document has been created yet. To create one in the database (specifying the
-package ID):
+In the default configuration, if a scanner is not specified, only `nomos`
+is run by default. One can use the `-s` option to explicitly specify
+which scanners to run:
+
+    $ dosocs2 scan -s nomos_deep,dependency_check package.tar.gz
+    dosocs2: package_tar_gz: package_id: 456
+    dosocs2: running nomos_deep on package 456
+    dosocs2: running dependency_check on package 456
+
+After `dosocs2 scan`, no SPDX document has yet been created.
+To create one in the database (specifying the package ID):
 
     $ dosocs2 generate 456
-    document_id: 123
+    dosocs2: (package_id 456): document_id: 123
 
 Then, to compile and output the document in tag-value format:
 
