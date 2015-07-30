@@ -31,11 +31,14 @@ from collections import namedtuple
 from sqlalchemy import select, and_
 
 from . import util
+from . import scanresult
 from . import schema as db
 from . import spdxdb
 from .config import config
 
+
 WorkItem = namedtuple('WorkItem', ['file_id', 'path'])
+
 
 class Scanner(object):
 
@@ -65,17 +68,20 @@ class Scanner(object):
         # add package-level checking for "already done"
         self.register()
         all_files = self.get_file_list(package_id, package_root)
-        processed_files = set()
+        processed_files = {} 
         not_processed_files = set()
         for file in all_files:
             if not self.is_already_done(file):
-                self.process_file(file)
-                processed_files.add(file)
+                processed_files[file] = self.process_file(file)
             else:
                 not_processed_files.add(file)
+        self.store_results(processed_files)
         self.mark_done(processed_files)
 
     def process_file(self, file):
+        pass
+
+    def store_results(self, processed_files):
         pass
 
     def register(self):
@@ -142,31 +148,45 @@ class Nomos(Scanner):
                 if lic_name != 'No_license_found'
                 })
         return scan_result
+    
+    def store_results(self, processed_files):
+        licenses_to_add = []
+        for (file, license_names) in processed_files.iteritems():
+            licenses = []
+            for license_name in license_names:
+                license_kwargs = {
+                    'conn': self.conn,
+                    'short_name': license_name,
+                    'comment': 'found by ' + self.name
+                    }
+                lic = scanresult.lookup_or_add_license(**license_kwargs)
+                licenses.append(lic)
+            for license in licenses:
+                file_license_kwargs = {
+                    'file_id': file.file_id,
+                    'license_id': license['license_id'],
+                    'extracted_text': ''
+                    }
+                licenses_to_add.append(file_license_kwargs)
+        scanresult.add_file_licenses(self.conn, licenses_to_add)
 
 
-class NomosDeep(Scanner):
+class NomosDeep(Nomos):
 
     name = 'nomos_deep'
 
-    def __init__(self):
-        self._nomos = Nomos()
-
-    def scan_file(self, path):
-        if util.archive_type(path):
-            scan_result = set()
-            with util.tempextract(path) as (tempdir, relpaths):
-                unfiltered_results = self._nomos.scan_directory(tempdir)
-            for this_result in unfiltered_results.values():
-                scan_result.update(this_result)
-            return {path: scan_result}
+    def process_file(self, file):
+        scan_result = set()
+        if util.archive_type(file.path):
+            with util.tempextract(file.path) as (tempdir, relpaths):
+                abspaths = (os.path.join(tempdir, relpath) for relpath in relpaths)
+                filepaths = (abspath for abspath in abspaths if os.path.isfile(abspath))
+                for filepath in filepaths:
+                    work_item = WorkItem(None, filepath)
+                    this_result = super(NomosDeep, self).process_file(work_item)
+                    scan_result.update(this_result)
         else:
-            return self._nomos.scan_file(path)
-
-    def scan_directory(self, path):
-        scan_result = {}
-        for filepath in util.allpaths(path):
-            if os.path.isfile(filepath):
-                scan_result.update(self.scan_file(filepath))
+            scan_result = super(NomosDeep, self).process_file(file)
         return scan_result
 
 

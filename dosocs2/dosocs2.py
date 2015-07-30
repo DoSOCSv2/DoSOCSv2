@@ -22,7 +22,7 @@
 {0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
 {0} newconfig
 {0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
-    [-s SCANNER] [-r VER] (PATH)
+    [-s SCANNERS] [-r VER] (PATH)
 {0} print [-f FILE] (DOC-ID)
 {0} scan [-c COMMENT] [-f FILE] [-n NAME] [-r VER] [-s SCANNERS] (PATH)
 {0} scanners [-f FILE]
@@ -111,9 +111,9 @@ def do_scan(engine, package_root, package_file_path=None, selected_scanners=None
         }
     with engine.begin() as conn:
         package = spdxdb.register_package(conn, **kwargs)
-    sys.stderr.write('{}: package_id: {}'.format(package_file_path or package_root, package['package_id']))
+    errmsg('{}: package_id: {}'.format(package_file_path or package_root, package['package_id']))
     for scanner in selected_scanners:
-        sys.stderr.write(scanner.name + '\n')
+        errmsg('running {} on package {}'.format(scanner.name, package['package_id']))
         scanner_kwargs = {
             'package_id': package['package_id'],
             'package_root': package_root,
@@ -142,21 +142,17 @@ def main():
             errmsg('{}: {}'.format(alt_config, ex.strerror))
             sys.exit(1)
         config.update_config(alt_config)
-
-    if argv['--scanners']:
-        selected_scanners = []
-        for this_scanner_name in argv['--scanners'].split(','):
-            try:
-                this_scanner = scanners.scanners[this_scanner_name]
-            except KeyError:
-                errmsg("'{}' is not a known scanner".format(this_scanner_name))
-                sys.exit(1)
-            if this_scanner not in selected_scanners:
-                selected_scanners.append(this_scanner)
-    else:
-        this_scanner_name = config.config['dosocs2']['default_scanner']
-        this_scanner = scanners.scanners[this_scanner_name]
-        selected_scanners = [this_scanner]
+    if not argv['--scanners']:
+        argv['--scanners'] = config.config['dosocs2']['default_scanners']
+    selected_scanners = []
+    for this_scanner_name in argv['--scanners'].split(','):
+        try:
+            this_scanner = scanners.scanners[this_scanner_name]
+        except KeyError:
+            errmsg("'{}' is not a known scanner".format(this_scanner_name))
+            sys.exit(1)
+        if this_scanner not in selected_scanners:
+            selected_scanners.append(this_scanner)
 
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')
@@ -184,8 +180,9 @@ def main():
         sys.exit(0 if configresult else 1)
 
     elif argv['scanners']:
+        default_scanners = config.config['dosocs2']['default_scanners'].split(',')
         for s in sorted(scanners.scanners):
-            if config.config['dosocs2']['default_scanner'] == s:
+            if s in default_scanners:
                 print(s + ' [default]')
             else:
                 print(s)
@@ -221,7 +218,7 @@ def main():
                 errmsg('package id {} not found in the database.'.format(package_id))
                 sys.exit(1)
             document_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
-        fmt = '(package_id {}): document_id: {}'
+        fmt = '(package_id {}): document_id: {}\n'
         sys.stderr.write(fmt.format(package_id, document_id))
 
     elif argv['scan']:

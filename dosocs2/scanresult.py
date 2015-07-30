@@ -20,13 +20,7 @@ import string
 from sqlalchemy.sql import select, and_
 
 from . import schema as db
-
-
-def insert(conn, table, params):
-    query = table.insert().values(**params)
-    result = conn.execute(query)
-    [pkey] = result.inserted_primary_key
-    return pkey
+from .spdxdb import insert, bulk_insert
 
 
 def lookup_license(conn, short_name):
@@ -63,27 +57,19 @@ def lookup_or_add_license(conn, short_name, comment=None):
     return new_license
 
 
-def store_license_scan_result(conn, scanner_name, scan_result, path_file_id_map):
-    for path in scan_result:
-        licenses_found = [
-            lookup_or_add_license(conn, shortname, 'found by ' + scanner_name)
-            for shortname in scan_result[path]
-            ]
-        for license in licenses_found:
-            file_license_params = {
-                'file_id': path_file_id_map[path],
-                'license_id': license['license_id'],
-                'extracted_text': '',
-                }
-            query = (
-                select([db.files_licenses])
-                .where(
-                    and_(
-                        db.files_licenses.c.file_id == file_license_params['file_id'],
-                        db.files_licenses.c.license_id == file_license_params['license_id']
-                        )
+def add_file_licenses(conn, rows):
+    to_add = []
+    for file_license_params in rows:
+        query = (
+            select([db.files_licenses])
+            .where(
+                and_(
+                    db.files_licenses.c.file_id == file_license_params['file_id'],
+                    db.files_licenses.c.license_id == file_license_params['license_id']
                     )
                 )
-            [already_exists] = conn.execute(query).fetchall() or [None]
-            if already_exists is None:
-                insert(conn, db.files_licenses, file_license_params)
+            )
+        [already_exists] = conn.execute(query).fetchall() or [None]
+        if already_exists is None:
+            to_add.append(file_license_params)
+    bulk_insert(conn, db.files_licenses, to_add)
