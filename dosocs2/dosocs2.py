@@ -99,7 +99,7 @@ def errmsg(text, **kwargs):
 
 
 def do_scan(engine, package_root, package_file_path=None, selected_scanners=None,
-            package_name=None, package_version='', package_comment=''):
+            package_name=None, package_version='', package_comment='', rescan=False):
     if selected_scanners is None:
         selected_scanners = ()
     kwargs = {
@@ -112,16 +112,23 @@ def do_scan(engine, package_root, package_file_path=None, selected_scanners=None
     with engine.begin() as conn:
         package = spdxdb.register_package(conn, **kwargs)
     errmsg('{}: package_id: {}'.format(package_file_path or package_root, package['package_id']))
-    for scanner in selected_scanners:
-        errmsg('running {} on package {}'.format(scanner.name, package['package_id']))
+    for scanner_cls in selected_scanners:
         scanner_kwargs = {
             'package_id': package['package_id'],
             'package_root': package_root,
-            'package_file_path': package_file_path
+            'package_file_path': package_file_path,
+            'rescan': rescan
             }
         with engine.begin() as conn:
-            scanner_inst = scanner(conn)
-            scanner_inst.run(**scanner_kwargs)
+            scanner = scanner_cls(conn)
+            package_already_done = scanner.package_is_already_done(package['package_id'])
+            if not rescan and package_already_done:
+                errmsg('{} already ran on package {}'.format(scanner.name, package['package_id']))
+            else:
+                errmsg('running {} on package {}'.format(scanner.name, package['package_id']))
+                scanner.run(**scanner_kwargs)
+            if not package_already_done:
+                scanner.mark_package_done(package['package_id'])
     return package
 
 

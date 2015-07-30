@@ -46,6 +46,7 @@ class Scanner(object):
 
     def __init__(self, conn):
         self.conn = conn
+        self.register()
 
     def get_file_list(self, package_id, package_root):
         query = (
@@ -64,24 +65,24 @@ class Scanner(object):
             file_list.append(WorkItem(**kwargs))
         return file_list
 
-    def run(self, package_id, package_root, package_file_path=None):
-        # add package-level checking for "already done"
-        self.register()
+    def run(self, package_id, package_root, package_file_path=None, rescan=False):
         all_files = self.get_file_list(package_id, package_root)
         processed_files = {} 
         not_processed_files = set()
         for file in all_files:
-            if not self.is_already_done(file):
+            if not self.file_is_already_done(file):
                 processed_files[file] = self.process_file(file)
             else:
                 not_processed_files.add(file)
         self.store_results(processed_files)
-        self.mark_done(processed_files)
+        self.mark_files_done(processed_files)
 
     def process_file(self, file):
+        # override in subclass
         pass
 
     def store_results(self, processed_files):
+        # override in subclass
         pass
 
     def register(self):
@@ -97,7 +98,7 @@ class Scanner(object):
         else:
             self.pk = spdxdb.insert(self.conn, db.scanners, {'name': self.name})
 
-    def is_already_done(self, file):
+    def file_is_already_done(self, file):
         query = (
             select([db.files_scans])
             .where(
@@ -110,7 +111,20 @@ class Scanner(object):
         [result] = self.conn.execute(query).fetchall() or [None]
         return (result is not None)
 
-    def mark_done(self, files):
+    def package_is_already_done(self, package_id):
+        query = (
+            select([db.packages_scans])
+            .where(
+                and_(
+                    db.packages_scans.c.package_id == package_id,
+                    db.packages_scans.c.scanner_id == self.pk
+                    )
+                )
+            )
+        [result] = self.conn.execute(query).fetchall() or [None]
+        return (result is not None)
+
+    def mark_files_done(self, files):
         rows = []
         file_ids_seen = set()
         for file in files:
@@ -123,6 +137,13 @@ class Scanner(object):
             rows.append(file_scan_params)
             file_ids_seen.add(file.file_id)
         spdxdb.bulk_insert(self.conn, db.files_scans, rows)
+
+    def mark_package_done(self, package_id):
+        package_scan_params = {
+            'package_id': package_id,
+            'scanner_id': self.pk,
+            }
+        spdxdb.insert(self.conn, db.packages_scans, package_scan_params)
 
 
 class Nomos(Scanner):
