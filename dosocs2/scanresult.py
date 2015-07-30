@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+import json
 import string
 
-from sqlalchemy.sql import select, and_
+from sqlalchemy.sql import select, and_, update
 
 from . import schema as db
 from .spdxdb import insert, bulk_insert
@@ -73,3 +73,9 @@ def add_file_licenses(conn, rows):
         if already_exists is None:
             to_add.append(file_license_params)
     bulk_insert(conn, db.files_licenses, to_add)
+
+
+def add_cpes(conn, package_id, cpes):
+    json_text = json.dumps(cpes)
+    query = update(db.packages).values({'comment': json_text}).where(db.packages.c.package_id == package_id)
+    conn.execute(query)

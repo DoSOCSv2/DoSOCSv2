@@ -6,3 +6,4 @@ junk/
 build/
 dist/
 *.egg-info/
+*.out

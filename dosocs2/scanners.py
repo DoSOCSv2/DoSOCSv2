@@ -29,6 +29,7 @@ import subprocess
 from collections import namedtuple
 
 from sqlalchemy import select, and_
+import xmltodict
 
 from . import util
 from . import scanresult
@@ -67,7 +68,7 @@ class Scanner(object):
 
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
         all_files = self.get_file_list(package_id, package_root)
-        processed_files = {} 
+        processed_files = {}
         files_to_mark = set()
         for file in all_files:
             already_done = self.file_is_already_done(file)
@@ -170,7 +171,7 @@ class Nomos(Scanner):
                 if lic_name != 'No_license_found'
                 })
         return scan_result
-    
+
     def store_results(self, processed_files):
         licenses_to_add = []
         for (file, license_names) in processed_files.iteritems():
@@ -212,8 +213,78 @@ class NomosDeep(Nomos):
         return scan_result
 
 
+class DependencyCheck(Scanner):
+
+    name = 'dependency_check'
+
+    def __init__(self, conn):
+        super(DependencyCheck, self).__init__(conn)
+        self.exec_path = config['dependency_check']['path']
+
+    def run(self, package_id, package_root, package_file_path=None, rescan=False):
+        # rescan is ignored
+        package_path = package_file_path or package_root
+        with util.tempdir() as tempdir:
+            args = [
+                self.exec_path,
+                '--out', tempdir,
+                '--format', 'XML',
+                '--scan', package_path,
+                '--app', 'none',
+                '--noupdate'
+                ]
+            subprocess.check_call(args, stderr=open(os.devnull))
+            with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
+                xml_data = f.read()
+        cpes = DependencyCheck.parse_dependency_xml(xml_data)
+        scanresult.add_cpes(self.conn, package_id, cpes)
+
+    @staticmethod
+    def as_list(item):
+        if isinstance(item, list):
+            return item
+        else:
+            return [item]
+
+    @staticmethod
+    def extract_cpe(item):
+        if isinstance(item, OrderedDict):
+            return item['#text']
+        else:
+            return item
+
+    @staticmethod
+    def strip_whitespace(s):
+        return re.sub(r'(\n|\s+)', r' ', s)
+
+    @staticmethod
+    def get_cpes(dep):
+        idents = DependencyCheck.as_list(dep.get('identifiers', {}).get('identifier', []))
+        cpes = []
+        for ident in idents:
+            if ident['@type'] == 'cpe':
+                cpes.append({
+                    'cpe': ident['name'],
+                    'confidence': ident['@confidence'],
+                    })
+        return cpes
+
+    @staticmethod
+    def parse_dependency_xml(xml_text):
+        x = xmltodict.parse(xml_text)
+        deps = []
+        root_deps = x['analysis']['dependencies'] or {}
+        for dep in DependencyCheck.as_list(root_deps.get('dependency', list())):
+            deps.append({
+                'sha1': dep['sha1'],
+                'cpes': DependencyCheck.get_cpes(dep)
+                })
+        return deps
+
+
 scanners = {
     'nomos': Nomos,
     'nomos_deep': NomosDeep,
-    'dummy': Scanner
+    'dummy': Scanner,
+    'dependency_check': DependencyCheck
     }
