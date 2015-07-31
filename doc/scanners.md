@@ -67,3 +67,9 @@ This scanner uses OWASP Dependency-Check to attempt to identify any
 [CPE(s)](https://nvd.nist.gov/cpe.cfm) associated with a package. It operates
 at the package level only, and any file-level operations are considered
 implementation details of Dependency-Check itself.
+
+As of version 0.10.0, this information is stored as a JSON object in the
+package comment field (SPDX 2.0 section 3.19). Until a field for this
+information is added to SPDX, or an alternative solution arises, the
+package comment field *will be overwritten* each time `dependency_check`
+runs on a package.
