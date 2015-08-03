@@ -73,3 +73,17 @@ package comment field (SPDX 2.0 section 3.19). Until a field for this
 information is added to SPDX, or an alternative solution arises, the
 package comment field **will be overwritten** each time `dependency_check`
 runs on a package.
+
+#### `copyright`
+
+This is the `copyright` agent from FOSSology, it identifies strings that look
+like copyright declarations. `copyright` stores found copyright strings in
+the copyright text field at the file level, overwriting that field if it is
+already populated. This agent is a bit heavy-handed--it often produces
+false positives, so is output should be subject to extra review by a human.
+
+#### `monk`
+
+Another adapter for a FOSSology agent. `monk` is a license scanner; it is
+fast but tends to produce much fewer matches than `nomos`. It otherwise
+operates exactly the same as `nomos`, as far as we are concerned. 
