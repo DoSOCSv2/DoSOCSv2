@@ -80,7 +80,7 @@ This is the `copyright` agent from FOSSology, it identifies strings that look
 like copyright declarations. `copyright` stores found copyright strings in
 the copyright text field at the file level, overwriting that field if it is
 already populated. This agent is a bit heavy-handed--it often produces
-false positives, so is output should be subject to extra review by a human.
+false positives, so its output should be subject to extra review by a human.
 
 #### `monk`
 
