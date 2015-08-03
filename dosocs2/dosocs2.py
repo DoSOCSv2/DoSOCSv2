@@ -137,7 +137,6 @@ def do_scan(engine, package_root, package_file_path=None, selected_scanners=None
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
-    engine = db.initialize(config.config['dosocs2']['connection_uri'], util.bool_from_str(config.config['dosocs2']['echo']))
     doc_id = argv['DOC-ID']
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
@@ -162,6 +161,8 @@ def main():
             sys.exit(1)
         if this_scanner not in selected_scanners:
             selected_scanners.append(this_scanner)
+
+    engine = db.initialize(config.config['dosocs2']['connection_uri'], util.bool_from_str(config.config['dosocs2']['echo']))
 
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')

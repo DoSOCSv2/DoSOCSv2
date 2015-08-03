@@ -74,6 +74,9 @@ def add_file_licenses(conn, rows):
             to_add.append(file_license_params)
     bulk_insert(conn, db.files_licenses, to_add)
 
+def add_file_copyright(conn, file_id, text):
+    query = update(db.files).values({'copyright_text': text}).where(db.files.c.file_id == file_id)
+    conn.execute(query)
 
 def add_cpes(conn, package_id, cpes):
     json_text = json.dumps(cpes)

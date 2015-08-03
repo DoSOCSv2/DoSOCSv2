@@ -35,7 +35,7 @@ from . import util
 from . import scanresult
 from . import schema as db
 from . import spdxdb
-from .config import config
+from . import config
 
 
 WorkItem = namedtuple('WorkItem', ['file_id', 'path'])
@@ -148,29 +148,7 @@ class Scanner(object):
         spdxdb.insert(self.conn, db.packages_scans, package_scan_params)
 
 
-class Nomos(Scanner):
-
-    name = 'nomos'
-
-    def __init__(self, conn):
-        super(Nomos, self).__init__(conn)
-        self.exec_path = config['nomos']['path']
-        self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
-
-    def process_file(self, file):
-        args = (self.exec_path, '-l', file.path)
-        output = subprocess.check_output(args)
-        scan_result = set()
-        for line in output.split('\n'):
-            m = re.match(self.search_pattern, line)
-            if m is None:
-                continue
-            scan_result.update({
-                lic_name
-                for lic_name in m.group(2).split(',')
-                if lic_name != 'No_license_found'
-                })
-        return scan_result
+class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
@@ -192,6 +170,81 @@ class Nomos(Scanner):
                     }
                 licenses_to_add.append(file_license_kwargs)
         scanresult.add_file_licenses(self.conn, licenses_to_add)
+
+
+class Monk(FileLicenseScanner):
+
+    name = 'monk'
+
+    def __init__(self, conn):
+        super(Monk, self).__init__(conn)
+        print(config.config)
+        self.exec_path = config.config[self.name]['path']
+        self.search_pattern = re.compile('found diff match between \"(.*?)\" and \"(.*?)\"')
+
+    def process_file(self, file):
+        args = (self.exec_path, file.path)
+        output = subprocess.check_output(args)
+        scan_result = set()
+        for line in output.split('\n'):
+            m = re.match(self.search_pattern, line)
+            if m is None:
+                continue
+            scan_result.update({
+                lic_name
+                for lic_name in m.group(2).split(',')
+                })
+        return scan_result
+
+
+class Nomos(FileLicenseScanner):
+
+    name = 'nomos'
+
+    def __init__(self, conn):
+        super(Nomos, self).__init__(conn)
+        self.exec_path = config.config['nomos']['path']
+        self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
+
+    def process_file(self, file):
+        args = (self.exec_path, '-l', file.path)
+        output = subprocess.check_output(args)
+        scan_result = set()
+        for line in output.split('\n'):
+            m = re.match(self.search_pattern, line)
+            if m is None:
+                continue
+            scan_result.update({
+                lic_name
+                for lic_name in m.group(2).split(',')
+                if lic_name != 'No_license_found'
+                })
+        return scan_result
+
+
+class Copyright(Scanner):
+
+    name = 'copyright'
+
+    def __init__(self, conn):
+        super(Copyright, self).__init__(conn)
+        self.exec_path = config.config[self.name]['path']
+        self.search_pattern = re.compile(r"\t\[[0-9]+:[0-9]+:statement\] ['](.*?)[']", re.DOTALL)
+
+    def process_file(self, file):
+        args = (self.exec_path, '-C', file.path)
+        output = subprocess.check_output(args)
+        scan_result = []
+        m = re.findall(self.search_pattern, output)
+        if m is None:
+            return None
+        else:
+            return '\n'.join(m) or None
+
+    def store_results(self, processed_files):
+        for file in processed_files:
+            if processed_files[file] is not None:
+                scanresult.add_file_copyright(self.conn, file.file_id, processed_files[file])
 
 
 class NomosDeep(Nomos):
@@ -219,7 +272,7 @@ class DependencyCheck(Scanner):
 
     def __init__(self, conn):
         super(DependencyCheck, self).__init__(conn)
-        self.exec_path = config['dependency_check']['path']
+        self.exec_path = config.config[self.name]['path']
 
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
         # rescan is ignored
@@ -283,6 +336,8 @@ class DependencyCheck(Scanner):
 
 
 scanners = {
+    'copyright': Copyright,
+    'monk': Monk,
     'nomos': Nomos,
     'nomos_deep': NomosDeep,
     'dummy': Scanner,
