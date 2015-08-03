@@ -1,12 +1,18 @@
 ## Scanners
 
 The concept of scanners that provide useful information about software packages
-is an important one to `dosocs2`. `dosocs2` comes with four scanners defined:
+is an important one to `dosocs2`. `dosocs2` comes with six scanners defined:
 
 * `dummy`
 * `nomos` (the default)
 * `nomos_deep`
 * `dependency_check`
+* `copyright`
+* `monk`
+* 
+
+By default, only `dummy`, `nomos` and `nomos_deep` are operable. The rest
+require uncommenting lines in `dosocs2.conf` to enable them.
 
 During a package scan, after any unknown files are registered and their SHA-1
 digests saved, any of these scanners can be run in any combination on the
