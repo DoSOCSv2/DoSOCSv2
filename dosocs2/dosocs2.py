@@ -246,6 +246,7 @@ def main():
                 kwargs['package_file_path'] = package_path
                 do_scan(**kwargs)
         else:
+            os.stat(package_path)  # force exception if nonexisstent
             kwargs['package_root'] = package_path
             kwargs['package_file_path'] = None
             do_scan(**kwargs)
@@ -266,6 +267,7 @@ def main():
                 kwargs['package_file_path'] = package_path
                 package = do_scan(**kwargs)
         else:
+            os.stat(package_path)  # force exception if nonexisstent
             kwargs['package_root'] = package_path
             kwargs['package_file_path'] = None
             package = do_scan(**kwargs)
