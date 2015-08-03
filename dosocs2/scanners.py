@@ -178,7 +178,6 @@ class Monk(FileLicenseScanner):
 
     def __init__(self, conn):
         super(Monk, self).__init__(conn)
-        print(config.config)
         self.exec_path = config.config[self.name]['path']
         self.search_pattern = re.compile('found diff match between \"(.*?)\" and \"(.*?)\"')
 
