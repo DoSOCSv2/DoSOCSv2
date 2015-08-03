@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy.sql import select, case, and_
+from sqlalchemy.sql import select, case, and_, union_all
 from sqlalchemy import func
 from . import schema as db
 
@@ -424,11 +424,72 @@ def auto_contained_by(docid):
     )
 
 
-def auto_describes():
-    # stub
-    return select([db.relationships]).where(False)
+def auto_describes(docid):
+    rty = db.relationship_types.alias()
+    ide1 = db.identifiers.alias()
+    ide2 = db.identifiers.alias()
+    doc = db.documents.alias()
+    pac = db.packages.alias()
+    pfi = db.packages_files.alias()
+    one = (
+        select([
+            doc.c.document_id,
+            ide1.c.identifier_id        .label('left_identifier_id'),
+            rty.c.relationship_type_id,
+            ide2.c.identifier_id        .label('right_identifier_id'),
+            ])
+        .select_from(
+            doc
+            .join(pac)
+            .join(ide1,
+                (doc.c.document_id == ide1.c.document_id) &
+                (doc.c.document_namespace_id == ide1.c.document_namespace_id)
+                )
+            .join(ide2,
+                (pac.c.package_id == ide2.c.package_id) &
+                (doc.c.document_namespace_id == ide2.c.document_namespace_id)
+                )
+            .join(rty, rty.c.name == 'DESCRIBES')
+            )
+        .where(doc.c.document_id == docid)
+        )
+    two = (
+        select([
+            doc.c.document_id,
+            ide1.c.identifier_id        .label('left_identifier_id'),
+            rty.c.relationship_type_id,
+            ide2.c.identifier_id        .label('right_identifier_id'),
+            ])
+        .select_from(
+            doc
+            .join(pac)
+            .join(pfi, pac.c.package_id == pfi.c.package_id, isouter=True)
+            .join(ide1,
+                (doc.c.document_id == ide1.c.document_id) &
+                (doc.c.document_namespace_id == ide1.c.document_namespace_id)
+                )
+            .join(ide2,
+                (pfi.c.package_file_id == ide2.c.package_file_id) &
+                (doc.c.document_namespace_id == ide2.c.document_namespace_id)
+                )
+            .join(rty, rty.c.name == 'DESCRIBES')
+            )
+        .where(doc.c.document_id == docid)
+        )
+    return union_all(one, two)
 
 
-def auto_described_by():
-    # stub
-    return select([db.relationships]).where(False)
+def auto_described_by(docid):
+    v = auto_describes(docid).alias()
+    rty2 = db.relationship_types.alias()
+    return (select([
+        v.c.document_id,
+        v.c.right_identifier_id     .label('left_identifier_id'),
+        rty2.c.relationship_type_id,
+        v.c.left_identifier_id     .label('right_identifier_id')
+        ])
+    .select_from(
+        v.join(rty2, rty2.c.name == 'DESCRIBED_BY')
+        )
+    .where(v.c.document_id == docid)
+    )

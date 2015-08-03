@@ -190,8 +190,8 @@ def autocreate_relationships(conn, docid):
     qs = (
         queries.auto_contains(docid),
         queries.auto_contained_by(docid),
-        # queries.auto_describes(docid),
-        # queries.auto_described_by(docid)
+        queries.auto_describes(docid),
+        queries.auto_described_by(docid)
         )
     for q in qs:
         row_params = []
