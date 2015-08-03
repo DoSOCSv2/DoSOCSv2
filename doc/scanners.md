@@ -9,7 +9,6 @@ is an important one to `dosocs2`. `dosocs2` comes with six scanners defined:
 * `dependency_check`
 * `copyright`
 * `monk`
-* 
 
 By default, only `dummy`, `nomos` and `nomos_deep` are operable. The rest
 require uncommenting lines in `dosocs2.conf` to enable them.
