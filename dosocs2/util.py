@@ -15,8 +15,6 @@
 
 '''Miscellaneous utility functions.'''
 
-from __future__ import print_function
-
 from contextlib import contextmanager
 import hashlib
 import os
