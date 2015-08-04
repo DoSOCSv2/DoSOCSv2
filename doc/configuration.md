@@ -25,10 +25,8 @@ and each one overrides any values from the previous one. Any value that
 is undefined in a config file will default to its value in the config
 file before it in the resolution order.
 
-There is no 'internal default' config that does not exist in a disk file--
-if none of the files in the resolution order exist, `dosocs2` cannot run. 
-
-### `dosocs2 configtest`
+There is no 'internal default' config that does not exist in a disk file--if
+none of the files in the resolution order exist, `dosocs2` cannot run. 
 
 One can see the resolution order and the effective configuration using `dosocs2
 configtest`. One may also pass the `-f` option to this command to see the
