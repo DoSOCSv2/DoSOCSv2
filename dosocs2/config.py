@@ -18,13 +18,24 @@ import pkg_resources
 import os
 import shutil
 
+
 DEFAULT_CONFIG_PATH = pkg_resources.resource_filename('dosocs2', 'default/dosocs2.conf')
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
 DOSOCS2_CONFIG_HOME = os.path.join(XDG_CONFIG_HOME, 'dosocs2')
 DOSOCS2_CONFIG_PATH = os.path.join(DOSOCS2_CONFIG_HOME, 'dosocs2.conf')
+GLOBAL_CONFIG_PATH = '/etc/dosocs2.conf'
+
 
 config = None
 _parser = None
+
+
+def get_config_resolution_order(other_config_path=None):
+    return [
+        DEFAULT_CONFIG_PATH,
+        GLOBAL_CONFIG_PATH,
+        other_config_path or DOSOCS2_CONFIG_PATH
+        ]
 
 
 def create_user_config(overwrite=True):
@@ -44,16 +55,11 @@ def update_config(other_config_path=None):
     global config
     global _parser
     _parser = RawConfigParser()
-    _parser.read([DEFAULT_CONFIG_PATH, other_config_path or DOSOCS2_CONFIG_PATH])
+    config_order = get_config_resolution_order(other_config_path)
+    _parser.read(config_order)
     config = {section: dict(_parser.items(section))
               for section in _parser.sections()
               }
-
-
-def config_location(other_config_path=None):
-    if os.path.exists(other_config_path or DOSOCS2_CONFIG_PATH):
-        return other_config_path or DOSOCS2_CONFIG_PATH
-    return DEFAULT_CONFIG_PATH
 
 
 def dump_to_file(fileobj):

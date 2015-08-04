@@ -145,7 +145,8 @@ def main():
 
     if argv['--config']:
         try:
-            os.stat(alt_config)
+            with open(alt_config) as _:
+                pass
         except EnvironmentError as ex:
             errmsg('{}: {}'.format(alt_config, ex.strerror))
             sys.exit(1)
@@ -166,7 +167,12 @@ def main():
 
     if argv['configtest']:
         print('\n' + 79 * '-' + '\n')
-        print('Config at: {}'.format(config.config_location(alt_config)))
+        print('Config resolution order:')
+        for path in config.get_config_resolution_order(alt_config):
+            if os.path.exists(path):
+                print(path)
+            else:
+                print(path + ' (not present)')
         print('\n' + 79 * '-' + '\n')
         print('Effective configuration:\n')
         print('# begin dosocs2 config')
