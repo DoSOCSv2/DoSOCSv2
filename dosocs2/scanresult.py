@@ -58,7 +58,7 @@ def lookup_or_add_license(conn, short_name, comment=None):
 
 
 def add_file_licenses(conn, rows):
-    to_add = []
+    to_add = {}
     for file_license_params in rows:
         query = (
             select([db.files_licenses])
@@ -71,8 +71,9 @@ def add_file_licenses(conn, rows):
             )
         [already_exists] = conn.execute(query).fetchall() or [None]
         if already_exists is None:
-            to_add.append(file_license_params)
-    bulk_insert(conn, db.files_licenses, to_add)
+            key = file_license_params['file_id'], file_license_params['license_id']
+            to_add[key] = file_license_params
+    bulk_insert(conn, db.files_licenses, list(to_add.values()))
 
 def add_file_copyright(conn, file_id, text):
     query = update(db.files).values({'copyright_text': text}).where(db.files.c.file_id == file_id)
