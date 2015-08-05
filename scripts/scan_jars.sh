@@ -6,7 +6,6 @@ import os
 import subprocess
 import sys
 
-last_seen = None
 packages = []
 
 directory = sys.argv[1]
@@ -15,10 +14,9 @@ for subdir, dirnames, filenames in os.walk(directory):
     for filename in filenames:
         if filename.endswith(".jar") and '/.nexus/' not in subdir:
             packages.append((os.path.splitext(filename)[0], os.path.join(subdir, filename)))
-            continue
+
 for package_name, package_path in sorted(packages):
-    print(package_name + '...', end='')
-    sys.stdout.flush()
+    print(package_name + '...')
     args = [
         'dosocs2', 'scan',
         '--scanners', 'nomos_deep,dependency_check',
