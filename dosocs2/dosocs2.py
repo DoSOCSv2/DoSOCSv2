@@ -87,7 +87,7 @@ format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
 }
 
-__version__ = '0.12.3'
+__version__ = '0.12.4'
 
 
 def msg(text, **kwargs):
