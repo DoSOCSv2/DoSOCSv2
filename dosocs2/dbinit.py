@@ -61,7 +61,7 @@ def load_licenses(conn, url='http://spdx.org/licenses/'):
         return False
     for shortname, name, url in sorted_rows:
         license_params = {
-            'name': name,
+            'name': name.replace('&quot;', '"'),
             'short_name': shortname,
             'cross_reference': url,
             'comment': '',
