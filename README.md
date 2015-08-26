@@ -173,7 +173,7 @@ History
 -------
 
 dosocs2 owes its name and concept to the
-[DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zach
+[DoSOCS](https://github.com/socs-dev-env/DoSOCS) tool created by Zac
 McFarland, which in turn was spun off from the `do_spdx` plugin for Yocto
 Project, created by Jake Cloyd and Liang Cao.
 
