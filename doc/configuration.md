@@ -16,7 +16,7 @@ probably be at `~/.config/dosocs2/dosocs2.conf`.
 - The in-memory default config (defined in `config.py`)
 - `/etc/dosocs2.conf`
 - `$XDG_CONFIG_HOME/dosocs2/dosocs2.conf` (if not defined,
-  `XDG_CONFIG_HOME` is equal to `$HOME/.config`)
+  `$XDG_CONFIG_HOME` is equal to `$HOME/.config`)
 - If an alternate config file is specified on the command line with `-f`,
   that one is used *instead of* the one in `$XDG_CONFIG_HOME`.
 
