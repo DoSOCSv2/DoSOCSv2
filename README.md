@@ -88,14 +88,13 @@ After successful install, generate an initial config file:
     $ dosocs2 newconfig
     dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
 
-The default config uses a SQLite database. Open up the config file and change
-the database file path in variable `connection_uri` to whatever path you
-like, e.g.:
-
-    connection_uri = sqlite:////home/tgurney/.dosocs2.sqlite3
+The default config uses a SQLite database stored in your home directory. If
+you like, you can open the config file and change the `connection_uri`
+variable to create the database at a different location.
 
 If you have [FOSSology](http://www.fossology.org/) installed, you also need
 to set the path of the default `nomos` scanner if it is not already correct.
+Likewise for any of the other supported scanners (see [doc/scanners.md](doc/scanners.md))
 
 Finally, to create all necessary tables and views in the database:
 
