@@ -4,7 +4,7 @@
 
 An explanation of the configuration options is found in the default
 `dosocs2.conf` file. To generate a copy of this file, run
-`dosocs2 newconfig`. It will copy the default config file to
+`dosocs2 newconfig`. It will write the default config to
 `$XDG_CONFIG_HOME/dosocs2/dosocs2.conf`. Unless you have explicitly
 defined `$XDG_CONFIG_HOME` in your environment, the new config file will
 probably be at `~/.config/dosocs2/dosocs2.conf`.
