@@ -13,10 +13,10 @@ probably be at `~/.config/dosocs2/dosocs2.conf`.
 
 `dosocs2` will read configuration files in the following order:
 
-- The default, in the `dosocs2` package itself, in `default/dosocs2.conf`
+- The in-memory default config (defined in `config.py`)
 - `/etc/dosocs2.conf`
 - `$XDG_CONFIG_HOME/dosocs2/dosocs2.conf` (if not defined,
-  `XDG_CONFIG_HOME=$HOME/.config`)
+  `XDG_CONFIG_HOME` is equal to `$HOME/.config`)
 - If an alternate config file is specified on the command line with `-f`,
   that one is used *instead of* the one in `$XDG_CONFIG_HOME`.
 
@@ -24,9 +24,6 @@ All existing config files in the resolution order are read if they exist,
 and each one overrides any values from the previous one. Any value that
 is undefined in a config file will default to its value in the config
 file before it in the resolution order.
-
-There is no 'internal default' config that does not exist in a disk file--if
-none of the files in the resolution order exist, `dosocs2` cannot run. 
 
 One can see the resolution order and the effective configuration using `dosocs2
 configtest`. One may also pass the `-f` option to this command to see the
