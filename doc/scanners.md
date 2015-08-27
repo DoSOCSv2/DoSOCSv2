@@ -10,9 +10,6 @@ is an important one to `dosocs2`. `dosocs2` comes with six scanners defined:
 * `copyright`
 * `monk`
 
-By default, only `dummy`, `nomos` and `nomos_deep` are enabled. The rest
-require uncommenting lines in `dosocs2.conf` to enable them.
-
 During a package scan, after any unknown files are registered and their SHA-1
 digests saved, any of these scanners can be run in any combination on the
 target packages. This is accomplished using the `-s` option to `dosocs2 scan`,
