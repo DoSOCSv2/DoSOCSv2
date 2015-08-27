@@ -31,7 +31,7 @@ setup(
         'xmltodict',
         ],
 
-    package_data={'dosocs2': ['templates/*', 'default/*']},
+    package_data={'dosocs2': ['templates/*']},
 
     entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
 

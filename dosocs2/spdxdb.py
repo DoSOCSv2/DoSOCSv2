@@ -150,7 +150,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
 
 def create_document_namespace(conn, doc_name):
     suffix = util.friendly_namespace_suffix(doc_name)
-    uri = config.config['dosocs2']['namespace_prefix'] + suffix
+    uri = config.config['namespace_prefix'] + suffix
     doc_namespace = {'uri': uri}
     doc_namespace['document_namespace_id'] = insert(conn, db.document_namespaces, doc_namespace)
     return doc_namespace

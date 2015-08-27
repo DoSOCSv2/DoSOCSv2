@@ -178,7 +178,7 @@ class Monk(FileLicenseScanner):
 
     def __init__(self, conn):
         super(Monk, self).__init__(conn)
-        self.exec_path = config.config['dosocs2'][self.name + '_path']
+        self.exec_path = config.config['scanner_' + self.name + '_path']
         self.search_pattern = re.compile('found diff match between \"(.*?)\" and \"(.*?)\"')
 
     def process_file(self, file):
@@ -202,7 +202,7 @@ class Nomos(FileLicenseScanner):
 
     def __init__(self, conn):
         super(Nomos, self).__init__(conn)
-        self.exec_path = config.config['dosocs2'][self.name + '_path']
+        self.exec_path = config.config['scanner_' + self.name + '_path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
 
     def process_file(self, file):
@@ -227,7 +227,7 @@ class Copyright(Scanner):
 
     def __init__(self, conn):
         super(Copyright, self).__init__(conn)
-        self.exec_path = config.config['dosocs2'][self.name + '_path']
+        self.exec_path = config.config['scanner_' + self.name + '_path']
         self.search_pattern = re.compile(r"\t\[[0-9]+:[0-9]+:statement\] ['](.*?)[']", re.DOTALL)
 
     def process_file(self, file):
@@ -271,7 +271,7 @@ class DependencyCheck(Scanner):
 
     def __init__(self, conn):
         super(DependencyCheck, self).__init__(conn)
-        self.exec_path = config.config['dosocs2'][self.name + '_path']
+        self.exec_path = config.config['scanner_' + self.name + '_path']
 
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
         # rescan is ignored

@@ -64,34 +64,24 @@ def render_template(templatefile, context):
 
 
 def render_document(conn, docid, template_file):
-    render_relationships = util.bool_from_str(config.config['dosocs2']['render_relationships'])
     document = get_row(conn, queries.documents(docid))
     external_refs = get_rows(conn, queries.external_refs(docid))
     document['creators'] = get_rows(conn, queries.documents_creators(docid))
     document['annotations'] = get_rows(conn, queries.annotations(docid, document['id_string']))
-    if render_relationships:
-        query = queries.relationships(document['document_namespace_id'], document['id_string'])
-        document['relationships'] = get_rows(conn, query)
-    else:
-        document['relationships'] = None
+    query = queries.relationships(document['document_namespace_id'], document['id_string'])
+    document['relationships'] = get_rows(conn, query)
     package = get_row(conn, queries.documents_packages(docid))
     package['license_info_from_files'] = get_rows(conn, queries.packages_all_licenses_in_files(package['package_id'])) or ['NOASSERTION']
     package['annotations'] = get_rows(conn, queries.annotations(docid, package['id_string']))
-    if render_relationships:
-        query = queries.relationships(document['document_namespace_id'], package['id_string'])
-        package['relationships'] = get_rows(conn, query)
-    else:
-        package['relationships'] = None
+    query = queries.relationships(document['document_namespace_id'], package['id_string'])
+    package['relationships'] = get_rows(conn, query)
     package['files'] = get_rows(conn, queries.documents_files(docid, package['package_id']))
     for file in package['files']:
         file['license_info'] = get_rows(conn, queries.files_licenses(file['file_id']))
         file['contributors'] = get_rows(conn, queries.file_contributors(file['file_id']))
         file['annotations'] = get_rows(conn, queries.annotations(docid, file['id_string']))
-        if render_relationships:
-            query = queries.relationships(document['document_namespace_id'], file['id_string'])
-            file['relationships'] = get_rows(conn, query)
-        else:
-            file['relationships'] = None
+        query = queries.relationships(document['document_namespace_id'], file['id_string'])
+        file['relationships'] = get_rows(conn, query)
     licenses = get_rows(conn, queries.documents_unofficial_licenses(docid))
     context = {
         'document': document,

@@ -70,6 +70,7 @@ from __future__ import print_function
 
 import os
 import pkg_resources
+import re
 import sys
 
 import docopt
@@ -134,6 +135,41 @@ def do_scan(engine, package_root, package_file_path=None, selected_scanners=None
     return package
 
 
+def do_configtest(engine, alt_config):
+    print('\n' + 79 * '-' + '\n')
+    print('Config resolution order:')
+    for path in config.get_config_resolution_order(alt_config):
+        if os.path.exists(path):
+            print(path)
+        else:
+            print(path + ' (not present)')
+    print('\n' + 79 * '-' + '\n')
+    print('Effective configuration:\n')
+    print('# begin dosocs2 config\n')
+    config.dump_to_file(sys.stdout)
+    print('\n# end dosocs2 config')
+    print('\n' + 79 * '-' + '\n')
+    print('Testing specified scanner paths...')
+    scanner_config_pattern = r'scanner_(.*?)_path'
+    for key in sorted(config.config.keys()):
+        result = re.match(scanner_config_pattern, key)
+        if result:
+            print(result.group(1) + ' ({})...'.format(config.config[key]), end='')
+            try:
+                os.stat(config.config[key])
+            except EnvironmentError:
+                print('does not exist or is inaccessible.')
+            else:
+                print('ok.')
+
+    print('\n' + 79 * '-' + '\n')
+    print('Testing database connection...', end='')
+    sys.stdout.flush()
+    with engine.begin() as conn:
+        conn.execute('select 1;')
+    print('ok.')
+
+
 def main():
     argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
@@ -152,7 +188,7 @@ def main():
             sys.exit(1)
         config.update_config(alt_config)
     if not argv['--scanners']:
-        argv['--scanners'] = config.config['dosocs2']['default_scanners']
+        argv['--scanners'] = config.config['default_scanners']
     selected_scanners = []
     for this_scanner_name in argv['--scanners'].split(','):
         try:
@@ -163,27 +199,10 @@ def main():
         if this_scanner not in selected_scanners:
             selected_scanners.append(this_scanner)
 
-    engine = db.initialize(config.config['dosocs2']['connection_uri'], util.bool_from_str(config.config['dosocs2']['echo']))
+    engine = db.initialize(config.config['connection_uri'], util.bool_from_str(config.config['echo']))
 
     if argv['configtest']:
-        print('\n' + 79 * '-' + '\n')
-        print('Config resolution order:')
-        for path in config.get_config_resolution_order(alt_config):
-            if os.path.exists(path):
-                print(path)
-            else:
-                print(path + ' (not present)')
-        print('\n' + 79 * '-' + '\n')
-        print('Effective configuration:\n')
-        print('# begin dosocs2 config')
-        config.dump_to_file(sys.stdout)
-        print('# end dosocs2 config')
-        print('\n' + 79 * '-' + '\n')
-        print('Testing database connection...', end='')
-        sys.stdout.flush()
-        with engine.begin() as conn:
-            conn.execute('select 1;')
-        print('ok.')
+        do_configtest(engine, alt_config)
         sys.exit(0)
 
     elif argv['newconfig']:
@@ -196,7 +215,7 @@ def main():
         sys.exit(0 if configresult else 1)
 
     elif argv['scanners']:
-        default_scanners = config.config['dosocs2']['default_scanners'].split(',')
+        default_scanners = config.config['default_scanners'].split(',')
         for s in sorted(scanners.scanners):
             if s in default_scanners:
                 print(s + ' [default]')
