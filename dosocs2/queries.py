@@ -44,7 +44,7 @@ def creators():
         ])
     .select_from(
         cre
-        .join(cty)
+        .join(cty, cre.c.creator_type_id == cty.c.creator_type_id)
         )
     )
 
@@ -66,11 +66,9 @@ def annotations(docid, id_string):
         ])
     .select_from(
         ann
-        .join(cre)
-        .join(aty)
-        .join(ide,
-              ann.c.identifier_id == ide.c.identifier_id
-              )
+        .join(cre, ann.c.creator_id == cre.c.creator_id)
+        .join(aty, ann.c.annotation_type_id == aty.c.annotation_type_id)
+        .join(ide, ann.c.identifier_id == ide.c.identifier_id)
         )
     .where(
         and_(
@@ -92,8 +90,8 @@ def documents_creators(docid):
         ])
     .select_from(
         doc
-        .join(dcr)
-        .join(cre)
+        .join(dcr, doc.c.document_id == dcr.c.document_id)
+        .join(cre, dcr.c.creator_id == cre.c.creator_id)
         )
     .where(doc.c.document_id == docid)
     )
@@ -128,10 +126,10 @@ def documents_files(docid, package_id):
         ])
     .select_from(
         doc
-        .join(pac)
+        .join(pac, doc.c.package_id == pac.c.package_id)
         .join(pfi, pac.c.package_id == pfi.c.package_id)
-        .join(fil)
-        .join(fty)
+        .join(fil, pfi.c.file_id == fil.c.file_id)
+        .join(fty, fil.c.file_type_id == fty.c.file_type_id)
         .join(ide,
               (pfi.c.package_file_id == ide.c.package_file_id) &
               (doc.c.document_namespace_id == ide.c.document_namespace_id)
@@ -180,7 +178,7 @@ def documents_packages(docid):
         ])
     .select_from(
         doc
-        .join(pac)
+        .join(pac, doc.c.package_id == pac.c.package_id)
         .join(ide,
               (pac.c.package_id == ide.c.package_id) &
               (doc.c.document_namespace_id == ide.c.document_namespace_id)
@@ -244,9 +242,9 @@ def documents_unofficial_licenses(docid):
         ])
     .select_from(
         doc
-        .join(pac)
+        .join(pac, doc.c.package_id == pac.c.package_id)
         .join(pfi, pac.c.package_id == pfi.c.package_id)
-        .join(fil)
+        .join(fil, pfi.c.file_id == fil.c.file_id)
         .join(fli, fil.c.file_id == fli.c.file_id)
         .join(lic, fli.c.license_id == lic.c.license_id)
         )
@@ -328,7 +326,7 @@ def packages_all_licenses_in_files(package_id):
     .select_from(
         pac
         .join(pfi, pac.c.package_id == pfi.c.package_id)
-        .join(fil)
+        .join(fil, pfi.c.file_id == fil.c.file_id)
         .join(lic1, pfi.c.concluded_license_id == lic1.c.license_id, isouter=True)
         .join(fli, fil.c.file_id == fli.c.file_id, isouter=True)
         .join(lic2, fli.c.license_id == lic2.c.license_id)
@@ -362,7 +360,7 @@ def relationships(left_namespace_id, left_id_string):
         ])
     .select_from(
         rel
-        .join(rty)
+        .join(rty, rel.c.relationship_type_id == rty.c.relationship_type_id)
         .join(ide1, rel.c.left_identifier_id == ide1.c.identifier_id)
         .join(ide2, rel.c.right_identifier_id == ide2.c.identifier_id)
         .join(doc1, ide1.c.document_namespace_id == doc1.c.document_namespace_id)
@@ -440,7 +438,7 @@ def auto_describes(docid):
             ])
         .select_from(
             doc
-            .join(pac)
+            .join(pac, doc.c.package_id == pac.c.package_id)
             .join(ide1,
                 (doc.c.document_id == ide1.c.document_id) &
                 (doc.c.document_namespace_id == ide1.c.document_namespace_id)
@@ -462,7 +460,7 @@ def auto_describes(docid):
             ])
         .select_from(
             doc
-            .join(pac)
+            .join(pac, doc.c.package_id == pac.c.package_id)
             .join(pfi, pac.c.package_id == pfi.c.package_id, isouter=True)
             .join(ide1,
                 (doc.c.document_id == ide1.c.document_id) &
