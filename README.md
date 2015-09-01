@@ -75,6 +75,8 @@ First off, I recommend installing and running `dosocs2` inside a Python
 [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
 is not a requirement.
 
+### Step 1 - Download and install
+
 [Grab the latest release](https://github.com/ttgurney/dosocs2/releases)
 and use `pip` to install it as a package. If you are not inside a virtualenv
 you may have to run `pip` as root (not recommended!). Replace `0.x.x` with
@@ -83,40 +85,56 @@ the latest release version number.
     $ tar xf 0.x.x.tar.gz 
     $ pip install ./dosocs2-0.x.x
 
-After successful install, generate an initial config file:
+### Step 2 - Change the default configuration
+
+Not required, but strongly recommended, is to generate an initial config
+file:
 
     $ dosocs2 newconfig
-    dosocs2: wrote config file to /home/tgurney/.config/dosocs2/dosocs2.conf
+    dosocs2: wrote config file to /home/tom/.config/dosocs2/dosocs2.conf
 
-The default config uses a SQLite database stored in your home directory. If
-you like, you can open the config file and change the `connection_uri`
-variable to create the database at a different location.
+The default config points to a SQLite database stored in your home directory.
+For example, for user `tom`, this database would be created at
+`/home/tom/.config/dosocs2/dosocs2.sqlite3`. If you like, you can open the
+config file and change the `connection_uri` variable to use a different
+location for the database.
 
 If you have [FOSSology](http://www.fossology.org/) installed, you also need
 to set the path of the default `nomos` scanner if it is not already correct.
-Likewise for any of the other supported scanners (see [doc/scanners.md](doc/scanners.md))
+Likewise for any of the other supported scanners you want to use
+(see [doc/scanners.md](doc/scanners.md))
 
-Finally, to create all necessary tables and views in the database:
+### Step 3 (Optional) - Add PostgreSQL configuration
 
-    $ dosocs2 dbinit
-
-
-### Using dosocs2 with PostgreSQL
+Follow this step if you want to use PostgreSQL instead of SQLite for the
+SPDX database.
 
 You will have to create the `spdx` (or whatever name you want) role and
 database yourself.  I recommend setting a different password than the
 one given...:
 
+    $ sudo -u postgres psql
+    psql (9.3.9)
+    Type "help" for help.
+
     postgres=# create role spdx with login password 'spdx';
+    CREATE ROLE
     postgres=# create database spdx with owner spdx;
+    CREATE DATABASE
 
 Then change the `connection_uri` variable in your `dosocs2.conf`:
 
     # connection_uri = postgresql://user:pass@host:port/database
     connection_uri = postgresql://spdx:spdx@localhost:5432/spdx
 
-Run `dosocs2 dbinit` again to set up, and you're good to go. 
+### Step 4 - Database setup
 
+Finally, to create all necessary tables and views in the database:
+
+    $ dosocs2 dbinit
+
+You only need to do this once. **This command will drop all
+existing tables from your SPDX database, so be careful!**
 
 Usage
 -----
