@@ -61,7 +61,7 @@ def load_licenses(conn, url='http://spdx.org/licenses/'):
         return False
     for shortname, name, url in sorted_rows:
         license_params = {
-            'name': name.replace('&quot;', '"'),
+            'name': name,
             'short_name': shortname,
             'cross_reference': url,
             'comment': '',
@@ -149,11 +149,13 @@ def scrape_site(url):
     shortname_part = r'<code property=\"spdx:licenseId\">(.*?)</code>'
     pattern_str = url_part + name_part + shortname_part
     pattern = re.compile(pattern_str)
-    page_one_line = page_text.replace('\n', '')
+    page_one_line = page_text.replace('\n', '').replace('&quot;', '"')
     rows = pattern.findall(page_one_line)
     # reverse column order and append full url to first column
-    completed_rows = [
-        [row[2], row[1], (url + row[0][2:])]
+    completed_rows = [[
+        row[2],                         # short name
+        row[1],                         # friendly name
+        (url + '/' + row[0][2:])]             # cross ref
         for row in rows
         ]
     return completed_rows
