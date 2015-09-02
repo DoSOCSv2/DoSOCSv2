@@ -9,7 +9,8 @@ install_requires=[
     ]
 
 tests_require=[
-    'pytest'
+    'pytest',
+    'mock'
     ]
 
 postgres_requires=[
