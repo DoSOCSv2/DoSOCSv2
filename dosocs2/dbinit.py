@@ -161,13 +161,13 @@ def scrape_site(url):
     return completed_rows
 
 
-def initialize(dosocs2_version):
+def initialize(engine, dosocs2_version):
     url = 'http://spdx.org/licenses/'
     msg('dropping and creating all tables...', end='')
-    db.meta.drop_all(db.engine)
-    db.meta.create_all(db.engine)
+    db.meta.drop_all(engine)
+    db.meta.create_all(engine)
     print('ok.')
-    with db.engine.begin() as conn:
+    with engine.begin() as conn:
         msg('loading licenses...', end='')
         result = load_licenses(conn, url)
         if not result:
