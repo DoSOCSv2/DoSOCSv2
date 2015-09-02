@@ -19,7 +19,6 @@ from sqlalchemy import ForeignKeyConstraint, CheckConstraint, UniqueConstraint
 from sqlalchemy import func
 
 meta = MetaData()
-engine = None
 
 licenses = Table('licenses', meta,
     Column('license_id', Integer, primary_key=True),
@@ -272,12 +271,9 @@ files_scans = Table('files_scans', meta,
     )
 
 
-def initialize(connection_string, echo):
-    global engine
-    if engine is None:
-        # because 'echo=False' is for some reason not allowed...
-        if echo is True:
-            engine = create_engine(connection_string, echo=True)
-        else:
-            engine = create_engine(connection_string)
-    return engine
+def create_connection(connection_string, echo):
+    # because 'echo=False' is for some reason not allowed...
+    if echo is True:
+        return create_engine(connection_string, echo=True)
+    else:
+        return create_engine(connection_string)

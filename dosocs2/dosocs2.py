@@ -75,6 +75,10 @@ import sys
 
 import docopt
 
+__version__ = '0.13.0'
+
+argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
+
 from . import config
 from . import dbinit
 from . import render
@@ -87,8 +91,6 @@ from . import util
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
 }
-
-__version__ = '0.13.0'
 
 
 def msg(text, **kwargs):
@@ -171,7 +173,6 @@ def do_configtest(engine, alt_config):
 
 
 def main():
-    argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
     alt_config = argv['--config']
     doc_id = argv['DOC-ID']
     package_id = argv['PACKAGE-ID']
@@ -198,8 +199,8 @@ def main():
             sys.exit(1)
         if this_scanner not in selected_scanners:
             selected_scanners.append(this_scanner)
-
-    engine = db.initialize(config.config['connection_uri'], util.bool_from_str(config.config['echo']))
+    echo = util.bool_from_str(config.config['echo'])
+    engine = db.create_connection(config.config['connection_uri'], echo)
 
     if argv['configtest']:
         do_configtest(engine, alt_config)
