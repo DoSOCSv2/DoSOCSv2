@@ -234,7 +234,7 @@ def main():
             if answer != 'YES':
                 errmsg('canceling operation.')
                 sys.exit(1)
-        sys.exit(0 if dbinit.initialize(__version__) else 1)
+        sys.exit(0 if dbinit.initialize(engine, __version__) else 1)
 
     elif argv['print']:
         with engine.begin() as conn:
