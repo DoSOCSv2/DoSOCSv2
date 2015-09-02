@@ -1,4 +1,4 @@
-dosocs2
+dosocs2 [![Build Status](https://travis-ci.org/ttgurney/dosocs2.svg?branch=master)](https://travis-ci.org/ttgurney/dosocs2)
 =======
 
 dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
