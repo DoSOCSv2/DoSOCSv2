@@ -1,5 +1,21 @@
 from setuptools import setup
 
+install_requires=[
+    'jinja2',
+    'python-magic',
+    'docopt',
+    'SQLAlchemy',
+    'xmltodict',
+    ]
+
+tests_require=[
+    'pytest'
+    ]
+
+postgres_requires=[
+    'psycopg2'
+    ]
+
 setup(
     name='dosocs2',
     version='0.13.0',
@@ -24,16 +40,20 @@ setup(
     packages=['dosocs2'],
     install_requires=[
         'jinja2',
-        'psycopg2',
         'python-magic',
         'docopt',
         'SQLAlchemy',
         'xmltodict',
         ],
-
+    tests_require=tests_require,
+    extras_require={
+        'tests': install_requires + tests_require,
+        'postgres': install_requires + postgres_requires,
+        },
     package_data={'dosocs2': ['templates/*']},
 
     entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
+    test_suite='py.test',
 
     zip_safe=False,
 )

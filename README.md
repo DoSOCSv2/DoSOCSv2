@@ -54,18 +54,8 @@ Optional:
   (for vulnerability identification)
 - PostgreSQL 8.x or later version (can be on a separate machine)
 
-### Python libraries
-
-- [docopt](http://docopt.org/)
-- [Jinja2](http://jinja.pocoo.org/)
-- [psycopg2](http://initd.org/psycopg/) (if not using the PostgreSQL
-  configuration, this dependency can be safely removed from `setup.py`
-  prior to install)
-- [python-magic](https://github.com/ahupp/python-magic)
-- [SQLAlchemy](http://www.sqlalchemy.org/)
-- [xmltodict](https://github.com/martinblech/xmltodict)
-
-All Python dependencies are handled automatically by `pip`.
+Python libraries:
+- All Python dependencies are handled automatically by `pip`.
 
 
 Installation
@@ -82,8 +72,14 @@ and use `pip` to install it as a package. If you are not inside a virtualenv
 you may have to run `pip` as root (not recommended!). Replace `0.x.x` with
 the latest release version number.
 
-    $ tar xf 0.x.x.tar.gz 
+    $ tar xf 0.x.x.tar.gz
     $ pip install ./dosocs2-0.x.x
+
+Or, if you want PostgreSQL support to go along with the standard SQLite support:
+
+    $ tar xf 0.x.x.tar.gz
+    $ pip install ./dosocs2-0.x.x[postgres]
+
 
 ### Step 2 - Change the default configuration
 
@@ -103,6 +99,7 @@ If you have [FOSSology](http://www.fossology.org/) installed, you also need
 to set the path of the default `nomos` scanner if it is not already correct.
 Likewise for any of the other supported scanners you want to use
 (see [doc/scanners.md](doc/scanners.md))
+
 
 ### Step 3 (Optional) - Add PostgreSQL configuration
 
@@ -126,6 +123,7 @@ Then change the `connection_uri` variable in your `dosocs2.conf`:
 
     # connection_uri = postgresql://user:pass@host:port/database
     connection_uri = postgresql://spdx:spdx@localhost:5432/spdx
+
 
 ### Step 4 - Database setup
 
