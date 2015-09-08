@@ -18,6 +18,11 @@
 #
 # SPDX-License-Identifier: GPL-2.0+
 
+from sqlalchemy import MetaData, Table, create_engine, Column
+from sqlalchemy import Integer, String, Text, Boolean, DateTime
+from sqlalchemy import ForeignKeyConstraint, CheckConstraint, UniqueConstraint
+from sqlalchemy import func
+
 meta = MetaData()
 
 licenses = Table('licenses', meta,
