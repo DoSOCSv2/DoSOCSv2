@@ -77,7 +77,6 @@ import docopt
 
 __version__ = '0.13.0'
 
-argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
 
 from . import config
 from . import dbinit
@@ -172,7 +171,10 @@ def do_configtest(engine, alt_config):
     print('ok.')
 
 
-def main():
+def main(argv=None):
+    if argv is None:
+        argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
+    print(argv)
     alt_config = argv['--config']
     doc_id = argv['DOC-ID']
     package_id = argv['PACKAGE-ID']
