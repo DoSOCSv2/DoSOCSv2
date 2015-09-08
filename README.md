@@ -34,12 +34,17 @@ changes until a 1.x.x release!
 License and Copyright
 ---------------------
 
-dosocs2 is copyright © 2014-2015 University of Nebraska at Omaha and other
-contributors.
+Copyright © 2015 University of Nebraska at Omaha
+Copyright © 2015 Thomas T. Gurney
 
-The dosocs2 code is licensed under the terms of the Apache License 2.0
-(see LICENSE). All associated documentation is licensed under the terms of the
-Creative Commons Attribution Share-Alike 3.0 license (see CC-BY-SA-3.0).
+dosocs2 is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 2 of the License, or (at your option) any later
+version. See the file LICENSE for more details.
+
+All associated documentation is licensed under the terms of the Creative
+Commons Attribution Share-Alike 3.0 license. See the file CC-BY-SA-3.0 for more
+details.
 
 
 Dependencies
