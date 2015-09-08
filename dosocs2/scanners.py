@@ -13,15 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''Interfaces to external scanning tools.
+"""Interfaces to external scanning tools.
 
-scan_file() and scan_directory() must return a dictionary mapping a relative
-file path (starting with '.') to a set of license short names. These license
-names do not necessarily have to be on the SPDX license list.
-
-scan_file(path) -> {str: {str}} or None
-scan_directory(path) -> {str: {str}} or None
-'''
+Includes the Scanner base class, the WorkItem class, and some predefined
+Scanner subclasses.
+"""
 
 import os
 import re
@@ -38,18 +34,48 @@ from . import spdxdb
 from . import config
 
 
+"""A file (already registered) to be processed by a scanner."""
 WorkItem = namedtuple('WorkItem', ['file_id', 'path'])
 
 
 class Scanner(object):
 
+    """Base class for connectors to external scanning tools.
+
+    Any new connectors should inherit from Scanner or one of its subclasses,
+    and at least override process_file(), store_results(), and the 'name'
+    property.
+
+    Instantiating the base Scanner class provides a 'dummy' scanner,
+    in which the process_file() and store_results() methods are no-ops. The
+    'dummy' scanner is otherwise a well-behaved scanner, and no other methods
+    strictly need to be overridden by subclasses.
+    """
+
+    """Name for this scanner, used in all contexts (including the database).
+
+    All scanner names must be unique, thus subclasses must override this
+    property. Not doing so will lead to strange results.
+    """
     name = 'dummy'
 
     def __init__(self, conn):
+        """Initialize Scanner object.
+
+        Register the scanner in the database if it is not already registered.
+        Other initialization (such as reading certain variables from
+        the dosocs2 config file) may be done here by subclasses.
+        """
         self.conn = conn
         self.register()
 
     def get_file_list(self, package_id, package_root):
+        """Return list of WorkItems for all files in a specified package.
+
+        Arguments:
+        package_id -- ID of package (must already be registered in DB)
+        package_root -- Path to the root of the package; must be a directory
+        """
         query = (
             select([
                 db.packages_files.c.file_id,
@@ -67,6 +93,33 @@ class Scanner(object):
         return file_list
 
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
+        """Scan the specified package, skipping already-scanned files.
+
+        Return None.
+
+        Arguments:
+        package_id -- ID of package (must already be registered in DB)
+        package_root -- Path to the root of the package; must be a directory.
+          In the case of a package that is an archive (like a .tar.gz), this
+          would be the path to the root of the unpacked directory structure.
+        package_file_path -- If the package exists also as a single file
+          (.tar.gz, .jar, whatever), this is the path to that file. Otherwise
+          the package is treated as a directory tree with no corresponding
+          archive file.
+        rescan -- Boolean. If True, scan all files regardless of whether or
+          not this scanner has already scanned them. Subclasses may choose
+          to ignore this parameter, and always rescan regardless of
+          already-scanned status.
+
+        In the default implementation, this method does these things:
+        1. Get the file list based on the specified package ID and
+          package root path (self.get_file_list())
+        2. Invoke self.process_file() on each file that has not already been
+          scanned (determined by self.file_is_already_done())
+        3. Store the scan results (with self.store_results())
+        4. Mark all files that were scanned in this run as done
+          (self.mark_files_done())
+        """
         all_files = self.get_file_list(package_id, package_root)
         processed_files = {}
         files_to_mark = set()
@@ -80,14 +133,42 @@ class Scanner(object):
         self.mark_files_done(files_to_mark)
 
     def process_file(self, file):
-        # override in subclass
+        """Invoke an actual scan on a single file. Return the scan result.
+
+        Arguments:
+        file -- WorkItem object.
+
+        The nature of the returned scan result object will depend on which
+        scanner is being called (and what type of results are expected by
+        self.store_results())
+
+        In the base Scanner class, this method returns None, so it must be
+        overridden in a subclass.
+
+        """
         pass
 
     def store_results(self, processed_files):
-        # override in subclass
+        """Store scan results in the database. Return None.
+
+        Arguments:
+        processed_files -- A mapping (dictionary) of WorkItems to scan result
+          objects.  The nature of these scan result objects depends on which
+          scanner is being called.
+
+        In the base Scanner class, this method does nothing, so it must be
+        overridden in a subclass.
+        """
         pass
 
     def register(self):
+        """Register scanner in the database if not already registered.
+
+        Also set self.pk equal to the primary key of the record in the scanners
+        table corresponding to this scanner.
+
+        Return None.
+        """
         if getattr(self, 'pk', None) is not None:
             return
         query = (
@@ -101,6 +182,10 @@ class Scanner(object):
             self.pk = spdxdb.insert(self.conn, db.scanners, {'name': self.name})
 
     def file_is_already_done(self, file):
+        """Return True if scanner has already scanned this file.
+
+        Return False otherwise.
+        """
         query = (
             select([db.files_scans])
             .where(
@@ -114,6 +199,10 @@ class Scanner(object):
         return (result is not None)
 
     def package_is_already_done(self, package_id):
+        """Return True if scanner has already scanned this package.
+
+        Return False otherwise.
+        """
         query = (
             select([db.packages_scans])
             .where(
@@ -127,6 +216,14 @@ class Scanner(object):
         return (result is not None)
 
     def mark_files_done(self, files):
+        """Create rows in the database to mark files as scanned. Return None.
+
+        Arguments:
+        files -- List of WorkItems corresponding to the files to be marked.
+          Duplicates are OK, however, rows in the files_scans table for these
+          items must not already exist, otherwise this method will fail by
+          attempting to violate a unique constraint in the database.
+        """
         rows = []
         file_ids_seen = set()
         for file in files:
@@ -149,6 +246,13 @@ class Scanner(object):
 
 
 class FileLicenseScanner(Scanner):
+
+    """Scanner subclass that implements store_results() for those scanners
+    whose result is a list of license short names.
+
+    New connectors to external license scanners should probably inherit from
+    this and not from Scanner.
+    """
 
     def store_results(self, processed_files):
         licenses_to_add = []
@@ -174,6 +278,8 @@ class FileLicenseScanner(Scanner):
 
 class Monk(FileLicenseScanner):
 
+    """Connector to FOSSology's 'monk' license scanner."""
+
     name = 'monk'
 
     def __init__(self, conn):
@@ -197,6 +303,8 @@ class Monk(FileLicenseScanner):
 
 
 class Nomos(FileLicenseScanner):
+
+    """Connector to FOSSology's 'nomos' license scanner."""
 
     name = 'nomos'
 
@@ -223,6 +331,8 @@ class Nomos(FileLicenseScanner):
 
 class Copyright(Scanner):
 
+    """Connector to FOSSology's 'copyright' scanner."""
+
     name = 'copyright'
 
     def __init__(self, conn):
@@ -247,6 +357,18 @@ class Copyright(Scanner):
 
 
 class NomosDeep(Nomos):
+
+    """Same as Nomos, but unpacks archives in the file list.
+
+    Regular Nomos treats every file as a monolith. This one will unpack
+    those files that are archives, and scan the resulting directory structure.
+    All licenses found for such an archive are treated as associated with
+    the archive itself, rather than any of the files inside.
+
+    Thus, Nomos and NomosDeep will return the same number of files scanned,
+    but for those scanned files that are archive files, NomosDeep will likely
+    return better results, at the cost of execution speed.
+    """
 
     name = 'nomos_deep'
 
@@ -333,7 +455,10 @@ class DependencyCheck(Scanner):
                 })
         return deps
 
+"""Table of scanners known to dosocs2.
 
+All scanners here are recognized by the -s option on the command line.
+"""
 scanners = {
     'copyright': Copyright,
     'monk': Monk,
