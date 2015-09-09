@@ -1,5 +1,7 @@
 from setuptools import setup
 
+_dosocs2_version = '0.14.1'
+
 install_requires=[
     'jinja2',
     'python-magic',
@@ -16,7 +18,7 @@ tests_require=[
 
 setup(
     name='dosocs2',
-    version='0.14.1',
+    version=_dosocs2_version,
     description='SPDX 2.0 document creation and storage',
     long_description='',
     url='https://github.com/ttgurney/dosocs2',
