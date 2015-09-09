@@ -6,15 +6,12 @@ install_requires=[
     'docopt',
     'SQLAlchemy',
     'xmltodict',
+    'psycopg2'
     ]
 
 tests_require=[
     'pytest',
     'mock'
-    ]
-
-postgres_requires=[
-    'psycopg2'
     ]
 
 setup(
@@ -39,17 +36,10 @@ setup(
 
     keywords='spdx license licenses',
     packages=['dosocs2'],
-    install_requires=[
-        'jinja2',
-        'python-magic',
-        'docopt',
-        'SQLAlchemy',
-        'xmltodict',
-        ],
+    install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
         'tests': install_requires + tests_require,
-        'postgres': install_requires + postgres_requires,
         },
     package_data={'dosocs2': ['templates/*']},
 
