@@ -72,7 +72,7 @@ is not a requirement.
 
 ### Step 1 - Download and install
 
-[Grab the latest release](https://github.com/ttgurney/dosocs2/releases)
+[Grab the source tarball for the latest release](https://github.com/ttgurney/dosocs2/releases)
 and use `pip` to install it as a package. If you are not inside a virtualenv
 you may have to run `pip` as root (not recommended!). Replace `0.x.x` with
 the latest release version number.
