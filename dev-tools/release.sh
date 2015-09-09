@@ -9,10 +9,22 @@ else
     exit 1
 fi
 
+STATUS=$(git status | grep "nothing to commit, working directory clean")
+
+if [[ "$STATUS" != "0" ]]; then
+    echo "$0: working directory must be clean first"
+    exit 1
+fi
+
 OLDVER=$(cat setup.py | grep -E '^_dosocs2_version = ' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 NEWVER=$($BUMPER $OLDVER)
 
 sed -i "s/$OLDVER/$NEWVER/g" setup.py
+git add setup.py
 sed -i "s/$OLDVER/$NEWVER/g" dosocs2/dosocs2.py
+git add dosocs2/dosocs2.py
 
-git commit -m "Bump version number to $NEWVER" -e
+git diff
+git commit -m "Bump version number to $NEWVER" -e || exit 1
+python setup.py sdist || exit 1
+py2dsc-deb "dist/dosocs2-${NEWVER}.tar.gz"
