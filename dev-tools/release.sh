@@ -11,7 +11,7 @@ fi
 
 STATUS=$(git status | grep "nothing to commit, working directory clean")
 
-if [[ "$STATUS" != "0" ]]; then
+if [[ "$?" != "0" ]]; then
     echo "$0: working directory must be clean first"
     exit 1
 fi
