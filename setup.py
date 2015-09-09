@@ -19,7 +19,7 @@ postgres_requires=[
 
 setup(
     name='dosocs2',
-    version='0.13.0',
+    version='0.14.0',
     description='SPDX 2.0 document creation and storage',
     long_description='',
     url='https://github.com/ttgurney/dosocs2',
