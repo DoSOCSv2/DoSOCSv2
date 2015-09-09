@@ -34,7 +34,7 @@ changes until a 1.x.x release!
 License and Copyright
 ---------------------
 
-Copyright © 2015 University of Nebraska at Omaha
+Copyright © 2015 University of Nebraska at Omaha  
 Copyright © 2015 Thomas T. Gurney
 
 dosocs2 is free software: you can redistribute it and/or modify it under the
