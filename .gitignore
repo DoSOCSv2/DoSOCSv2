@@ -5,5 +5,6 @@ venv*
 junk/
 build/
 dist/
+deb_dist/
 *.egg-info/
 *.out
