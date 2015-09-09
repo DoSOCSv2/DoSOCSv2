@@ -80,11 +80,6 @@ the latest release version number.
     $ tar xf 0.x.x.tar.gz
     $ pip install ./dosocs2-0.x.x
 
-Or, if you want PostgreSQL support to go along with the standard SQLite support:
-
-    $ tar xf 0.x.x.tar.gz
-    $ pip install ./dosocs2-0.x.x[postgres]
-
 
 ### Step 2 - Change the default configuration
 
