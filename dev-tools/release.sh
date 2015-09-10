@@ -24,7 +24,13 @@ git add setup.py
 sed -i "s/$OLDVER/$NEWVER/g" dosocs2/dosocs2.py
 git add dosocs2/dosocs2.py
 
-git diff
-git commit -m "Bump version number to $NEWVER" -e || exit 1
+git commit -m "Bump version number to $NEWVER" -e
+
+if [[ "$?" != "0" ]]; then
+    git checkout -- setup.py
+    git checkout -- dosocs2/dosocs2.py
+    exit 1
+fi
+
 python setup.py sdist || exit 1
 py2dsc-deb "dist/dosocs2-${NEWVER}.tar.gz"
