@@ -112,4 +112,4 @@ def dump_to_file(fileobj):
     for key, val in sorted(config.iteritems()):
         fileobj.write('{} = {}\n'.format(key, val))
 
-update_config()
+update_config(os.devnull)
