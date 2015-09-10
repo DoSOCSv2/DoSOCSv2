@@ -194,7 +194,7 @@ def main(sysargv=None):
                 pass
         except EnvironmentError as ex:
             errmsg('{}: {}'.format(alt_config, ex.strerror))
-            sys.exit(1)
+            return 1
         config.update_config(alt_config)
     if not argv['--scanners']:
         argv['--scanners'] = config.config['default_scanners']
@@ -204,7 +204,7 @@ def main(sysargv=None):
             this_scanner = scanners.scanners[this_scanner_name]
         except KeyError:
             errmsg("'{}' is not a known scanner".format(this_scanner_name))
-            sys.exit(1)
+            return 1
         if this_scanner not in selected_scanners:
             selected_scanners.append(this_scanner)
     echo = util.bool_from_str(config.config['echo'])
@@ -212,7 +212,7 @@ def main(sysargv=None):
 
     if argv['configtest']:
         do_configtest(engine, alt_config)
-        sys.exit(0)
+        return 0
 
     elif argv['newconfig']:
         config_path = config.DOSOCS2_CONFIG_PATH
@@ -221,7 +221,7 @@ def main(sysargv=None):
             errmsg('failed to write config file to {}'.format(config_path))
         else:
             msg('wrote config file to {}'.format(config_path))
-        sys.exit(0 if configresult else 1)
+        return 0 if configresult else 1
 
     elif argv['scanners']:
         default_scanners = config.config['default_scanners'].split(',')
@@ -230,7 +230,7 @@ def main(sysargv=None):
                 print(s + ' [default]')
             else:
                 print(s)
-        sys.exit(0)
+        return 0
 
     elif argv['dbinit']:
         if not argv['--no-confirm']:
@@ -241,14 +241,14 @@ def main(sysargv=None):
             answer = raw_input()
             if answer != 'YES':
                 errmsg('canceling operation.')
-                sys.exit(1)
-        sys.exit(0 if dbinit.initialize(engine, __version__) else 1)
+                return 1
+        return 0 if dbinit.initialize(engine, __version__) else 1
 
     elif argv['print']:
         with engine.begin() as conn:
             if spdxdb.fetch(conn, db.documents, doc_id) is None:
                 errmsg('document id {} not found in the database.'.format(doc_id))
-                sys.exit(1)
+                return 1
             print(render.render_document(conn, doc_id, format_map['tag']))
 
     elif argv['generate']:
@@ -260,7 +260,7 @@ def main(sysargv=None):
             package = spdxdb.fetch(conn, db.packages, package_id)
             if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
-                sys.exit(1)
+                return 1
             document_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
         fmt = '(package_id {}): document_id: {}\n'
         sys.stderr.write(fmt.format(package_id, document_id))
@@ -322,4 +322,4 @@ def main(sysargv=None):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    sys.exit(main(sys.argv[1:]))
