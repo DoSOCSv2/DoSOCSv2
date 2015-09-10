@@ -175,10 +175,12 @@ def do_configtest(engine, alt_config):
     print('ok.')
 
 
-def main(argv=None):
-    if argv is None:
-        argv = docopt.docopt(doc=__doc__.format(os.path.basename(sys.argv[0])), version=__version__)
-    print(argv)
+def main(sysargv=None):
+    argv = docopt.docopt(
+        doc=__doc__.format(os.path.basename(sys.argv[0])),
+        argv=sysargv,
+        version=__version__
+        )
     alt_config = argv['--config']
     doc_id = argv['DOC-ID']
     package_id = argv['PACKAGE-ID']
@@ -320,4 +322,4 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
