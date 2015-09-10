@@ -98,6 +98,7 @@ def create_user_config(overwrite=True):
 
 def update_config(other_config_path=None):
     global config
+    config = {}
     config_order = get_config_resolution_order(other_config_path)
     config.update(get_config_from_file(DEFAULT_CONFIG.split('\n')))
     for path in config_order:
@@ -112,4 +113,4 @@ def dump_to_file(fileobj):
     for key, val in sorted(config.iteritems()):
         fileobj.write('{} = {}\n'.format(key, val))
 
-update_config(os.devnull)
+update_config()
