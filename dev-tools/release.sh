@@ -16,6 +16,11 @@ if [[ "$?" != "0" ]]; then
     exit 1
 fi
 
+if [[ "${VIRTUAL_ENV}x" != "x" ]]; then
+    echo "$0: get out of virtual env first"
+    exit 1
+fi
+
 OLDVER=$(cat setup.py | grep -E '^_dosocs2_version = ' | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 NEWVER=$($BUMPER $OLDVER)
 
