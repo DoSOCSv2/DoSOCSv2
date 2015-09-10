@@ -1,6 +1,6 @@
 from setuptools import setup
 
-_dosocs2_version = '0.15.0'
+_dosocs2_version = '0.14.1'
 
 install_requires=[
     'jinja2',
