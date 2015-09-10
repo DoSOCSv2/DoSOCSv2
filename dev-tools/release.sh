@@ -32,8 +32,8 @@ git add dosocs2/dosocs2.py
 git commit -m "Bump version number to $NEWVER" -e
 
 if [[ "$?" != "0" ]]; then
-    git checkout -- setup.py
-    git checkout -- dosocs2/dosocs2.py
+    git reset HEAD .
+    git checkout -- .
     exit 1
 fi
 
