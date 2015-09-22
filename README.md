@@ -66,22 +66,23 @@ Python libraries:
 Installation
 ------------
 
-First off, I recommend installing and running `dosocs2` inside a Python
-[virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
-is not a requirement.
-
 ### Step 1 - Download and install
 
-[Grab the source tarball for the latest release](https://github.com/ttgurney/dosocs2/releases)
-and use `pip` to install it as a package. If you are not inside a virtualenv
-you may have to run `pip` as root (not recommended!). Replace `0.x.x` with
-the latest release version number.
+[Grab the source tarball for the latest
+release](https://github.com/ttgurney/dosocs2/releases) and use `pip` to install
+it as a package. Replace `0.x.x` with the latest release version number.
+
+I recommend doing this inside a Python
+[virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), but it
+is not a requirement. If you are not inside a virtualenv you may have to run
+`pip` as root (not recommended!).
+
 
     $ tar xf 0.x.x.tar.gz
     $ pip install ./dosocs2-0.x.x
 
 
-### Step 2 - Change the default configuration
+### Step 2 (Optional) - Change the default configuration
 
 Not required, but strongly recommended, is to generate an initial config
 file:
