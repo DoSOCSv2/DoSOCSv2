@@ -315,7 +315,7 @@ class Nomos(FileLicenseScanner):
 
     def __init__(self, conn):
         super(Nomos, self).__init__(conn)
-        self.exec_path = config.config['scanner_' + self.name + '_path']
+        self.exec_path = config.config['scanner_' + Nomos.name + '_path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
 
     def process_file(self, file):
