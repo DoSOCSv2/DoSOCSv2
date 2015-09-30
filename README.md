@@ -79,11 +79,11 @@ is not a requirement. If you are not inside a virtualenv you may have to run
 
 
     $ tar xf 0.x.x.tar.gz
-    $ pip install ./dosocs2-0.x.x
+    $ pip install ./DoSOCSv2-0.x.x
 
 Then run the install script for the default license scanner:
 
-    $ ./dosocs2-0.x.x/scripts/install-nomossa.sh
+    $ ./DoSOCSv2-0.x.x/scripts/install-nomos.sh
 
 ### Step 2 (Optional) - Change the default configuration
 

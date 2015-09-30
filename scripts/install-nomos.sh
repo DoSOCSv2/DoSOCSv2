@@ -1,4 +1,23 @@
 #!/bin/bash
+
+if [[ "$(type -t git)" == "" ]]; then
+    echo "Couldn't find git in your PATH!"
+    echo "Please install git before continuing."
+    exit 1
+fi
+
+if [[ ! -d /usr/include/glib-2.0 ]]; then
+    echo "Couldn't find glib-2.0 headers!"
+    echo "Please install glib2-devel before continuing."
+    exit 1
+fi
+
+if [[ "$(type -t gcc)" == "" ]]; then
+    echo "Couldn't find gcc in your PATH!"
+    echo "Please install gcc before continuing."
+    exit 1
+fi
+
 REPO=$(mktemp -d)
 echo "[$0] git clone https://github.com/fossology/fossology $REPO"
 git clone https://github.com/fossology/fossology $REPO || exit 1
