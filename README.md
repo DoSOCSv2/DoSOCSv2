@@ -83,7 +83,7 @@ is not a requirement. If you are not inside a virtualenv you may have to run
 
 Then run the install script for the default license scanner:
 
-    $ ./dosocs2-0.x.x/scripts/install-nomossa.sh
+    $ ./dosocs2-0.x.x/scripts/install-nomos.sh
 
 ### Step 2 (Optional) - Change the default configuration
 
