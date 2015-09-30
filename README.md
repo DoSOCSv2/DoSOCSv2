@@ -54,7 +54,7 @@ Dependencies
 
 Optional:
 - [FOSSology](http://www.fossology.org/) 2.5.x or later version (for
-  license identification)
+  more license/copyright scanners)
 - [OWASP dependency-check](https://github.com/jeremylong/DependencyCheck)
   (for vulnerability identification)
 - PostgreSQL 8.x or later version (can be on a separate machine)
@@ -81,6 +81,9 @@ is not a requirement. If you are not inside a virtualenv you may have to run
     $ tar xf 0.x.x.tar.gz
     $ pip install ./dosocs2-0.x.x
 
+Then run the install script for the default license scanner:
+
+    $ ./dosocs2-0.x.x/scripts/install-nomossa.sh
 
 ### Step 2 (Optional) - Change the default configuration
 
@@ -97,8 +100,7 @@ config file and change the `connection_uri` variable to use a different
 location for the database.
 
 If you have [FOSSology](http://www.fossology.org/) installed, you also need
-to set the path of the default `nomos` scanner if it is not already correct.
-Likewise for any of the other supported scanners you want to use
+to set the path of any of the supported scanners you want to use
 (see [doc/scanners.md](doc/scanners.md))
 
 

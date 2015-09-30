@@ -45,6 +45,8 @@ echo = False
 ############
 
 # Set the correct path for each
+# If you used the included install-nomos.sh, the scanner_nomos_path
+# should already be correct.
 scanner_nomos_path = /usr/local/share/fossology/nomos/agent/nomossa
 scanner_copyright_path = /usr/share/fossology/copyright/agent/copyright
 scanner_monk_path = /usr/share/fossology/monk/agent/monk
