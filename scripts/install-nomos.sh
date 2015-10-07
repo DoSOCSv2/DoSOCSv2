@@ -28,8 +28,8 @@ make || exit 1
 echo "[$0] sudo make install"
 sudo make install || exit 1
 popd
-echo "[$0] rm -rvf $REPO"
-rm -rvf $REPO
+echo "[$0] rm -rf $REPO"
+rm -rf $REPO
 echo "[$0] sudo ln -s /usr/local/share/fossology/nomos/agent/nomossa /usr/local/bin/nomossa"
 sudo ln -s /usr/local/share/fossology/nomos/agent/nomossa /usr/local/bin/nomossa || exit 1
 echo "[$0] done!"
