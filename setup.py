@@ -24,14 +24,14 @@ setup(
     url='https://github.com/ttgurney/dosocs2',
     author='Thomas T. Gurney',
     author_email='tgurney@unomaha.edu',
-    license='Apache Software License',
+    license='GNU General Public License v2 or later (GPLv2+)',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Documentation',
         'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Programming Language :: Python :: 2.7',
         'Environment :: Console',
         ],
