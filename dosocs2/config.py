@@ -20,7 +20,7 @@
 
 import os
 import re
-import shutil
+
 
 DEFAULT_CONFIG = """\
 # dosocs2 configuration file
