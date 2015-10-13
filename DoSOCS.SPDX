@@ -1,0 +1,676 @@
+
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+DocumentNamespace: postgresql://localhost:5432/spdx/DoSOCSv2-6d5e8c21-a06b-4036-96af-669b81be3667
+DocumentName: DoSOCSv2
+SPDXID: SPDXRef-DOCUMENT
+DocumentComment: <text></text>
+
+## External Document References
+
+
+## Creation Information
+Creator: Tool: dosocs2-0.15.1
+Created: 2015-10-13T11:29:48Z
+CreatorComment: <text></text>
+LicenseListVersion: 2.0
+
+
+## Document Annotations
+
+
+## Document Relationships
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-configuration_md-f9a6-e501a9b3
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-LICENSE-4cc7-5722623c
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-sonarqube_helper_py-652c-f3034dba
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-test_dbinit_py-d16b-719d72e6
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-build_rpm_sh-a0a0-00d843c1
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-scan_jars_py-6fc3-7ea56d6c
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-install_nomos_sh-cc66-ef80f945
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-release_sh-ec62-b1667021
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-scanresult_py-730b-f6c280f4
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-AUTHORS-d6d8-5c53c058
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-util_py-c2fc-f6a6cb44
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-README_md-4a07-11559a7a
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-__init___py-da39-2b1de819
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-DoSOCS_SPDX-da39-17891db4
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-setup_py-7f87-e28f3651
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-scanners_py-811a-65c42f94
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-dosocs2_py-7eff-2fdac169
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-test_db_connect_py-b04a-7cf87278
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-fix_bump_py-5092-55f72031
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-queries_py-cc00-c97b87b3
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-CC_BY_SA_3_0-b92d-870addea
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-render_py-5ccb-36121d32
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-_gitignore-5de4-2387667e
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-_travis_yml-63e0-fbd8ac82
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-spdxdb_py-1396-d8f739fd
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-CONTRIBUTING_md-5a46-d4a53479
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-spdx_schema_html-ffb6-0fc6910d
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-scan_pip_list_sh-9dab-a0bebf95
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-postgres_create_spdx-4498-2f722d68
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-config_py-9594-66aa2538
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-scanners_md-489a-16b621c9
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-schema_py-a726-04921d2d
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-dbinit_py-14b3-f1913617
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-minor_bump_py-ee0d-03ace3ff
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-2_0_tag-fb58-1c2ed526
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-file-quick_install_rpm_sh-9584-88134154
+
+## Package Information
+
+PackageName: DoSOCSv2
+SPDXID: SPDXRef-package-DoSOCSv2-b363-69ad99f6
+PackageFileName: DoSOCSv2
+PackageSupplier: NOASSERTION
+PackageOriginator: NOASSERTION
+PackageDownloadLocation: NOASSERTION
+PackageVerificationCode: b363a9be9ca34cfb664cd5daeb7711bdae8b6aab
+PackageHomePage: NOASSERTION
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseInfoFromFiles: CC-BY-SA-3.0
+PackageLicenseInfoFromFiles: GPL-2.0
+PackageLicenseInfoFromFiles: LicenseRef-CC-BY-SA
+PackageLicenseInfoFromFiles: GPL-2.0+
+PackageLicenseDeclared: NOASSERTION
+PackageLicenseComments: <text></text>
+PackageCopyrightText: NOASSERTION
+PackageSummary: <text></text>
+PackageDescription: <text></text>
+PackageComment: <text></text>
+
+
+## Relationships
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-configuration_md-f9a6-e501a9b3
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-LICENSE-4cc7-5722623c
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-sonarqube_helper_py-652c-f3034dba
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-test_dbinit_py-d16b-719d72e6
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-build_rpm_sh-a0a0-00d843c1
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-scan_jars_py-6fc3-7ea56d6c
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-install_nomos_sh-cc66-ef80f945
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-release_sh-ec62-b1667021
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-scanresult_py-730b-f6c280f4
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-AUTHORS-d6d8-5c53c058
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-util_py-c2fc-f6a6cb44
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-README_md-4a07-11559a7a
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-__init___py-da39-2b1de819
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-DoSOCS_SPDX-da39-17891db4
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-setup_py-7f87-e28f3651
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-scanners_py-811a-65c42f94
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-dosocs2_py-7eff-2fdac169
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-test_db_connect_py-b04a-7cf87278
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-fix_bump_py-5092-55f72031
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-queries_py-cc00-c97b87b3
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-CC_BY_SA_3_0-b92d-870addea
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-render_py-5ccb-36121d32
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-_gitignore-5de4-2387667e
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-_travis_yml-63e0-fbd8ac82
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-spdxdb_py-1396-d8f739fd
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-CONTRIBUTING_md-5a46-d4a53479
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-spdx_schema_html-ffb6-0fc6910d
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-scan_pip_list_sh-9dab-a0bebf95
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-postgres_create_spdx-4498-2f722d68
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-config_py-9594-66aa2538
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-scanners_md-489a-16b621c9
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-schema_py-a726-04921d2d
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-dbinit_py-14b3-f1913617
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-minor_bump_py-ee0d-03ace3ff
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-2_0_tag-fb58-1c2ed526
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 CONTAINS SPDXRef-file-quick_install_rpm_sh-9584-88134154
+Relationship: SPDXRef-package-DoSOCSv2-b363-69ad99f6 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+## File Information
+
+
+FileName: ./dosocs2/spdxdb.py
+SPDXID: SPDXRef-file-spdxdb_py-1396-d8f739fd
+FileType: SOURCE
+FileChecksum: SHA1: 1396c9c9a03283751f15cf1ac37be762506404f4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-spdxdb_py-1396-d8f739fd CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-spdxdb_py-1396-d8f739fd DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/dbinit.py
+SPDXID: SPDXRef-file-dbinit_py-14b3-f1913617
+FileType: SOURCE
+FileChecksum: SHA1: 14b3b8d494b9eed61b7569a92ff5ddb0ec8fea08
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-dbinit_py-14b3-f1913617 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-dbinit_py-14b3-f1913617 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/postgres-create-spdx.sql
+SPDXID: SPDXRef-file-postgres_create_spdx-4498-2f722d68
+FileType: OTHER
+FileChecksum: SHA1: 4498a6c8be310850563ae570f8c3fa63fcc2318b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-postgres_create_spdx-4498-2f722d68 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-postgres_create_spdx-4498-2f722d68 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./doc/scanners.md
+SPDXID: SPDXRef-file-scanners_md-489a-16b621c9
+FileType: OTHER
+FileChecksum: SHA1: 489ad957f98dca582d65cbe411e6ac14d7a39d18
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-scanners_md-489a-16b621c9 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-scanners_md-489a-16b621c9 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./README.md
+SPDXID: SPDXRef-file-README_md-4a07-11559a7a
+FileType: OTHER
+FileChecksum: SHA1: 4a07497570e574dab4171f3f5eb6e09d7a73a1ca
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseInfoInFile: LicenseRef-CC-BY-SA
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-README_md-4a07-11559a7a CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-README_md-4a07-11559a7a DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./LICENSE
+SPDXID: SPDXRef-file-LICENSE-4cc7-5722623c
+FileType: SOURCE
+FileChecksum: SHA1: 4cc77b90af91e615a64ae04893fdffa7939db84c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-LICENSE-4cc7-5722623c CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-LICENSE-4cc7-5722623c DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dev-tools/fix-bump.py
+SPDXID: SPDXRef-file-fix_bump_py-5092-55f72031
+FileType: SOURCE
+FileChecksum: SHA1: 509252eb961e1ae9de35beebcaef171431e69798
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-fix_bump_py-5092-55f72031 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-fix_bump_py-5092-55f72031 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./CONTRIBUTING.md
+SPDXID: SPDXRef-file-CONTRIBUTING_md-5a46-d4a53479
+FileType: OTHER
+FileChecksum: SHA1: 5a46afbcc57ebff4e8448a8d11a75620b4bf6756
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0
+LicenseInfoInFile: LicenseRef-CC-BY-SA
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-CONTRIBUTING_md-5a46-d4a53479 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-CONTRIBUTING_md-5a46-d4a53479 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/render.py
+SPDXID: SPDXRef-file-render_py-5ccb-36121d32
+FileType: SOURCE
+FileChecksum: SHA1: 5ccb9835d77502c89b216dab787a63608161b0b6
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-render_py-5ccb-36121d32 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-render_py-5ccb-36121d32 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./.gitignore
+SPDXID: SPDXRef-file-_gitignore-5de4-2387667e
+FileType: OTHER
+FileChecksum: SHA1: 5de45b3ff012949b66f0225c515b5a625adaa2d1
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-_gitignore-5de4-2387667e CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-_gitignore-5de4-2387667e DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./.travis.yml
+SPDXID: SPDXRef-file-_travis_yml-63e0-fbd8ac82
+FileType: OTHER
+FileChecksum: SHA1: 63e01625a2ecce444121b53aacf95828607cf224
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-_travis_yml-63e0-fbd8ac82 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-_travis_yml-63e0-fbd8ac82 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/sonarqube_helper.py
+SPDXID: SPDXRef-file-sonarqube_helper_py-652c-f3034dba
+FileType: SOURCE
+FileChecksum: SHA1: 652c9acae5cf1615b594759b87160444091cb489
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-sonarqube_helper_py-652c-f3034dba CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-sonarqube_helper_py-652c-f3034dba DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/scan_jars.py
+SPDXID: SPDXRef-file-scan_jars_py-6fc3-7ea56d6c
+FileType: SOURCE
+FileChecksum: SHA1: 6fc3ba2aa06da337da8e33802e5d8bb199f31f52
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-scan_jars_py-6fc3-7ea56d6c CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-scan_jars_py-6fc3-7ea56d6c DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/scanresult.py
+SPDXID: SPDXRef-file-scanresult_py-730b-f6c280f4
+FileType: SOURCE
+FileChecksum: SHA1: 730b96ead4afc3085cfa9d1e1a8e63f1115d58e4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-scanresult_py-730b-f6c280f4 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-scanresult_py-730b-f6c280f4 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/dosocs2.py
+SPDXID: SPDXRef-file-dosocs2_py-7eff-2fdac169
+FileType: SOURCE
+FileChecksum: SHA1: 7eff434d9a71368570f0cead3e3575575f3bde44
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-dosocs2_py-7eff-2fdac169 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-dosocs2_py-7eff-2fdac169 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./setup.py
+SPDXID: SPDXRef-file-setup_py-7f87-e28f3651
+FileType: SOURCE
+FileChecksum: SHA1: 7f8750da50d682cbe275b0bfbce12231b88dd158
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-setup_py-7f87-e28f3651 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-setup_py-7f87-e28f3651 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/scanners.py
+SPDXID: SPDXRef-file-scanners_py-811a-65c42f94
+FileType: SOURCE
+FileChecksum: SHA1: 811a4b2b860b98d63e342af50a9fb3bd862c6242
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-scanners_py-811a-65c42f94 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-scanners_py-811a-65c42f94 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/quick-install-rpm.sh
+SPDXID: SPDXRef-file-quick_install_rpm_sh-9584-88134154
+FileType: SOURCE
+FileChecksum: SHA1: 95846eddc9c5afbef1d1bbb7f083cf26d6db12ad
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-quick_install_rpm_sh-9584-88134154 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-quick_install_rpm_sh-9584-88134154 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/config.py
+SPDXID: SPDXRef-file-config_py-9594-66aa2538
+FileType: SOURCE
+FileChecksum: SHA1: 959482eb61f3869de1c717d3f3c6339dc919f355
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-config_py-9594-66aa2538 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-config_py-9594-66aa2538 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/scan_pip_list.sh
+SPDXID: SPDXRef-file-scan_pip_list_sh-9dab-a0bebf95
+FileType: SOURCE
+FileChecksum: SHA1: 9daba30582a94bed8e3a496f5bc4ebf528f13981
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-scan_pip_list_sh-9dab-a0bebf95 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-scan_pip_list_sh-9dab-a0bebf95 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dev-tools/build-rpm.sh
+SPDXID: SPDXRef-file-build_rpm_sh-a0a0-00d843c1
+FileType: SOURCE
+FileChecksum: SHA1: a0a09b0c6c640e76add7d1dbff2949b288cf8e3d
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-build_rpm_sh-a0a0-00d843c1 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-build_rpm_sh-a0a0-00d843c1 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/schema.py
+SPDXID: SPDXRef-file-schema_py-a726-04921d2d
+FileType: SOURCE
+FileChecksum: SHA1: a7269829262edcbd144be604e41377414f671d99
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-schema_py-a726-04921d2d CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-schema_py-a726-04921d2d DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./tests/test_db_connect.py
+SPDXID: SPDXRef-file-test_db_connect_py-b04a-7cf87278
+FileType: SOURCE
+FileChecksum: SHA1: b04a3d418089ba3cae9233dd228d6830f51fd558
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-test_db_connect_py-b04a-7cf87278 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-test_db_connect_py-b04a-7cf87278 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./CC-BY-SA-3.0
+SPDXID: SPDXRef-file-CC_BY_SA_3_0-b92d-870addea
+FileType: SOURCE
+FileChecksum: SHA1: b92d433c85fa1b10c614aacf80780e1bc90ee445
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: CC-BY-SA-3.0
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-CC_BY_SA_3_0-b92d-870addea CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-CC_BY_SA_3_0-b92d-870addea DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/util.py
+SPDXID: SPDXRef-file-util_py-c2fc-f6a6cb44
+FileType: SOURCE
+FileChecksum: SHA1: c2fcd483fa62fd20235c7ba76faac06c1b4e50f3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-util_py-c2fc-f6a6cb44 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-util_py-c2fc-f6a6cb44 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/queries.py
+SPDXID: SPDXRef-file-queries_py-cc00-c97b87b3
+FileType: SOURCE
+FileChecksum: SHA1: cc004e2ce1d2c32485a62028d4fa614e8db12d7f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-queries_py-cc00-c97b87b3 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-queries_py-cc00-c97b87b3 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./scripts/install-nomos.sh
+SPDXID: SPDXRef-file-install_nomos_sh-cc66-ef80f945
+FileType: SOURCE
+FileChecksum: SHA1: cc6670e88756c875c3e7188aa9424455f09d43ef
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-install_nomos_sh-cc66-ef80f945 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-install_nomos_sh-cc66-ef80f945 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./tests/test_dbinit.py
+SPDXID: SPDXRef-file-test_dbinit_py-d16b-719d72e6
+FileType: SOURCE
+FileChecksum: SHA1: d16b21b0e5551a9854a33cf984492fb4fd07f44f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-test_dbinit_py-d16b-719d72e6 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-test_dbinit_py-d16b-719d72e6 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./AUTHORS
+SPDXID: SPDXRef-file-AUTHORS-d6d8-5c53c058
+FileType: OTHER
+FileChecksum: SHA1: d6d8d8eae3009e359a77952d0a9f0ed097d4889e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-AUTHORS-d6d8-5c53c058 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-AUTHORS-d6d8-5c53c058 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./DoSOCS.SPDX
+SPDXID: SPDXRef-file-DoSOCS_SPDX-da39-17891db4
+FileType: OTHER
+FileChecksum: SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-DoSOCS_SPDX-da39-17891db4 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-DoSOCS_SPDX-da39-17891db4 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/__init__.py
+SPDXID: SPDXRef-file-__init___py-da39-2b1de819
+FileType: OTHER
+FileChecksum: SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-__init___py-da39-2b1de819 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-__init___py-da39-2b1de819 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dev-tools/release.sh
+SPDXID: SPDXRef-file-release_sh-ec62-b1667021
+FileType: SOURCE
+FileChecksum: SHA1: ec623e19d01fcb943a187312fa72806ba266693b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-release_sh-ec62-b1667021 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-release_sh-ec62-b1667021 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dev-tools/minor-bump.py
+SPDXID: SPDXRef-file-minor_bump_py-ee0d-03ace3ff
+FileType: SOURCE
+FileChecksum: SHA1: ee0d76910b84a8aa4a9e988b6d702c75d276815a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-minor_bump_py-ee0d-03ace3ff CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-minor_bump_py-ee0d-03ace3ff DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./doc/configuration.md
+SPDXID: SPDXRef-file-configuration_md-f9a6-e501a9b3
+FileType: OTHER
+FileChecksum: SHA1: f9a68dca97c097889eb390c085145b9d014b5b84
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-configuration_md-f9a6-e501a9b3 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-configuration_md-f9a6-e501a9b3 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./dosocs2/templates/2.0.tag
+SPDXID: SPDXRef-file-2_0_tag-fb58-1c2ed526
+FileType: OTHER
+FileChecksum: SHA1: fb58b780b5db2694cda3ba74dafb30d501d058a1
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: GPL-2.0+
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-2_0_tag-fb58-1c2ed526 CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-2_0_tag-fb58-1c2ed526 DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+FileName: ./doc/spdx_schema.html
+SPDXID: SPDXRef-file-spdx_schema_html-ffb6-0fc6910d
+FileType: SOURCE
+FileChecksum: SHA1: ffb6c8243a453ffd73da413d79b45251906d0b77
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseComments: <text></text>
+FileCopyrightText: NOASSERTION
+FileComment: <text></text>
+FileNotice: <text></text>
+## Relationships
+Relationship: SPDXRef-file-spdx_schema_html-ffb6-0fc6910d CONTAINED_BY SPDXRef-package-DoSOCSv2-b363-69ad99f6
+Relationship: SPDXRef-file-spdx_schema_html-ffb6-0fc6910d DESCRIBED_BY SPDXRef-DOCUMENT
+
+
+## License Information
+
+LicenseID: LicenseRef-CC-BY-SA
+LicenseName: CC-BY-SA
+ExtractedText: <text></text>
+LicenseCrossReference: 
+LicenseComment: <text>found by nomos</text>
+
