@@ -84,11 +84,15 @@ def get_config_resolution_order(other_config_path=None):
         ]
 
 
-def create_user_config(overwrite=True):
+def make_config_dirs():
     try:
         os.makedirs(DOSOCS2_CONFIG_HOME)
     except EnvironmentError:
         pass
+
+
+def create_user_config(overwrite=True):
+    make_config_dirs()
     try:
         if overwrite or not os.path.exists(DOSOCS2_CONFIG_PATH):
             with open(DOSOCS2_CONFIG_PATH, 'w') as f:

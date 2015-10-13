@@ -188,6 +188,8 @@ def main(sysargv=None):
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
 
+    config.make_config_dirs()
+
     if argv['--config']:
         try:
             with open(alt_config) as _:
