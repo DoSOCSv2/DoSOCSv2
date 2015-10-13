@@ -39,7 +39,7 @@ if [[ ! -f "./setup.py" ]]; then
     exit 1
 fi
 
-echo "[$0] sudo yum install gcc git glib2-devel make postgresql-devel sqlite"
+echo "[$0] sudo yum install gcc git glib2-devel make postgresql-devel python-devel sqlite"
 sudo yum install gcc git make postgresql-devel glib2-devel sqlite || exit 1
 
 if [[ -d "$VIRTUAL_ENV" ]]; then
