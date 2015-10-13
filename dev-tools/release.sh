@@ -38,4 +38,3 @@ if [[ "$?" != "0" ]]; then
 fi
 
 python setup.py sdist || exit 1
-py2dsc-deb "dist/dosocs2-${NEWVER}.tar.gz"
