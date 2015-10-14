@@ -40,7 +40,7 @@ if [[ ! -f "./setup.py" ]]; then
 fi
 
 echo "[$0] sudo yum install gcc git glib2-devel make postgresql-devel python-devel sqlite"
-sudo yum install gcc git make postgresql-devel glib2-devel sqlite || exit 1
+sudo yum install gcc git make postgresql-devel glib2-devel sqlite unzip || exit 1
 
 if [[ -d "$VIRTUAL_ENV" ]]; then
     echo "[$0] Running inside a virtualenv"
@@ -53,6 +53,8 @@ fi
 
 echo "[$0] Installing nomos"
 ./scripts/install-nomos.sh || exit 1
+echo "[$0] Installing dependency-check"
+./scripts/install-dependency-check.sh || exit 1
 
 echo -e "\nSelect initial configuration:"
 select ANSWER in "PostgreSQL (global)" "SQLite (per-user)"; do
