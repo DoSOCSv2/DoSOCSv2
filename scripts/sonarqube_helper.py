@@ -20,15 +20,37 @@
 #
 # SPDX-License-Identifier: GPL-2.0+
 
+# Helper script for dosocs2 SonarQube plugin.
+
+import os
+import re
 import subprocess
 import sys
+import psycopg2
 
 package_path = sys.argv[1]
 
 args = [
     'dosocs2', 'scan',
-    '--scanners', 'nomos_deep',
+    '--scanners', 'nomos_deep,dependency_check',
     package_path
     ]
-output = subprocess.check_output(args)
+output = subprocess.check_output(args, stderr=subprocess.STDOUT)
 print output
+m = re.search(r"package_id: ([0-9]+)\n", output)
+package_id = m.group(1)
+
+query = """
+select pac.package_id, short_name, count(fli.file_license_id) found_count, package_comment
+from packages pac
+join packages_files pfi on  pac.package_id = pfi.package_id
+join files fil on pfi.file_id = fil.file_id
+join files_licenses fli on fil.file_id = fli.file_id
+join licenses lic on fli.license_id = lic.license_id
+where pac.package_id = ?
+group by short_name
+"""
+conn = psycopg2.connect('dbname=spdx user=spdx') # add password parameter
+c = conn.cursor()
+c.execute(query, (package_id,))
+print c.fetchall()
