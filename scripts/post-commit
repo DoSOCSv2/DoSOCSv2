@@ -16,7 +16,7 @@ JENKINS_JOB_NAME=dosocs2-svn
 JENKINS_API_TOKEN=0123456789abcdef
 
 # url escape
-NEWREPOS=$(python2 -c "\
+NEWREPOS=$(/usr/bin/python2 -c "\
 import sys; print '$REPOS'\
 .replace('%', '%25')\
 .replace('/', '%2F')\
