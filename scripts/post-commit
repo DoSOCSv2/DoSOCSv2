@@ -10,6 +10,10 @@
 REPOS="$1"
 #REV="$2"
 #TXN_NAME="$3"
+JENKINS_HOST=localhost
+JENKINS_PORT=9012
+JENKINS_JOB_NAME=dosocs2-svn
+JENKINS_API_TOKEN=0123456789abcdef
 
 # url escape
 NEWREPOS=$(python2 -c "\
@@ -36,4 +40,4 @@ import sys; print '$REPOS'\
   --output-document "-" \
   --timeout=2 --user=socs --password=socs --auth-no-challenge \
   --post-data "" \
-  "http://localhost:9002/job/dosocs2-svn/buildWithParameters?token=socs&TARGET%5FPATH=$NEWREPOS"
+  "http://${JENKINS_HOST}:${JENKINS_PORT}/job/${JENKINS_JOB_NAME}/buildWithParameters?token=${JENKINS_API_TOKEN}&TARGET%5FPATH=${NEWREPOS}"
