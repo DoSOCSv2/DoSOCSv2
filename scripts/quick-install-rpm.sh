@@ -51,10 +51,17 @@ else
     sudo pip install . || exit 1
 fi
 
-echo "[$0] Installing nomos"
-./scripts/install-nomos.sh || exit 1
-echo "[$0] Installing dependency-check"
-./scripts/install-dependency-check.sh || exit 1
+read -p "Install nomos scanner (y/N)? " yn
+case ${yn:0:1} in
+    y|Y ) ./scripts/install-nomos.sh ;;
+    * ) ;;
+esac
+
+read -p "Install dependency-check scanner (y/N)? " yn
+case ${yn:0:1} in
+    y|Y ) ./scripts/install-dependency-check.sh ;;
+    * ) ;;
+esac
 
 echo -e "\nSelect initial configuration:"
 select ANSWER in "PostgreSQL (global)" "SQLite (per-user)"; do
