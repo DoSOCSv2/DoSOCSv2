@@ -39,6 +39,17 @@ if [[ ! -f "./setup.py" ]]; then
     exit 1
 fi
 
+echo "[$0] I am about to do the following, with root privileges acquired as needed:"
+echo "[$0] - Install all required system packages: (yum install gcc git glib2-devel make postgresql-devel python-devel sqlite)"
+echo '[$0] - Install DoSOCS using pip'
+echo '[$0] - Prompt for nomos and dependency-check installation'
+echo '[$0] - Prompt for database install and configuration'
+read -p "Is this okay (y/N)? " yn
+case ${yn:0:1} in
+    y|Y ) ;;
+    * ) exit ;;
+esac
+
 echo "[$0] sudo yum install gcc git glib2-devel make postgresql-devel python-devel sqlite"
 sudo yum install gcc git make postgresql-devel glib2-devel sqlite unzip || exit 1
 
@@ -83,6 +94,9 @@ if [[ "$CONFIG_TYPE" == "postgresql" ]]; then
     if [[ "$PSQL_PORT" == "" ]]; then
         PSQL_PORT="5432"
     fi
+
+    echo "[$0] I will now prompt for passwords for PostgreSQL roles 'spdx' and 'spdx_select'"
+    echo "[$0] If these roles do not already exist, you will be prompted to create them."
 
     while true; do
         read -s -p "Password for role 'spdx': " SPDX_PASS
