@@ -41,9 +41,9 @@ fi
 
 echo "[$0] I am about to do the following, with root privileges acquired as needed:"
 echo "[$0] - Install all required system packages: (yum install gcc git glib2-devel make postgresql-devel python-devel sqlite)"
-echo '[$0] - Install DoSOCS using pip'
-echo '[$0] - Prompt for nomos and dependency-check installation'
-echo '[$0] - Prompt for database install and configuration'
+echo "[$0] - Install DoSOCS using pip"
+echo "[$0] - Prompt for nomos and dependency-check installation"
+echo "[$0] - Prompt for database install and configuration"
 read -p "Is this okay (y/N)? " yn
 case ${yn:0:1} in
     y|Y ) ;;
