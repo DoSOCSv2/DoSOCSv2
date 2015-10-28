@@ -105,7 +105,7 @@ def errmsg(text, **kwargs):
     sys.stdout.flush()
 
 
-def do_scan(engine, package_root, package_file_path=None, selected_scanners=None,
+def do_scan(engine, config, package_root, package_file_path=None, selected_scanners=None,
             package_name=None, package_version='', package_comment='', rescan=False):
     if selected_scanners is None:
         selected_scanners = ()
@@ -127,7 +127,7 @@ def do_scan(engine, package_root, package_file_path=None, selected_scanners=None
             'rescan': rescan
             }
         with engine.begin() as conn:
-            scanner = scanner_cls(conn)
+            scanner = scanner_cls(conn, config)
             package_already_done = scanner.package_is_already_done(package['package_id'])
             if not rescan and package_already_done:
                 errmsg('{} already ran on package {}'.format(scanner.name, package['package_id']))
@@ -269,6 +269,7 @@ def main(sysargv=None):
 
     elif argv['scan']:
         kwargs = {
+            'config': config.config,
             'engine': engine,
             'selected_scanners': selected_scanners,
             'package_name': argv['--package-name'],
@@ -290,6 +291,7 @@ def main(sysargv=None):
 
     elif argv['oneshot']:
         kwargs = {
+            'config': config.config,
             'engine': engine,
             'selected_scanners': selected_scanners,
             'package_name': argv['--package-name'],

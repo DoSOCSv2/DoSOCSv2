@@ -35,7 +35,6 @@ from . import util
 from . import scanresult
 from . import schema as db
 from . import spdxdb
-from . import config
 
 
 """A file (already registered) to be processed by a scanner."""
@@ -63,12 +62,11 @@ class Scanner(object):
     """
     name = 'dummy'
 
-    def __init__(self, conn):
+    def __init__(self, conn, config):
         """Initialize Scanner object.
 
         Register the scanner in the database if it is not already registered.
-        Other initialization (such as reading certain variables from
-        the dosocs2 config file) may be done here by subclasses.
+        Other initialization may be done here by subclasses.
         """
         self.conn = conn
         self.register()
@@ -286,9 +284,9 @@ class Monk(FileLicenseScanner):
 
     name = 'monk'
 
-    def __init__(self, conn):
-        super(Monk, self).__init__(conn)
-        self.exec_path = config.config['scanner_' + self.name + '_path']
+    def __init__(self, conn, config):
+        super(Monk, self).__init__(conn, config)
+        self.exec_path = config['scanner_' + self.name + '_path']
         self.search_pattern = re.compile('found diff match between \"(.*?)\" and \"(.*?)\"')
 
     def process_file(self, file):
@@ -312,9 +310,9 @@ class Nomos(FileLicenseScanner):
 
     name = 'nomos'
 
-    def __init__(self, conn):
-        super(Nomos, self).__init__(conn)
-        self.exec_path = config.config['scanner_' + Nomos.name + '_path']
+    def __init__(self, conn, config):
+        super(Nomos, self).__init__(conn, config)
+        self.exec_path = config['scanner_' + Nomos.name + '_path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
 
     def process_file(self, file):
@@ -339,9 +337,9 @@ class Copyright(Scanner):
 
     name = 'copyright'
 
-    def __init__(self, conn):
-        super(Copyright, self).__init__(conn)
-        self.exec_path = config.config['scanner_' + self.name + '_path']
+    def __init__(self, conn, config):
+        super(Copyright, self).__init__(conn, config)
+        self.exec_path = config['scanner_' + self.name + '_path']
         self.search_pattern = re.compile(r"\t\[[0-9]+:[0-9]+:statement\] ['](.*?)[']", re.DOTALL)
 
     def process_file(self, file):
@@ -395,9 +393,9 @@ class DependencyCheck(Scanner):
 
     name = 'dependency_check'
 
-    def __init__(self, conn):
-        super(DependencyCheck, self).__init__(conn)
-        self.exec_path = config.config['scanner_' + self.name + '_path']
+    def __init__(self, conn, config):
+        super(DependencyCheck, self).__init__(conn, config)
+        self.exec_path = config['scanner_' + self.name + '_path']
 
     def run(self, package_id, package_root, package_file_path=None, rescan=False):
         # rescan is ignored
