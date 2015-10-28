@@ -20,7 +20,6 @@
 import time
 
 import jinja2
-from . import config
 from . import queries
 from . import util
 

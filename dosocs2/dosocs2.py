@@ -255,14 +255,15 @@ def main(sysargv=None):
     elif argv['generate']:
         kwargs = {
             'name': new_doc_name,
-            'comment': new_doc_comment
+            'comment': new_doc_comment,
+            'prefix': config.config['namespace_prefix']
             }
         with engine.begin() as conn:
             package = spdxdb.fetch(conn, db.packages, package_id)
             if package is None:
                 errmsg('package id {} not found in the database.'.format(package_id))
                 return 1
-            document_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
+            document_id = spdxdb.create_document(conn, package=package, **kwargs)['document_id']
         fmt = '(package_id {}): document_id: {}\n'
         sys.stderr.write(fmt.format(package_id, document_id))
 
@@ -313,9 +314,10 @@ def main(sysargv=None):
             else:
                 kwargs = {
                     'name': new_doc_name,
-                    'comment': new_doc_comment
+                    'comment': new_doc_comment,
+                    'prefix': config.config['namespace_prefix']
                     }
-                doc_id = spdxdb.create_document(conn, package, **kwargs)['document_id']
+                doc_id = spdxdb.create_document(conn, package=package, **kwargs)['document_id']
             fmt = '{}: document_id: {}\n'
             sys.stderr.write(fmt.format(package_path, doc_id))
         with engine.begin() as conn:

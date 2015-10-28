@@ -21,7 +21,6 @@ import os
 
 from sqlalchemy.sql import select, and_
 
-from . import config
 from . import queries
 from . import schema as db
 from . import util
@@ -150,9 +149,9 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
     return package
 
 
-def create_document_namespace(conn, doc_name):
+def create_document_namespace(conn, prefix, doc_name):
     suffix = util.friendly_namespace_suffix(doc_name)
-    uri = config.config['namespace_prefix'] + suffix
+    uri = prefix + suffix
     doc_namespace = {'uri': uri}
     doc_namespace['document_namespace_id'] = insert(conn, db.document_namespaces, doc_namespace)
     return doc_namespace
@@ -208,14 +207,14 @@ def autocreate_relationships(conn, docid):
         bulk_insert(conn, db.relationships, row_params)
 
 
-def create_document(conn, package, name=None, comment=None):
+def create_document(conn, prefix, package, name=None, comment=None):
     data_license_query = (
         select([db.licenses.c.license_id])
         .where(db.licenses.c.short_name == 'CC0-1.0')
         )
     data_license_id = conn.execute(data_license_query).fetchone()['license_id']
     doc_name = name or package['name']
-    doc_namespace_id = create_document_namespace(conn, doc_name)['document_namespace_id']
+    doc_namespace_id = create_document_namespace(conn, prefix, doc_name)['document_namespace_id']
     new_document = {
         'data_license_id': data_license_id,
         'spdx_version': 'SPDX-2.0',
