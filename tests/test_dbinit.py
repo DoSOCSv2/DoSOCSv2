@@ -64,7 +64,7 @@ def test_scrape_license_list(mock_urlopen):
     a = Mock()
     a.read.side_effect = [TEST_LICENSE_PAGE_TEXT]
     mock_urlopen.return_value = a
-    result = dbinit.scrape_site('https://spdx.org/licenses')
+    result = dbinit.scrape_site('https://spdx.org/licenses/')
     expected_result = [
         ['BSD-2-Clause-FreeBSD',
          'BSD 2-clause FreeBSD License',

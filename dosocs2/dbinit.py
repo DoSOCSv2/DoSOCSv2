@@ -159,7 +159,7 @@ def scrape_site(url):
     completed_rows = [[
         row[2],                         # short name
         row[1],                         # friendly name
-        (url + row[0][2:])]             # cross ref
+        (url + '/' + row[0][2:])]             # cross ref
         for row in rows
         ]
     return completed_rows
