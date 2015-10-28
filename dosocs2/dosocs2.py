@@ -23,7 +23,7 @@
 {0} configtest [-f FILE]
 {0} dbinit [-f FILE] [--no-confirm]
 {0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
-{0} newconfig
+{0} newconfig [-f FILE]
 {0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
     [-s SCANNERS] [-e VER] [-r] (PATH)
 {0} print [-f FILE] (DOC-ID)
@@ -81,7 +81,7 @@ import docopt
 __version__ = '0.15.1'
 
 
-from . import config
+from . import configtools
 from . import dbinit
 from . import render
 from . import scanners
@@ -93,6 +93,10 @@ from . import util
 format_map = {
     'tag': pkg_resources.resource_filename('dosocs2', 'templates/2.0.tag'),
 }
+
+
+def print_hr():
+    print('\n' + 79 * '-' + '\n')
 
 
 def msg(text, **kwargs):
@@ -139,20 +143,20 @@ def do_scan(engine, config, package_root, package_file_path=None, selected_scann
     return package
 
 
-def do_configtest(engine, alt_config):
-    print('\n' + 79 * '-' + '\n')
+def do_configtest(engine, config):
+    print_hr()
     print('Config resolution order:')
-    for path in config.get_config_resolution_order(alt_config):
+    for path in config.resolution_order:
         if os.path.exists(path):
             print(path)
         else:
             print(path + ' (not present)')
-    print('\n' + 79 * '-' + '\n')
+    print_hr()
     print('Effective configuration:\n')
     print('# begin dosocs2 config\n')
     config.dump_to_file(sys.stdout)
     print('\n# end dosocs2 config')
-    print('\n' + 79 * '-' + '\n')
+    print_hr()
     print('Testing specified scanner paths...')
     scanner_config_pattern = r'scanner_(.*?)_path'
     for key in sorted(config.config.keys()):
@@ -166,7 +170,7 @@ def do_configtest(engine, alt_config):
             else:
                 print('ok.')
 
-    print('\n' + 79 * '-' + '\n')
+    print_hr()
     print('Testing database connection...', end='')
     sys.stdout.flush()
     with engine.begin() as conn:
@@ -180,23 +184,28 @@ def main(sysargv=None):
         argv=sysargv,
         version=__version__
         )
-    alt_config = argv['--config']
+    alt_config_path = argv['--config']
     doc_id = argv['DOC-ID']
     package_id = argv['PACKAGE-ID']
     package_path = argv['PATH']
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
 
+
+    config = configtools.Config()
     config.make_config_dirs()
 
     if argv['--config']:
         try:
-            with open(alt_config) as _:
-                pass
+            # if creating new, don't care if it already exists or not
+            if not argv['newconfig']:
+                with open(alt_config_path) as _:
+                    pass
         except EnvironmentError as ex:
-            errmsg('{}: {}'.format(alt_config, ex.strerror))
+            errmsg('{}: {}'.format(alt_config_path, ex.strerror))
             return 1
-        config.update_config(alt_config)
+        config.local_path = alt_config_path
+        config.update_config()
     if not argv['--scanners']:
         argv['--scanners'] = config.config['default_scanners']
     selected_scanners = []
@@ -212,17 +221,18 @@ def main(sysargv=None):
     engine = db.create_connection(config.config['connection_uri'], echo)
 
     if argv['configtest']:
-        do_configtest(engine, alt_config)
+        do_configtest(engine, config)
         return 0
 
     elif argv['newconfig']:
-        config_path = config.DOSOCS2_CONFIG_PATH
-        configresult = config.create_user_config()
-        if not configresult:
-            errmsg('failed to write config file to {}'.format(config_path))
+        try:
+            configresult = config.create_local_config()
+        except EnvironmentError as e:
+            errmsg('failed to write config file to {}: {}'.format(config.local_path, e.strerror))
+            return 1
         else:
-            msg('wrote config file to {}'.format(config_path))
-        return 0 if configresult else 1
+            msg('wrote config file to {}'.format(config.local_path))
+            return 0
 
     elif argv['scanners']:
         default_scanners = config.config['default_scanners'].split(',')

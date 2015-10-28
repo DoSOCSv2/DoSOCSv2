@@ -52,69 +52,56 @@ scanner_dependency_check_path = /usr/local/dependency-check/bin/dependency-check
 """
 
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
-DOSOCS2_CONFIG_HOME = os.path.join(XDG_CONFIG_HOME, 'dosocs2')
-DOSOCS2_CONFIG_PATH = os.path.join(DOSOCS2_CONFIG_HOME, 'dosocs2.conf')
-GLOBAL_CONFIG_PATH = '/etc/dosocs2.conf'
 
-config = {}
+class Config:
 
-def _interpolate(matchobj):
-    return os.environ.get(matchobj.group(1)) or ''
+    def __init__(self):
+        self.config_home = os.path.join(XDG_CONFIG_HOME, 'dosocs2')
+        self.local_path = os.path.join(self.config_home, 'dosocs2.conf')
+        self.global_path = '/etc/dosocs2.conf'
+        self.config = self.get_from_file(DEFAULT_CONFIG.split('\n'))
+        self.update_config()
 
+    def _interpolate(self, matchobj):
+        return os.environ.get(matchobj.group(1)) or ''
 
-def get_config_from_file(f):
-    config = {}
-    for line in f:
-        if not line.strip() or line.startswith('#'):
-            continue
-        key, val = line.strip().split('=', 1)
-        key = key.strip()
-        val = val.strip()
-        val = re.sub(r'\$\((.*?)\)', _interpolate, val)
-        config[key] = val
-    return config
+    def get_from_file(self, f):
+        config = {}
+        for line in f:
+            if not line.strip() or line.startswith('#'):
+                continue
+            key, val = line.strip().split('=', 1)
+            key = key.strip()
+            val = val.strip()
+            val = re.sub(r'\$\((.*?)\)', self._interpolate, val)
+            config[key] = val
+        return config
 
+    @property
+    def resolution_order(self):
+        return (self.global_path, self.local_path)
 
-def get_config_resolution_order(other_config_path=None):
-    return [
-        GLOBAL_CONFIG_PATH,
-        other_config_path or DOSOCS2_CONFIG_PATH
-        ]
-
-
-def make_config_dirs():
-    try:
-        os.makedirs(DOSOCS2_CONFIG_HOME)
-    except EnvironmentError:
-        pass
-
-
-def create_user_config(overwrite=True):
-    make_config_dirs()
-    try:
-        if overwrite or not os.path.exists(DOSOCS2_CONFIG_PATH):
-            with open(DOSOCS2_CONFIG_PATH, 'w') as f:
-                f.write(DEFAULT_CONFIG)
-    except EnvironmentError:
-        return False
-    return True
-
-
-def update_config(other_config_path=None):
-    global config
-    config = {}
-    config_order = get_config_resolution_order(other_config_path)
-    config.update(get_config_from_file(DEFAULT_CONFIG.split('\n')))
-    for path in config_order:
+    def make_config_dirs(self):
         try:
-            with open(path) as f:
-                config.update(get_config_from_file(f))
+            os.makedirs(self.config_home)
         except EnvironmentError:
-            continue
+            pass
 
+    def create_local_config(self, overwrite=True):
+        self.make_config_dirs()
+        if overwrite or not os.path.exists(self.local_path):
+            with open(self.local_path, 'w') as f:
+                f.write(DEFAULT_CONFIG)
 
-def dump_to_file(fileobj):
-    for key, val in sorted(config.iteritems()):
-        fileobj.write('{} = {}\n'.format(key, val))
+    def update_config(self):
+        config_order = self.resolution_order
+        for path in config_order:
+            try:
+                with open(path) as f:
+                    self.config.update(self.get_from_file(f))
+            except EnvironmentError:
+                continue
 
-update_config()
+    def dump_to_file(self, fileobj):
+        for key, val in sorted(self.config.iteritems()):
+            fileobj.write('{} = {}\n'.format(key, val))
