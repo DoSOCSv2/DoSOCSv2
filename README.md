@@ -34,8 +34,7 @@ changes until a 1.x.x release!
 License and Copyright
 ---------------------
 
-Copyright © 2015 University of Nebraska at Omaha  
-Copyright © 2015 dosocs2 contributors
+Copyright © 2015 University of Nebraska at Omaha
 
 dosocs2 is free software: you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
