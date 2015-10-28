@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
