@@ -7,7 +7,6 @@ install_requires=[
     'python-magic',
     'docopt',
     'SQLAlchemy',
-    'xmltodict',
     'psycopg2'
     ]
 
@@ -21,7 +20,7 @@ setup(
     version=_dosocs2_version,
     description='SPDX 2.0 document creation and storage',
     long_description='',
-    url='https://github.com/ttgurney/dosocs2',
+    url='https://github.com/DoSOCSv2/DoSOCSv2',
     author='Thomas T. Gurney',
     author_email='tgurney@unomaha.edu',
     license='GNU General Public License v2 or later (GPLv2+)',
