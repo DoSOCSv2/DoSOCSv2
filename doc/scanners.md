@@ -1,14 +1,11 @@
 ## Scanners
 
 The concept of scanners that provide useful information about software packages
-is an important one to `dosocs2`. `dosocs2` comes with six scanners defined:
+is an important one to `dosocs2`. `dosocs2` comes with three scanners defined:
 
 * `dummy`
 * `nomos` (the default)
 * `nomos_deep`
-* `dependency_check`
-* `copyright`
-* `monk`
 
 During a package scan, after any unknown files are registered and their SHA-1
 digests saved, any of these scanners can be run in any combination on the
@@ -62,30 +59,3 @@ any archives (tarballs, zip archives) found in the package, and scan those
 files also. Any license information found in these 'sub-packages' is treated as
 if it applies to that entire sub-package as if it were a regular file. Files in
 sub-packages are not registered with `dosocs2`.
-
-#### `dependency_check`
-
-This scanner uses OWASP Dependency-Check to attempt to identify any
-[CPE(s)](https://nvd.nist.gov/cpe.cfm) associated with a package. It operates
-at the package level only, and any file-level operations are considered
-implementation details of Dependency-Check itself.
-
-As of version 0.10.0, this information is stored as a JSON object in the
-package comment field (SPDX 2.0 section 3.19). Until a field for this
-information is added to SPDX, or an alternative solution arises, the
-package comment field **will be overwritten** each time `dependency_check`
-runs on a package.
-
-#### `copyright`
-
-This is the `copyright` agent from FOSSology, it identifies strings that look
-like copyright declarations. `copyright` stores found copyright strings in
-the copyright text field at the file level, overwriting that field if it is
-already populated. This agent is a bit heavy-handed--it often produces
-false positives, so its output should be subject to extra review by a human.
-
-#### `monk`
-
-Another adapter for a FOSSology agent. `monk` is a license scanner; it is
-fast but tends to produce much fewer matches than `nomos`. It otherwise
-operates exactly the same as `nomos`, as far as we are concerned. 

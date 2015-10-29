@@ -17,21 +17,19 @@
 #
 # SPDX-License-Identifier: GPL-2.0+
 
-"""Interfaces to external scanning tools.
+"""Generic scanner facilities.
 
-Includes the Scanner base class, the WorkItem class, and some predefined
-Scanner subclasses.
+Includes Scanner base classes, the WorkItem class, and the discover() function.
 """
 
+import importlib
+import pkgutil
 import os
-import re
-import subprocess
 from collections import namedtuple
 
 from sqlalchemy import select, and_
-import xmltodict
 
-from . import util
+from . import scanners
 from . import scanresult
 from . import schema as db
 from . import spdxdb
@@ -49,10 +47,6 @@ class Scanner(object):
     and at least override process_file(), store_results(), and the 'name'
     property.
 
-    Instantiating the base Scanner class provides a 'dummy' scanner,
-    in which the process_file() and store_results() methods are no-ops. The
-    'dummy' scanner is otherwise a well-behaved scanner, and no other methods
-    strictly need to be overridden by subclasses.
     """
 
     """Name for this scanner, used in all contexts (including the database).
@@ -60,7 +54,7 @@ class Scanner(object):
     All scanner names must be unique, thus subclasses must override this
     property. Not doing so will lead to strange results.
     """
-    name = 'dummy'
+    name = None
 
     def __init__(self, conn, config):
         """Initialize Scanner object.
@@ -144,11 +138,10 @@ class Scanner(object):
         scanner is being called (and what type of results are expected by
         self.store_results())
 
-        In the base Scanner class, this method returns None, so it must be
-        overridden in a subclass.
-
+        In the base Scanner class, this method raises NotImplementedError,
+        so it must be overridden in a subclass.
         """
-        pass
+        raise NotImplementedError
 
     def store_results(self, processed_files):
         """Store scan results in the database. Return None.
@@ -158,10 +151,10 @@ class Scanner(object):
           objects.  The nature of these scan result objects depends on which
           scanner is being called.
 
-        In the base Scanner class, this method does nothing, so it must be
-        overridden in a subclass.
+        In the base Scanner class, this method raises NotImplementedError,
+        so it must be overridden in a subclass.
         """
-        pass
+        raise NotImplementedError
 
     def register(self):
         """Register scanner in the database if not already registered.
@@ -252,8 +245,8 @@ class FileLicenseScanner(Scanner):
     """Scanner subclass that implements store_results() for those scanners
     whose result is a list of license short names.
 
-    New connectors to external license scanners should probably inherit from
-    this and not from Scanner.
+    New connectors to external license scanners should inherit from this and
+    not from Scanner.
     """
 
     def store_results(self, processed_files):
@@ -278,194 +271,14 @@ class FileLicenseScanner(Scanner):
         scanresult.add_file_licenses(self.conn, licenses_to_add)
 
 
-class Monk(FileLicenseScanner):
-
-    """Connector to FOSSology's 'monk' license scanner."""
-
-    name = 'monk'
-
-    def __init__(self, conn, config):
-        super(Monk, self).__init__(conn, config)
-        self.exec_path = config['scanner_' + self.name + '_path']
-        self.search_pattern = re.compile('found diff match between \"(.*?)\" and \"(.*?)\"')
-
-    def process_file(self, file):
-        args = (self.exec_path, file.path)
-        output = subprocess.check_output(args)
-        scan_result = set()
-        for line in output.split('\n'):
-            m = re.match(self.search_pattern, line)
-            if m is None:
-                continue
-            scan_result.update({
-                lic_name
-                for lic_name in m.group(2).split(',')
-                })
-        return scan_result
-
-
-class Nomos(FileLicenseScanner):
-
-    """Connector to FOSSology's 'nomos' license scanner."""
-
-    name = 'nomos'
-
-    def __init__(self, conn, config):
-        super(Nomos, self).__init__(conn, config)
-        self.exec_path = config['scanner_' + Nomos.name + '_path']
-        self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
-
-    def process_file(self, file):
-        args = (self.exec_path, '-l', file.path)
-        output = subprocess.check_output(args)
-        scan_result = set()
-        for line in output.split('\n'):
-            m = re.match(self.search_pattern, line)
-            if m is None:
-                continue
-            scan_result.update({
-                lic_name
-                for lic_name in m.group(2).split(',')
-                if lic_name != 'No_license_found'
-                })
-        return scan_result
-
-
-class Copyright(Scanner):
-
-    """Connector to FOSSology's 'copyright' scanner."""
-
-    name = 'copyright'
-
-    def __init__(self, conn, config):
-        super(Copyright, self).__init__(conn, config)
-        self.exec_path = config['scanner_' + self.name + '_path']
-        self.search_pattern = re.compile(r"\t\[[0-9]+:[0-9]+:statement\] ['](.*?)[']", re.DOTALL)
-
-    def process_file(self, file):
-        args = (self.exec_path, '-C', file.path)
-        output = subprocess.check_output(args)
-        scan_result = []
-        m = re.findall(self.search_pattern, output)
-        if m is None:
-            return None
-        else:
-            return '\n'.join(m) or None
-
-    def store_results(self, processed_files):
-        for file in processed_files:
-            if processed_files[file] is not None:
-                scanresult.add_file_copyright(self.conn, file.file_id, processed_files[file])
-
-
-class NomosDeep(Nomos):
-
-    """Same as Nomos, but unpacks archives in the file list.
-
-    Regular Nomos treats every file as a monolith. This one will unpack
-    those files that are archives, and scan the resulting directory structure.
-    All licenses found for such an archive are treated as associated with
-    the archive itself, rather than any of the files inside.
-
-    Thus, Nomos and NomosDeep will return the same number of files scanned,
-    but for those scanned files that are archive files, NomosDeep will likely
-    return better results, at the cost of execution speed.
-    """
-
-    name = 'nomos_deep'
-
-    def process_file(self, file):
-        scan_result = set()
-        if util.archive_type(file.path):
-            with util.tempextract(file.path) as (tempdir, relpaths):
-                abspaths = (os.path.join(tempdir, relpath) for relpath in relpaths)
-                filepaths = (abspath for abspath in abspaths if os.path.isfile(abspath))
-                for filepath in filepaths:
-                    work_item = WorkItem(None, filepath)
-                    this_result = super(NomosDeep, self).process_file(work_item)
-                    scan_result.update(this_result)
-        else:
-            scan_result = super(NomosDeep, self).process_file(file)
-        return scan_result
-
-
-class DependencyCheck(Scanner):
-
-    name = 'dependency_check'
-
-    def __init__(self, conn, config):
-        super(DependencyCheck, self).__init__(conn, config)
-        self.exec_path = config['scanner_' + self.name + '_path']
-
-    def run(self, package_id, package_root, package_file_path=None, rescan=False):
-        # rescan is ignored
-        package_path = package_file_path or package_root
-        with util.tempdir() as tempdir:
-            args = [
-                self.exec_path,
-                '--out', tempdir,
-                '--format', 'XML',
-                '--scan', package_path,
-                '--app', 'none',
-                '--noupdate'
-                ]
-            subprocess.check_call(args, stderr=open(os.devnull))
-            with open(os.path.join(tempdir, 'dependency-check-report.xml')) as f:
-                xml_data = f.read()
-        cpes = DependencyCheck.parse_dependency_xml(xml_data)
-        scanresult.add_cpes(self.conn, package_id, cpes)
-
-    @staticmethod
-    def as_list(item):
-        if isinstance(item, list):
-            return item
-        else:
-            return [item]
-
-    @staticmethod
-    def extract_cpe(item):
-        if isinstance(item, OrderedDict):
-            return item['#text']
-        else:
-            return item
-
-    @staticmethod
-    def strip_whitespace(s):
-        return re.sub(r'(\n|\s+)', r' ', s)
-
-    @staticmethod
-    def get_cpes(dep):
-        idents = DependencyCheck.as_list(dep.get('identifiers', {}).get('identifier', []))
-        cpes = []
-        for ident in idents:
-            if ident['@type'] == 'cpe':
-                cpes.append({
-                    'cpe': ident['name'],
-                    'confidence': ident['@confidence'],
-                    })
-        return cpes
-
-    @staticmethod
-    def parse_dependency_xml(xml_text):
-        x = xmltodict.parse(xml_text)
-        deps = []
-        root_deps = x['analysis']['dependencies'] or {}
-        for dep in DependencyCheck.as_list(root_deps.get('dependency', list())):
-            deps.append({
-                'sha1': dep['sha1'],
-                'cpes': DependencyCheck.get_cpes(dep)
-                })
-        return deps
-
-"""Table of scanners known to dosocs2.
-
-All scanners here are recognized by the -s option on the command line.
-"""
-scanners = {
-    'copyright': Copyright,
-    'monk': Monk,
-    'nomos': Nomos,
-    'nomos_deep': NomosDeep,
-    'dummy': Scanner,
-    'dependency_check': DependencyCheck
-    }
+def discover():
+    path = os.path.dirname(scanners.__file__)
+    scanner_names = [name for _, name, _ in pkgutil.iter_modules([path])]
+    modules = (
+        importlib.import_module('.' + name, __package__ + '.' + 'scanners')
+        for name in scanner_names
+        )
+    return {
+        mod.scanner.name: mod.scanner
+        for mod in modules
+        }

@@ -84,7 +84,7 @@ __version__ = '0.15.1'
 from . import configtools
 from . import dbinit
 from . import render
-from . import scanners
+from . import scannerbase
 from . import schema as db
 from . import spdxdb
 from . import util
@@ -191,9 +191,10 @@ def main(sysargv=None):
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
 
-
     config = configtools.Config()
     config.make_config_dirs()
+
+    scanners = scannerbase.discover()
 
     if argv['--config']:
         try:
@@ -211,7 +212,7 @@ def main(sysargv=None):
     selected_scanners = []
     for this_scanner_name in argv['--scanners'].split(','):
         try:
-            this_scanner = scanners.scanners[this_scanner_name]
+            this_scanner = scanners[this_scanner_name]
         except KeyError:
             errmsg("'{}' is not a known scanner".format(this_scanner_name))
             return 1
@@ -236,7 +237,7 @@ def main(sysargv=None):
 
     elif argv['scanners']:
         default_scanners = config.config['default_scanners'].split(',')
-        for s in sorted(scanners.scanners):
+        for s in sorted(scanners):
             if s in default_scanners:
                 print(s + ' [default]')
             else:
