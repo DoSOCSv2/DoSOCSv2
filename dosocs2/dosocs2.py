@@ -299,7 +299,6 @@ def main(sysargv=None):
             kwargs['package_file_path'] = None
             do_scan(**kwargs)
 
-
     elif argv['oneshot']:
         kwargs = {
             'config': config.config,

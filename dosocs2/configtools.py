@@ -53,6 +53,7 @@ scanner_dependency_check_path = /usr/local/dependency-check/bin/dependency-check
 
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
 
+
 class Config:
 
     def __init__(self):
