@@ -19,7 +19,7 @@
 
 """Generic scanner facilities.
 
-Includes Scanner base classes, the WorkItem class, and the discover() function.
+Includes Scanner base classes and the WorkItem class.
 """
 
 import os
