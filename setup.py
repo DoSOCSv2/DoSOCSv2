@@ -36,7 +36,7 @@ setup(
         ],
 
     keywords='spdx license licenses',
-    packages=['dosocs2'],
+    packages=['dosocs2', 'dosocs2.scanners'],
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
