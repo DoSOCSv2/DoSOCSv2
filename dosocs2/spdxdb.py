@@ -220,7 +220,7 @@ def create_document(conn, prefix, package, name=None, comment=None):
         'spdx_version': 'SPDX-2.0',
         'name': doc_name,
         'document_namespace_id': doc_namespace_id,
-        'license_list_version': '2.0',  # TODO: dynamically fill from database table
+        'license_list_version': '2.2',
         'creator_comment': name or '',
         'document_comment': comment or '',
         'package_id': package['package_id']
