@@ -56,10 +56,10 @@ XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.confi
 
 class Config:
 
-    def __init__(self):
+    def __init__(self, global_path=None, local_path=None):
         self.config_home = os.path.join(XDG_CONFIG_HOME, 'dosocs2')
-        self.local_path = os.path.join(self.config_home, 'dosocs2.conf')
-        self.global_path = '/etc/dosocs2.conf'
+        self.local_path = local_path or os.path.join(self.config_home, 'dosocs2.conf')
+        self.global_path = global_path or '/etc/dosocs2.conf'
         self.config = self.get_from_file(DEFAULT_CONFIG.split('\n'))
         self.update_config()
 
