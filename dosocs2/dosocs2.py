@@ -83,8 +83,8 @@ __version__ = '0.15.1'
 
 from . import configtools
 from . import dbinit
+from . import discover
 from . import render
-from . import scannerbase
 from . import schema as db
 from . import spdxdb
 from . import util
@@ -194,7 +194,7 @@ def main(sysargv=None, config=None):
     # Configuration and scanner discovery
     config = config or configtools.Config()
     config.make_config_dirs()
-    scanners = scannerbase.discover()
+    scanners = discover.discover()
 
     # Pull from alternate config file if specified
     if argv['--config']:

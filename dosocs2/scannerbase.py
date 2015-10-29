@@ -22,14 +22,11 @@
 Includes Scanner base classes, the WorkItem class, and the discover() function.
 """
 
-import importlib
-import pkgutil
 import os
 from collections import namedtuple
 
 from sqlalchemy import select, and_
 
-from . import scanners
 from . import scanresult
 from . import schema as db
 from . import spdxdb
@@ -269,16 +266,3 @@ class FileLicenseScanner(Scanner):
                     }
                 licenses_to_add.append(file_license_kwargs)
         scanresult.add_file_licenses(self.conn, licenses_to_add)
-
-
-def discover():
-    path = os.path.dirname(scanners.__file__)
-    scanner_names = [name for _, name, _ in pkgutil.iter_modules([path])]
-    modules = (
-        importlib.import_module('.' + name, __package__ + '.' + 'scanners')
-        for name in scanner_names
-        )
-    return {
-        mod.scanner.name: mod.scanner
-        for mod in modules
-        }
