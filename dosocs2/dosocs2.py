@@ -178,7 +178,7 @@ def do_configtest(engine, config):
     print('ok.')
 
 
-def main(sysargv=None):
+def main(sysargv=None, config=None):
     argv = docopt.docopt(
         doc=__doc__.format(os.path.basename(sys.argv[0])),
         argv=sysargv,
@@ -191,11 +191,12 @@ def main(sysargv=None):
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
 
-    config = configtools.Config()
+    # Configuration and scanner discovery
+    config = config or configtools.Config()
     config.make_config_dirs()
-
     scanners = scannerbase.discover()
 
+    # Pull from alternate config file if specified
     if argv['--config']:
         try:
             # if creating new, don't care if it already exists or not
@@ -207,6 +208,8 @@ def main(sysargv=None):
             return 1
         config.local_path = alt_config_path
         config.update_config()
+
+    # Verify existence of selected scanners
     if not argv['--scanners']:
         argv['--scanners'] = config.config['default_scanners']
     selected_scanners = []
@@ -218,8 +221,12 @@ def main(sysargv=None):
             return 1
         if this_scanner not in selected_scanners:
             selected_scanners.append(this_scanner)
+
+    # Set up connection
     echo = util.bool_from_str(config.config['echo'])
     engine = db.create_connection(config.config['connection_uri'], echo)
+
+    # Now run the indicated command
 
     if argv['configtest']:
         do_configtest(engine, config)
