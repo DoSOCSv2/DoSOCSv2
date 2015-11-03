@@ -77,7 +77,7 @@ def load_default_creator(conn, creator_string):
     conn.execute(db.creators.insert().values(**creator_params))
 
 
-def initialize(engine, dosocs2_version, licenses_url=None):
+def initialize(engine, dosocs2_version):
     msg('dropping and creating all tables...', end='')
     db.meta.drop_all(engine)
     db.meta.create_all(engine)
