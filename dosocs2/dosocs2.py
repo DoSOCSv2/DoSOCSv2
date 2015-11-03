@@ -342,6 +342,8 @@ def main(sysargv=None, config=None):
             sys.stderr.write(fmt.format(package_path, doc_id))
         with engine.begin() as conn:
             print(render.render_document(conn, doc_id, template_file))
+    
+    return 0
 
 
 if __name__ == "__main__":
