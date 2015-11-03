@@ -58,16 +58,16 @@ def load_file_types(conn):
         conn.execute(db.file_types.insert().values(name=f))
 
 
-def load_licenses(conn, url='http://spdx.org/licenses/'):
-    rows = scrape_site(url)
+def load_licenses(conn, licenses_url):
+    rows = scrape_site(licenses_url)
     sorted_rows = list(sorted(rows))
     if len(rows) == 0:
         return False
-    for shortname, name, url in sorted_rows:
+    for shortname, name, licenses_url in sorted_rows:
         license_params = {
             'name': name,
             'short_name': shortname,
-            'cross_reference': url,
+            'cross_reference': licenses_url,
             'comment': '',
             'is_spdx_official': True,
             }
@@ -165,24 +165,24 @@ def scrape_site(url):
     return completed_rows
 
 
-def initialize(engine, dosocs2_version):
-    url = 'http://spdx.org/licenses/'
+def initialize(engine, dosocs2_version, licenses_url=None):
     msg('dropping and creating all tables...', end='')
     db.meta.drop_all(engine)
     db.meta.create_all(engine)
     print('ok.')
     with engine.begin() as conn:
-        msg('loading licenses...', end='')
-        result = load_licenses(conn, url)
-        if not result:
-            errmsg('error!')
-            errmsg('failed to download and load the license list')
-            errmsg('check your connection to ' + url +
-                   ' and make sure it is the correct page'
-                   )
-            return False
-        else:
-            print('ok.')
+        if licenses_url:
+            msg('loading licenses...', end='')
+            result = load_licenses(conn, licenses_url)
+            if not result:
+                errmsg('error!')
+                errmsg('failed to download and load the license list')
+                errmsg('check your connection to ' + licenses_url +
+                    ' and make sure it is the correct page'
+                    )
+                return False
+            else:
+                print('ok.')
         msg('loading creator types...', end='')
         load_creator_types(conn)
         print('ok.')
