@@ -42,7 +42,7 @@ setup(
     extras_require={
         'tests': install_requires + tests_require,
         },
-    package_data={'dosocs2': ['templates/*']},
+    package_data={'dosocs2': ['templates/*', 'fixtures/*']},
 
     entry_points={'console_scripts': ['dosocs2=dosocs2.dosocs2:main']},
     test_suite='py.test',

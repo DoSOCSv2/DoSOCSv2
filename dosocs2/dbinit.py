@@ -21,7 +21,9 @@
 
 from __future__ import print_function
 
-import re
+import json
+import os
+import pkg_resources
 import sys
 import urllib2
 
@@ -40,58 +42,25 @@ def errmsg(text, **kwargs):
     sys.stdout.flush()
 
 
-def load_file_types(conn):
-    filetypes = (
-        'SOURCE',
-        'BINARY',
-        'ARCHIVE',
-        'APPLICATION',
-        'AUDIO',
-        'IMAGE',
-        'TEXT',
-        'VIDEO',
-        'DOCUMENTATION',
-        'SPDX',
-        'OTHER'
-        )
-    for f in filetypes:
-        conn.execute(db.file_types.insert().values(name=f))
+def bulk_json_insert(conn, table, json_text):
+    rows = json.loads(json_text)
+    conn.execute(table.insert(), *rows)
 
 
-def load_licenses(conn, licenses_url):
-    rows = scrape_site(licenses_url)
-    sorted_rows = list(sorted(rows))
-    if len(rows) == 0:
-        return False
-    for shortname, name, licenses_url in sorted_rows:
-        license_params = {
-            'name': name,
-            'short_name': shortname,
-            'cross_reference': licenses_url,
-            'comment': '',
-            'is_spdx_official': True,
-            }
-        conn.execute(db.licenses.insert().values(**license_params))
-    return True
+def load_fixture(conn, path):
+    with open(path) as f:
+        json_text = f.read()
+    table_name, _ = os.path.splitext(os.path.basename(path))
+    table = getattr(db, table_name)
+    bulk_json_insert(conn, table, json_text)
 
 
-def load_creator_types(conn):
-    creator_types = (
-        'Person',
-        'Organization',
-        'Tool'
-        )
-    for c in creator_types:
-        conn.execute(db.creator_types.insert().values(name=c))
-
-
-def load_annotation_types(conn):
-    annotation_types = (
-        'REVIEW',
-        'OTHER'
-        )
-    for a in annotation_types:
-        conn.execute(db.annotation_types.insert().values(name=a))
+def discover_fixtures():
+    fixtures_dir = pkg_resources.resource_filename('dosocs2', 'fixtures')
+    return [
+        os.path.join(fixtures_dir, path)
+        for path in sorted(os.listdir(fixtures_dir))
+        ]
 
 
 def load_default_creator(conn, creator_string):
@@ -108,95 +77,19 @@ def load_default_creator(conn, creator_string):
     conn.execute(db.creators.insert().values(**creator_params))
 
 
-def load_relationship_types(conn):
-    relationship_types = (
-        'DESCRIBES',
-        'DESCRIBED_BY',
-        'CONTAINS',
-        'CONTAINED_BY',
-        'GENERATES',
-        'GENERATED_FROM',
-        'ANCESTOR_OF',
-        'DESCENDANT_OF',
-        'VARIANT_OF',
-        'DISTRIBUTION_ARTIFACT',
-        'PATCH_FOR',
-        'PATCH_APPLIED',
-        'COPY_OF',
-        'FILE_ADDED',
-        'FILE_DELETED',
-        'FILE_MODIFIED',
-        'EXPANDED_FROM_ARCHIVE',
-        'DYNAMIC_LINK',
-        'STATIC_LINK',
-        'DATA_FILE_OF',
-        'TEST_CASE_OF',
-        'BUILD_TOOL_OF',
-        'DOCUMENTATION_OF',
-        'OPTIONAL_COMPONENT_OF',
-        'METAFILE_OF',
-        'PACKAGE_OF',
-        'AMENDS',
-        'PREREQUISITE_FOR',
-        'HAS_PREREQUISITE',
-        'OTHER'
-        )
-    for rt in relationship_types:
-        conn.execute(db.relationship_types.insert().values(name=rt))
-
-
-def scrape_site(url):
-    '''Scrape license info and return (url, name, shortname) tuples'''
-    page_text = urllib2.urlopen(url).read()
-    url_part = r'<tr>\s*<td><a href=\"(.*?)\".*?>'
-    name_part = r'(.*?)</a></td>\s*.*?'
-    shortname_part = r'<code property=\"spdx:licenseId\">(.*?)</code>'
-    pattern_str = url_part + name_part + shortname_part
-    pattern = re.compile(pattern_str)
-    page_one_line = page_text.replace('\n', '').replace('&quot;', '"')
-    rows = pattern.findall(page_one_line)
-    # reverse column order and append full url to first column
-    completed_rows = [[
-        row[2],                         # short name
-        row[1],                         # friendly name
-        (url + row[0][2:])]             # cross ref
-        for row in rows
-        ]
-    return completed_rows
-
-
 def initialize(engine, dosocs2_version, licenses_url=None):
     msg('dropping and creating all tables...', end='')
     db.meta.drop_all(engine)
     db.meta.create_all(engine)
     print('ok.')
     with engine.begin() as conn:
-        if licenses_url:
-            msg('loading licenses...', end='')
-            result = load_licenses(conn, licenses_url)
-            if not result:
-                errmsg('error!')
-                errmsg('failed to download and load the license list')
-                errmsg('check your connection to ' + licenses_url +
-                    ' and make sure it is the correct page'
-                    )
-                return False
-            else:
-                print('ok.')
-        msg('loading creator types...', end='')
-        load_creator_types(conn)
-        print('ok.')
+        msg('loading fixtures...')
+        for fixture in discover_fixtures():
+            msg('  {}...'.format(os.path.basename(fixture)), end='') 
+            load_fixture(conn, fixture)
+            print('ok.')
         msg('loading default creator...', end='')
         load_default_creator(conn, 'dosocs2-' + dosocs2_version)
-        print('ok.')
-        msg('loading annotation types...', end='')
-        load_annotation_types(conn)
-        print('ok.')
-        msg('loading file types...', end='')
-        load_file_types(conn)
-        print('ok.')
-        msg('loading relationship types...', end='')
-        load_relationship_types(conn)
         print('ok.')
         msg('committing changes...', end='')
     print('ok.')

@@ -1,0 +1,13 @@
+[
+    {"name": "SOURCE"},
+    {"name": "BINARY"},
+    {"name": "ARCHIVE"},
+    {"name": "APPLICATION"},
+    {"name": "AUDIO"},
+    {"name": "IMAGE"},
+    {"name": "TEXT"},
+    {"name": "VIDEO"},
+    {"name": "DOCUMENTATION"},
+    {"name": "SPDX"},
+    {"name": "OTHER"}
+]

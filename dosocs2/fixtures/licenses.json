@@ -1,0 +1,2256 @@
+[
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGlide.html",
+        "is_spdx_official": true,
+        "name": "3dfx Glide License",
+        "short_name": "Glide"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAbstyles.html",
+        "is_spdx_official": true,
+        "name": "Abstyles License",
+        "short_name": "Abstyles"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAFL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Academic Free License v1.1",
+        "short_name": "AFL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAFL-1.2.html",
+        "is_spdx_official": true,
+        "name": "Academic Free License v1.2",
+        "short_name": "AFL-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAFL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Academic Free License v2.0",
+        "short_name": "AFL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAFL-2.1.html",
+        "is_spdx_official": true,
+        "name": "Academic Free License v2.1",
+        "short_name": "AFL-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAFL-3.0.html",
+        "is_spdx_official": true,
+        "name": "Academic Free License v3.0",
+        "short_name": "AFL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAMPAS.html",
+        "is_spdx_official": true,
+        "name": "Academy of Motion Picture Arts and Sciences BSD",
+        "short_name": "AMPAS"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Adaptive Public License 1.0",
+        "short_name": "APL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAdobe-Glyph.html",
+        "is_spdx_official": true,
+        "name": "Adobe Glyph List License",
+        "short_name": "Adobe-Glyph"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPAFML.html",
+        "is_spdx_official": true,
+        "name": "Adobe Postscript AFM License",
+        "short_name": "APAFML"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAdobe-2006.html",
+        "is_spdx_official": true,
+        "name": "Adobe Systems Incorporated Source Code License Agreement",
+        "short_name": "Adobe-2006"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAGPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Affero General Public License v1.0",
+        "short_name": "AGPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAfmparse.html",
+        "is_spdx_official": true,
+        "name": "Afmparse License",
+        "short_name": "Afmparse"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAladdin.html",
+        "is_spdx_official": true,
+        "name": "Aladdin Free Public License",
+        "short_name": "Aladdin"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesADSL.html",
+        "is_spdx_official": true,
+        "name": "Amazon Digital Services License",
+        "short_name": "ADSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAMDPLPA.html",
+        "is_spdx_official": true,
+        "name": "AMD's plpa_map.c License",
+        "short_name": "AMDPLPA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesANTLR-PD.html",
+        "is_spdx_official": true,
+        "name": "ANTLR Software Rights Notice",
+        "short_name": "ANTLR-PD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesApache-1.0.html",
+        "is_spdx_official": true,
+        "name": "Apache License 1.0",
+        "short_name": "Apache-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesApache-1.1.html",
+        "is_spdx_official": true,
+        "name": "Apache License 1.1",
+        "short_name": "Apache-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesApache-2.0.html",
+        "is_spdx_official": true,
+        "name": "Apache License 2.0",
+        "short_name": "Apache-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAML.html",
+        "is_spdx_official": true,
+        "name": "Apple MIT License",
+        "short_name": "AML"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Apple Public Source License 1.0",
+        "short_name": "APSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPSL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Apple Public Source License 1.1",
+        "short_name": "APSL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPSL-1.2.html",
+        "is_spdx_official": true,
+        "name": "Apple Public Source License 1.2",
+        "short_name": "APSL-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAPSL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Apple Public Source License 2.0",
+        "short_name": "APSL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesArtistic-1.0.html",
+        "is_spdx_official": true,
+        "name": "Artistic License 1.0",
+        "short_name": "Artistic-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesArtistic-1.0-Perl.html",
+        "is_spdx_official": true,
+        "name": "Artistic License 1.0 (Perl)",
+        "short_name": "Artistic-1.0-Perl"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesArtistic-1.0-cl8.html",
+        "is_spdx_official": true,
+        "name": "Artistic License 1.0 w/clause 8",
+        "short_name": "Artistic-1.0-cl8"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesArtistic-2.0.html",
+        "is_spdx_official": true,
+        "name": "Artistic License 2.0",
+        "short_name": "Artistic-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAAL.html",
+        "is_spdx_official": true,
+        "name": "Attribution Assurance License",
+        "short_name": "AAL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBahyph.html",
+        "is_spdx_official": true,
+        "name": "Bahyph License",
+        "short_name": "Bahyph"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBarr.html",
+        "is_spdx_official": true,
+        "name": "Barr License",
+        "short_name": "Barr"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBeerware.html",
+        "is_spdx_official": true,
+        "name": "Beerware License",
+        "short_name": "Beerware"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBitTorrent-1.0.html",
+        "is_spdx_official": true,
+        "name": "BitTorrent Open Source License v1.0",
+        "short_name": "BitTorrent-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBitTorrent-1.1.html",
+        "is_spdx_official": true,
+        "name": "BitTorrent Open Source License v1.1",
+        "short_name": "BitTorrent-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Boost Software License 1.0",
+        "short_name": "BSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBorceux.html",
+        "is_spdx_official": true,
+        "name": "Borceux license",
+        "short_name": "Borceux"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-2-Clause.html",
+        "is_spdx_official": true,
+        "name": "BSD 2-clause \"Simplified\" License",
+        "short_name": "BSD-2-Clause"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-2-Clause-FreeBSD.html",
+        "is_spdx_official": true,
+        "name": "BSD 2-clause FreeBSD License",
+        "short_name": "BSD-2-Clause-FreeBSD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-2-Clause-NetBSD.html",
+        "is_spdx_official": true,
+        "name": "BSD 2-clause NetBSD License",
+        "short_name": "BSD-2-Clause-NetBSD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-3-Clause.html",
+        "is_spdx_official": true,
+        "name": "BSD 3-clause \"New\" or \"Revised\" License",
+        "short_name": "BSD-3-Clause"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-3-Clause-Clear.html",
+        "is_spdx_official": true,
+        "name": "BSD 3-clause Clear License",
+        "short_name": "BSD-3-Clause-Clear"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-4-Clause.html",
+        "is_spdx_official": true,
+        "name": "BSD 4-clause \"Original\" or \"Old\" License",
+        "short_name": "BSD-4-Clause"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-Protection.html",
+        "is_spdx_official": true,
+        "name": "BSD Protection License",
+        "short_name": "BSD-Protection"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-3-Clause-Attribution.html",
+        "is_spdx_official": true,
+        "name": "BSD with attribution",
+        "short_name": "BSD-3-Clause-Attribution"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licenses0BSD.html",
+        "is_spdx_official": true,
+        "name": "BSD Zero Clause License",
+        "short_name": "0BSD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-4-Clause-UC.html",
+        "is_spdx_official": true,
+        "name": "BSD-4-Clause (University of California-Specific)",
+        "short_name": "BSD-4-Clause-UC"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesbzip2-1.0.5.html",
+        "is_spdx_official": true,
+        "name": "bzip2 and libbzip2 License v1.0.5",
+        "short_name": "bzip2-1.0.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesbzip2-1.0.6.html",
+        "is_spdx_official": true,
+        "name": "bzip2 and libbzip2 License v1.0.6",
+        "short_name": "bzip2-1.0.6"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCaldera.html",
+        "is_spdx_official": true,
+        "name": "Caldera License",
+        "short_name": "Caldera"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-1.0.html",
+        "is_spdx_official": true,
+        "name": "CeCILL Free Software License Agreement v1.0",
+        "short_name": "CECILL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-1.1.html",
+        "is_spdx_official": true,
+        "name": "CeCILL Free Software License Agreement v1.1",
+        "short_name": "CECILL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-2.0.html",
+        "is_spdx_official": true,
+        "name": "CeCILL Free Software License Agreement v2.0",
+        "short_name": "CECILL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-2.1.html",
+        "is_spdx_official": true,
+        "name": "CeCILL Free Software License Agreement v2.1",
+        "short_name": "CECILL-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-B.html",
+        "is_spdx_official": true,
+        "name": "CeCILL-B Free Software License Agreement",
+        "short_name": "CECILL-B"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCECILL-C.html",
+        "is_spdx_official": true,
+        "name": "CeCILL-C Free Software License Agreement",
+        "short_name": "CECILL-C"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesClArtistic.html",
+        "is_spdx_official": true,
+        "name": "Clarified Artistic License",
+        "short_name": "ClArtistic"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMIT-CMU.html",
+        "is_spdx_official": true,
+        "name": "CMU License",
+        "short_name": "MIT-CMU"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCNRI-Jython.html",
+        "is_spdx_official": true,
+        "name": "CNRI Jython License",
+        "short_name": "CNRI-Jython"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCNRI-Python.html",
+        "is_spdx_official": true,
+        "name": "CNRI Python License",
+        "short_name": "CNRI-Python"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCNRI-Python-GPL-Compatible.html",
+        "is_spdx_official": true,
+        "name": "CNRI Python Open Source GPL Compatible License Agreement",
+        "short_name": "CNRI-Python-GPL-Compatible"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCPOL-1.02.html",
+        "is_spdx_official": true,
+        "name": "Code Project Open License 1.02",
+        "short_name": "CPOL-1.02"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCDDL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Common Development and Distribution License 1.0",
+        "short_name": "CDDL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCDDL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Common Development and Distribution License 1.1",
+        "short_name": "CDDL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCPAL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Common Public Attribution License 1.0",
+        "short_name": "CPAL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Common Public License 1.0",
+        "short_name": "CPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCATOSL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Computer Associates Trusted Open Source License 1.1",
+        "short_name": "CATOSL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCondor-1.1.html",
+        "is_spdx_official": true,
+        "name": "Condor Public License v1.1",
+        "short_name": "Condor-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution 1.0",
+        "short_name": "CC-BY-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution 2.0",
+        "short_name": "CC-BY-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution 2.5",
+        "short_name": "CC-BY-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution 3.0",
+        "short_name": "CC-BY-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution 4.0",
+        "short_name": "CC-BY-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-ND-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution No Derivatives 1.0",
+        "short_name": "CC-BY-ND-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-ND-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution No Derivatives 2.0",
+        "short_name": "CC-BY-ND-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-ND-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution No Derivatives 2.5",
+        "short_name": "CC-BY-ND-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-ND-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution No Derivatives 3.0",
+        "short_name": "CC-BY-ND-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-ND-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution No Derivatives 4.0",
+        "short_name": "CC-BY-ND-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial 1.0",
+        "short_name": "CC-BY-NC-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial 2.0",
+        "short_name": "CC-BY-NC-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial 2.5",
+        "short_name": "CC-BY-NC-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial 3.0",
+        "short_name": "CC-BY-NC-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial 4.0",
+        "short_name": "CC-BY-NC-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-ND-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial No Derivatives 1.0",
+        "short_name": "CC-BY-NC-ND-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-ND-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial No Derivatives 2.0",
+        "short_name": "CC-BY-NC-ND-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-ND-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial No Derivatives 2.5",
+        "short_name": "CC-BY-NC-ND-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-ND-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial No Derivatives 3.0",
+        "short_name": "CC-BY-NC-ND-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-ND-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial No Derivatives 4.0",
+        "short_name": "CC-BY-NC-ND-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-SA-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial Share Alike 1.0",
+        "short_name": "CC-BY-NC-SA-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-SA-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial Share Alike 2.0",
+        "short_name": "CC-BY-NC-SA-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-SA-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial Share Alike 2.5",
+        "short_name": "CC-BY-NC-SA-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-SA-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial Share Alike 3.0",
+        "short_name": "CC-BY-NC-SA-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-NC-SA-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Non Commercial Share Alike 4.0",
+        "short_name": "CC-BY-NC-SA-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-SA-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Share Alike 1.0",
+        "short_name": "CC-BY-SA-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-SA-2.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Share Alike 2.0",
+        "short_name": "CC-BY-SA-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-SA-2.5.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Share Alike 2.5",
+        "short_name": "CC-BY-SA-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-SA-3.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Share Alike 3.0",
+        "short_name": "CC-BY-SA-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC-BY-SA-4.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Attribution Share Alike 4.0",
+        "short_name": "CC-BY-SA-4.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCC0-1.0.html",
+        "is_spdx_official": true,
+        "name": "Creative Commons Zero v1.0 Universal",
+        "short_name": "CC0-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCrossword.html",
+        "is_spdx_official": true,
+        "name": "Crossword License",
+        "short_name": "Crossword"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCrystalStacker.html",
+        "is_spdx_official": true,
+        "name": "CrystalStacker License",
+        "short_name": "CrystalStacker"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCUA-OPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "CUA Office Public License v1.0",
+        "short_name": "CUA-OPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesCube.html",
+        "is_spdx_official": true,
+        "name": "Cube License",
+        "short_name": "Cube"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesD-FSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Deutsche Freie Software Lizenz",
+        "short_name": "D-FSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesdiffmark.html",
+        "is_spdx_official": true,
+        "name": "diffmark license",
+        "short_name": "diffmark"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesWTFPL.html",
+        "is_spdx_official": true,
+        "name": "Do What The F*ck You Want To Public License",
+        "short_name": "WTFPL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesDOC.html",
+        "is_spdx_official": true,
+        "name": "DOC License",
+        "short_name": "DOC"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesDotseqn.html",
+        "is_spdx_official": true,
+        "name": "Dotseqn License",
+        "short_name": "Dotseqn"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesDSDP.html",
+        "is_spdx_official": true,
+        "name": "DSDP License",
+        "short_name": "DSDP"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesdvipdfm.html",
+        "is_spdx_official": true,
+        "name": "dvipdfm License",
+        "short_name": "dvipdfm"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Eclipse Public License 1.0",
+        "short_name": "EPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesECL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Educational Community License v1.0",
+        "short_name": "ECL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesECL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Educational Community License v2.0",
+        "short_name": "ECL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licenseseGenix.html",
+        "is_spdx_official": true,
+        "name": "eGenix.com Public License 1.1.0",
+        "short_name": "eGenix"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEFL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Eiffel Forum License v1.0",
+        "short_name": "EFL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEFL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Eiffel Forum License v2.0",
+        "short_name": "EFL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMIT-advertising.html",
+        "is_spdx_official": true,
+        "name": "Enlightenment License (e16)",
+        "short_name": "MIT-advertising"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMIT-enna.html",
+        "is_spdx_official": true,
+        "name": "enna License",
+        "short_name": "MIT-enna"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEntessa.html",
+        "is_spdx_official": true,
+        "name": "Entessa Public License v1.0",
+        "short_name": "Entessa"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesErlPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Erlang Public License v1.1",
+        "short_name": "ErlPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEUDatagrid.html",
+        "is_spdx_official": true,
+        "name": "EU DataGrid Software License",
+        "short_name": "EUDatagrid"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEUPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "European Union Public License 1.0",
+        "short_name": "EUPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEUPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "European Union Public License 1.1",
+        "short_name": "EUPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesEurosym.html",
+        "is_spdx_official": true,
+        "name": "Eurosym License",
+        "short_name": "Eurosym"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFair.html",
+        "is_spdx_official": true,
+        "name": "Fair License",
+        "short_name": "Fair"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMIT-feh.html",
+        "is_spdx_official": true,
+        "name": "feh License",
+        "short_name": "MIT-feh"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFrameworx-1.0.html",
+        "is_spdx_official": true,
+        "name": "Frameworx Open License 1.0",
+        "short_name": "Frameworx-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFreeImage.html",
+        "is_spdx_official": true,
+        "name": "FreeImage Public License v1.0",
+        "short_name": "FreeImage"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFTL.html",
+        "is_spdx_official": true,
+        "name": "Freetype Project License",
+        "short_name": "FTL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFSFUL.html",
+        "is_spdx_official": true,
+        "name": "FSF Unlimited License",
+        "short_name": "FSFUL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesFSFULLR.html",
+        "is_spdx_official": true,
+        "name": "FSF Unlimited License (with License Retention)",
+        "short_name": "FSFULLR"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGiftware.html",
+        "is_spdx_official": true,
+        "name": "Giftware License",
+        "short_name": "Giftware"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGL2PS.html",
+        "is_spdx_official": true,
+        "name": "GL2PS License",
+        "short_name": "GL2PS"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGlulxe.html",
+        "is_spdx_official": true,
+        "name": "Glulxe License",
+        "short_name": "Glulxe"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesAGPL-3.0.html",
+        "is_spdx_official": true,
+        "name": "GNU Affero General Public License v3.0",
+        "short_name": "AGPL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGFDL-1.1.html",
+        "is_spdx_official": true,
+        "name": "GNU Free Documentation License v1.1",
+        "short_name": "GFDL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGFDL-1.2.html",
+        "is_spdx_official": true,
+        "name": "GNU Free Documentation License v1.2",
+        "short_name": "GFDL-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGFDL-1.3.html",
+        "is_spdx_official": true,
+        "name": "GNU Free Documentation License v1.3",
+        "short_name": "GFDL-1.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v1.0 only",
+        "short_name": "GPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0.html",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 only",
+        "short_name": "GPL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-3.0.html",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v3.0 only",
+        "short_name": "GPL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-2.1.html",
+        "is_spdx_official": true,
+        "name": "GNU Lesser General Public License v2.1 only",
+        "short_name": "LGPL-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-3.0.html",
+        "is_spdx_official": true,
+        "name": "GNU Lesser General Public License v3.0 only",
+        "short_name": "LGPL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-2.0.html",
+        "is_spdx_official": true,
+        "name": "GNU Library General Public License v2 only",
+        "short_name": "LGPL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesgnuplot.html",
+        "is_spdx_official": true,
+        "name": "gnuplot License",
+        "short_name": "gnuplot"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesgSOAP-1.3b.html",
+        "is_spdx_official": true,
+        "name": "gSOAP Public License v1.3b",
+        "short_name": "gSOAP-1.3b"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesHaskellReport.html",
+        "is_spdx_official": true,
+        "name": "Haskell Language Report License",
+        "short_name": "HaskellReport"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesHPND.html",
+        "is_spdx_official": true,
+        "name": "Historic Permission Notice and Disclaimer",
+        "short_name": "HPND"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIBM-pibs.html",
+        "is_spdx_official": true,
+        "name": "IBM PowerPC Initialization and Boot Software",
+        "short_name": "IBM-pibs"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "IBM Public License v1.0",
+        "short_name": "IPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesICU.html",
+        "is_spdx_official": true,
+        "name": "ICU License",
+        "short_name": "ICU"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesImageMagick.html",
+        "is_spdx_official": true,
+        "name": "ImageMagick License",
+        "short_name": "ImageMagick"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesiMatix.html",
+        "is_spdx_official": true,
+        "name": "iMatix Standard Function Library Agreement",
+        "short_name": "iMatix"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesImlib2.html",
+        "is_spdx_official": true,
+        "name": "Imlib2 License",
+        "short_name": "Imlib2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIJG.html",
+        "is_spdx_official": true,
+        "name": "Independent JPEG Group License",
+        "short_name": "IJG"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIntel-ACPI.html",
+        "is_spdx_official": true,
+        "name": "Intel ACPI Software License Agreement",
+        "short_name": "Intel-ACPI"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIntel.html",
+        "is_spdx_official": true,
+        "name": "Intel Open Source License",
+        "short_name": "Intel"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesInterbase-1.0.html",
+        "is_spdx_official": true,
+        "name": "Interbase Public License v1.0",
+        "short_name": "Interbase-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesIPA.html",
+        "is_spdx_official": true,
+        "name": "IPA Font License",
+        "short_name": "IPA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesISC.html",
+        "is_spdx_official": true,
+        "name": "ISC License",
+        "short_name": "ISC"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesJasPer-2.0.html",
+        "is_spdx_official": true,
+        "name": "JasPer License",
+        "short_name": "JasPer-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesJSON.html",
+        "is_spdx_official": true,
+        "name": "JSON License",
+        "short_name": "JSON"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPPL-1.3a.html",
+        "is_spdx_official": true,
+        "name": "LaTeX Project Public License 1.3a",
+        "short_name": "LPPL-1.3a"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "LaTeX Project Public License v1.0",
+        "short_name": "LPPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "LaTeX Project Public License v1.1",
+        "short_name": "LPPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPPL-1.2.html",
+        "is_spdx_official": true,
+        "name": "LaTeX Project Public License v1.2",
+        "short_name": "LPPL-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPPL-1.3c.html",
+        "is_spdx_official": true,
+        "name": "LaTeX Project Public License v1.3c",
+        "short_name": "LPPL-1.3c"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLatex2e.html",
+        "is_spdx_official": true,
+        "name": "Latex2e License",
+        "short_name": "Latex2e"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesBSD-3-Clause-LBNL.html",
+        "is_spdx_official": true,
+        "name": "Lawrence Berkeley National Labs BSD variant license",
+        "short_name": "BSD-3-Clause-LBNL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLeptonica.html",
+        "is_spdx_official": true,
+        "name": "Leptonica License",
+        "short_name": "Leptonica"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPLLR.html",
+        "is_spdx_official": true,
+        "name": "Lesser General Public License For Linguistic Resources",
+        "short_name": "LGPLLR"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLibpng.html",
+        "is_spdx_official": true,
+        "name": "libpng License",
+        "short_name": "Libpng"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licenseslibtiff.html",
+        "is_spdx_official": true,
+        "name": "libtiff License",
+        "short_name": "libtiff"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPL-1.02.html",
+        "is_spdx_official": true,
+        "name": "Lucent Public License v1.02",
+        "short_name": "LPL-1.02"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Lucent Public License Version 1.0",
+        "short_name": "LPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMakeIndex.html",
+        "is_spdx_official": true,
+        "name": "MakeIndex License",
+        "short_name": "MakeIndex"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMTLL.html",
+        "is_spdx_official": true,
+        "name": "Matrix Template Library License",
+        "short_name": "MTLL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMS-PL.html",
+        "is_spdx_official": true,
+        "name": "Microsoft Public License",
+        "short_name": "MS-PL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMS-RL.html",
+        "is_spdx_official": true,
+        "name": "Microsoft Reciprocal License",
+        "short_name": "MS-RL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMirOS.html",
+        "is_spdx_official": true,
+        "name": "MirOS Licence",
+        "short_name": "MirOS"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMITNFA.html",
+        "is_spdx_official": true,
+        "name": "MIT +no-false-attribs license",
+        "short_name": "MITNFA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMIT.html",
+        "is_spdx_official": true,
+        "name": "MIT License",
+        "short_name": "MIT"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMotosoto.html",
+        "is_spdx_official": true,
+        "name": "Motosoto License",
+        "short_name": "Motosoto"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Mozilla Public License 1.0",
+        "short_name": "MPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Mozilla Public License 1.1",
+        "short_name": "MPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMPL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Mozilla Public License 2.0",
+        "short_name": "MPL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMPL-2.0-no-copyleft-exception.html",
+        "is_spdx_official": true,
+        "name": "Mozilla Public License 2.0 (no copyleft exception)",
+        "short_name": "MPL-2.0-no-copyleft-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesmpich2.html",
+        "is_spdx_official": true,
+        "name": "mpich2 License",
+        "short_name": "mpich2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMultics.html",
+        "is_spdx_official": true,
+        "name": "Multics License",
+        "short_name": "Multics"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesMup.html",
+        "is_spdx_official": true,
+        "name": "Mup License",
+        "short_name": "Mup"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNASA-1.3.html",
+        "is_spdx_official": true,
+        "name": "NASA Open Source Agreement 1.3",
+        "short_name": "NASA-1.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNaumen.html",
+        "is_spdx_official": true,
+        "name": "Naumen Public License",
+        "short_name": "Naumen"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNBPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Net Boolean Public License v1",
+        "short_name": "NBPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNetCDF.html",
+        "is_spdx_official": true,
+        "name": "NetCDF license",
+        "short_name": "NetCDF"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNGPL.html",
+        "is_spdx_official": true,
+        "name": "Nethack General Public License",
+        "short_name": "NGPL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNOSL.html",
+        "is_spdx_official": true,
+        "name": "Netizen Open Source License",
+        "short_name": "NOSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Netscape Public License v1.0",
+        "short_name": "NPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Netscape Public License v1.1",
+        "short_name": "NPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNewsletr.html",
+        "is_spdx_official": true,
+        "name": "Newsletr License",
+        "short_name": "Newsletr"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNLPL.html",
+        "is_spdx_official": true,
+        "name": "No Limit Public License",
+        "short_name": "NLPL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNokia.html",
+        "is_spdx_official": true,
+        "name": "Nokia Open Source License",
+        "short_name": "Nokia"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNPOSL-3.0.html",
+        "is_spdx_official": true,
+        "name": "Non-Profit Open Software License 3.0",
+        "short_name": "NPOSL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNoweb.html",
+        "is_spdx_official": true,
+        "name": "Noweb License",
+        "short_name": "Noweb"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNRL.html",
+        "is_spdx_official": true,
+        "name": "NRL License",
+        "short_name": "NRL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNTP.html",
+        "is_spdx_official": true,
+        "name": "NTP License",
+        "short_name": "NTP"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNunit.html",
+        "is_spdx_official": true,
+        "name": "Nunit License",
+        "short_name": "Nunit"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOCLC-2.0.html",
+        "is_spdx_official": true,
+        "name": "OCLC Research Public License 2.0",
+        "short_name": "OCLC-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesODbL-1.0.html",
+        "is_spdx_official": true,
+        "name": "ODC Open Database License v1.0",
+        "short_name": "ODbL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPDDL-1.0.html",
+        "is_spdx_official": true,
+        "name": "ODC Public Domain Dedication &amp; License 1.0",
+        "short_name": "PDDL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOGTSL.html",
+        "is_spdx_official": true,
+        "name": "Open Group Test Suite License",
+        "short_name": "OGTSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.2.2.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License  2.2.2",
+        "short_name": "OLDAP-2.2.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-1.1.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v1.1",
+        "short_name": "OLDAP-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-1.2.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v1.2",
+        "short_name": "OLDAP-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-1.3.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v1.3",
+        "short_name": "OLDAP-1.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-1.4.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v1.4",
+        "short_name": "OLDAP-1.4"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.0.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.0 (or possibly 2.0A and 2.0B)",
+        "short_name": "OLDAP-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.0.1.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.0.1",
+        "short_name": "OLDAP-2.0.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.1.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.1",
+        "short_name": "OLDAP-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.2.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.2",
+        "short_name": "OLDAP-2.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.2.1.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.2.1",
+        "short_name": "OLDAP-2.2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.3.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.3",
+        "short_name": "OLDAP-2.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.4.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.4",
+        "short_name": "OLDAP-2.4"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.5.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.5",
+        "short_name": "OLDAP-2.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.6.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.6",
+        "short_name": "OLDAP-2.6"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.7.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.7",
+        "short_name": "OLDAP-2.7"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOLDAP-2.8.html",
+        "is_spdx_official": true,
+        "name": "Open LDAP Public License v2.8",
+        "short_name": "OLDAP-2.8"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOML.html",
+        "is_spdx_official": true,
+        "name": "Open Market License",
+        "short_name": "OML"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Open Public License v1.0",
+        "short_name": "OPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Open Software License 1.0",
+        "short_name": "OSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOSL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Open Software License 1.1",
+        "short_name": "OSL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOSL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Open Software License 2.0",
+        "short_name": "OSL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOSL-2.1.html",
+        "is_spdx_official": true,
+        "name": "Open Software License 2.1",
+        "short_name": "OSL-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOSL-3.0.html",
+        "is_spdx_official": true,
+        "name": "Open Software License 3.0",
+        "short_name": "OSL-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOpenSSL.html",
+        "is_spdx_official": true,
+        "name": "OpenSSL License",
+        "short_name": "OpenSSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPHP-3.0.html",
+        "is_spdx_official": true,
+        "name": "PHP License v3.0",
+        "short_name": "PHP-3.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPHP-3.01.html",
+        "is_spdx_official": true,
+        "name": "PHP License v3.01",
+        "short_name": "PHP-3.01"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPlexus.html",
+        "is_spdx_official": true,
+        "name": "Plexus Classworlds License",
+        "short_name": "Plexus"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPostgreSQL.html",
+        "is_spdx_official": true,
+        "name": "PostgreSQL License",
+        "short_name": "PostgreSQL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensespsfrag.html",
+        "is_spdx_official": true,
+        "name": "psfrag License",
+        "short_name": "psfrag"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensespsutils.html",
+        "is_spdx_official": true,
+        "name": "psutils License",
+        "short_name": "psutils"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesPython-2.0.html",
+        "is_spdx_official": true,
+        "name": "Python License 2.0",
+        "short_name": "Python-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesQPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Q Public License 1.0",
+        "short_name": "QPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesQhull.html",
+        "is_spdx_official": true,
+        "name": "Qhull License",
+        "short_name": "Qhull"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRdisc.html",
+        "is_spdx_official": true,
+        "name": "Rdisc License",
+        "short_name": "Rdisc"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRPSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "RealNetworks Public Source License v1.0",
+        "short_name": "RPSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Reciprocal Public License 1.1",
+        "short_name": "RPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRPL-1.5.html",
+        "is_spdx_official": true,
+        "name": "Reciprocal Public License 1.5",
+        "short_name": "RPL-1.5"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRHeCos-1.1.html",
+        "is_spdx_official": true,
+        "name": "Red Hat eCos Public License v1.1",
+        "short_name": "RHeCos-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRSCPL.html",
+        "is_spdx_official": true,
+        "name": "Ricoh Source Code Public License",
+        "short_name": "RSCPL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRSA-MD.html",
+        "is_spdx_official": true,
+        "name": "RSA Message-Digest License ",
+        "short_name": "RSA-MD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesRuby.html",
+        "is_spdx_official": true,
+        "name": "Ruby License",
+        "short_name": "Ruby"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSAX-PD.html",
+        "is_spdx_official": true,
+        "name": "Sax Public Domain Notice",
+        "short_name": "SAX-PD"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSaxpath.html",
+        "is_spdx_official": true,
+        "name": "Saxpath License",
+        "short_name": "Saxpath"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSCEA.html",
+        "is_spdx_official": true,
+        "name": "SCEA Shared Source License",
+        "short_name": "SCEA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSWL.html",
+        "is_spdx_official": true,
+        "name": "Scheme Widget Library (SWL) Software License Agreement",
+        "short_name": "SWL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSendmail.html",
+        "is_spdx_official": true,
+        "name": "Sendmail License",
+        "short_name": "Sendmail"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSGI-B-1.0.html",
+        "is_spdx_official": true,
+        "name": "SGI Free Software License B v1.0",
+        "short_name": "SGI-B-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSGI-B-1.1.html",
+        "is_spdx_official": true,
+        "name": "SGI Free Software License B v1.1",
+        "short_name": "SGI-B-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSGI-B-2.0.html",
+        "is_spdx_official": true,
+        "name": "SGI Free Software License B v2.0",
+        "short_name": "SGI-B-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOFL-1.0.html",
+        "is_spdx_official": true,
+        "name": "SIL Open Font License 1.0",
+        "short_name": "OFL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesOFL-1.1.html",
+        "is_spdx_official": true,
+        "name": "SIL Open Font License 1.1",
+        "short_name": "OFL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSimPL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Simple Public License 2.0",
+        "short_name": "SimPL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSleepycat.html",
+        "is_spdx_official": true,
+        "name": "Sleepycat License",
+        "short_name": "Sleepycat"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSNIA.html",
+        "is_spdx_official": true,
+        "name": "SNIA Public License 1.1",
+        "short_name": "SNIA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSpencer-86.html",
+        "is_spdx_official": true,
+        "name": "Spencer License 86",
+        "short_name": "Spencer-86"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSpencer-94.html",
+        "is_spdx_official": true,
+        "name": "Spencer License 94",
+        "short_name": "Spencer-94"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSpencer-99.html",
+        "is_spdx_official": true,
+        "name": "Spencer License 99",
+        "short_name": "Spencer-99"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSMLNJ.html",
+        "is_spdx_official": true,
+        "name": "Standard ML of New Jersey License",
+        "short_name": "SMLNJ"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSugarCRM-1.1.3.html",
+        "is_spdx_official": true,
+        "name": "SugarCRM Public License v1.1.3",
+        "short_name": "SugarCRM-1.1.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSISSL.html",
+        "is_spdx_official": true,
+        "name": "Sun Industry Standards Source License v1.1",
+        "short_name": "SISSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSISSL-1.2.html",
+        "is_spdx_official": true,
+        "name": "Sun Industry Standards Source License v1.2",
+        "short_name": "SISSL-1.2"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesSPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Sun Public License v1.0",
+        "short_name": "SPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesWatcom-1.0.html",
+        "is_spdx_official": true,
+        "name": "Sybase Open Watcom Public License 1.0",
+        "short_name": "Watcom-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesTCL.html",
+        "is_spdx_official": true,
+        "name": "TCL/TK License",
+        "short_name": "TCL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesUnlicense.html",
+        "is_spdx_official": true,
+        "name": "The Unlicense",
+        "short_name": "Unlicense"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesTMate.html",
+        "is_spdx_official": true,
+        "name": "TMate Open Source License",
+        "short_name": "TMate"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesTORQUE-1.1.html",
+        "is_spdx_official": true,
+        "name": "TORQUE v2.5+ Software License v1.1",
+        "short_name": "TORQUE-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesTOSL.html",
+        "is_spdx_official": true,
+        "name": "Trusster Open Source License",
+        "short_name": "TOSL"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesUnicode-TOU.html",
+        "is_spdx_official": true,
+        "name": "Unicode Terms of Use",
+        "short_name": "Unicode-TOU"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesUPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Universal Permissive License v1.0",
+        "short_name": "UPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesNCSA.html",
+        "is_spdx_official": true,
+        "name": "University of Illinois/NCSA Open Source License",
+        "short_name": "NCSA"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesVim.html",
+        "is_spdx_official": true,
+        "name": "Vim License",
+        "short_name": "Vim"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesVOSTROM.html",
+        "is_spdx_official": true,
+        "name": "VOSTROM Public License for Open Source",
+        "short_name": "VOSTROM"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesVSL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Vovida Software License v1.0",
+        "short_name": "VSL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesW3C-19980720.html",
+        "is_spdx_official": true,
+        "name": "W3C Software Notice and License (1998-07-20)",
+        "short_name": "W3C-19980720"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesW3C.html",
+        "is_spdx_official": true,
+        "name": "W3C Software Notice and License (2002-12-31)",
+        "short_name": "W3C"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesWsuipa.html",
+        "is_spdx_official": true,
+        "name": "Wsuipa License",
+        "short_name": "Wsuipa"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesXnet.html",
+        "is_spdx_official": true,
+        "name": "X.Net License",
+        "short_name": "Xnet"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesX11.html",
+        "is_spdx_official": true,
+        "name": "X11 License",
+        "short_name": "X11"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesXerox.html",
+        "is_spdx_official": true,
+        "name": "Xerox License",
+        "short_name": "Xerox"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesXFree86-1.1.html",
+        "is_spdx_official": true,
+        "name": "XFree86 License 1.1",
+        "short_name": "XFree86-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesxinetd.html",
+        "is_spdx_official": true,
+        "name": "xinetd License",
+        "short_name": "xinetd"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesxpp.html",
+        "is_spdx_official": true,
+        "name": "XPP License",
+        "short_name": "xpp"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesXSkat.html",
+        "is_spdx_official": true,
+        "name": "XSkat License",
+        "short_name": "XSkat"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesYPL-1.0.html",
+        "is_spdx_official": true,
+        "name": "Yahoo! Public License v1.0",
+        "short_name": "YPL-1.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesYPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Yahoo! Public License v1.1",
+        "short_name": "YPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZed.html",
+        "is_spdx_official": true,
+        "name": "Zed License",
+        "short_name": "Zed"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZend-2.0.html",
+        "is_spdx_official": true,
+        "name": "Zend License v2.0",
+        "short_name": "Zend-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZimbra-1.3.html",
+        "is_spdx_official": true,
+        "name": "Zimbra Public License v1.3",
+        "short_name": "Zimbra-1.3"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZimbra-1.4.html",
+        "is_spdx_official": true,
+        "name": "Zimbra Public License v1.4",
+        "short_name": "Zimbra-1.4"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZlib.html",
+        "is_spdx_official": true,
+        "name": "zlib License",
+        "short_name": "Zlib"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licenseszlib-acknowledgement.html",
+        "is_spdx_official": true,
+        "name": "zlib/libpng License with Acknowledgement",
+        "short_name": "zlib-acknowledgement"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZPL-1.1.html",
+        "is_spdx_official": true,
+        "name": "Zope Public License 1.1",
+        "short_name": "ZPL-1.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZPL-2.0.html",
+        "is_spdx_official": true,
+        "name": "Zope Public License 2.0",
+        "short_name": "ZPL-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesZPL-2.1.html",
+        "is_spdx_official": true,
+        "name": "Zope Public License 2.1",
+        "short_name": "ZPL-2.1"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licenseseCos-2.0",
+        "is_spdx_official": true,
+        "name": "eCos license version 2.0",
+        "short_name": "eCos-2.0"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-1.0+",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v1.0 or later",
+        "short_name": "GPL-1.0+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0+",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 or later",
+        "short_name": "GPL-2.0+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0-with-autoconf-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 w/Autoconf exception",
+        "short_name": "GPL-2.0-with-autoconf-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0-with-bison-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 w/Bison exception",
+        "short_name": "GPL-2.0-with-bison-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0-with-classpath-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 w/Classpath exception",
+        "short_name": "GPL-2.0-with-classpath-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0-with-font-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 w/Font exception",
+        "short_name": "GPL-2.0-with-font-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-2.0-with-GCC-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v2.0 w/GCC Runtime Library exception",
+        "short_name": "GPL-2.0-with-GCC-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-3.0+",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v3.0 or later",
+        "short_name": "GPL-3.0+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-3.0-with-autoconf-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v3.0 w/Autoconf exception",
+        "short_name": "GPL-3.0-with-autoconf-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesGPL-3.0-with-GCC-exception",
+        "is_spdx_official": true,
+        "name": "GNU General Public License v3.0 w/GCC Runtime Library exception",
+        "short_name": "GPL-3.0-with-GCC-exception"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-2.1+",
+        "is_spdx_official": true,
+        "name": "GNU Lesser General Public License v2.1 or later",
+        "short_name": "LGPL-2.1+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-3.0+",
+        "is_spdx_official": true,
+        "name": "GNU Lesser General Public License v3.0 or later",
+        "short_name": "LGPL-3.0+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesLGPL-2.0+",
+        "is_spdx_official": true,
+        "name": "GNU Library General Public License v2 or later",
+        "short_name": "LGPL-2.0+"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesStandardML-NJ",
+        "is_spdx_official": true,
+        "name": "Standard ML of New Jersey License",
+        "short_name": "StandardML-NJ"
+    },
+    {
+        "comment": "",
+        "cross_reference": "http://spdx.org/licensesWXwindows",
+        "is_spdx_official": true,
+        "name": "wxWindows Library License",
+        "short_name": "WXwindows"
+    }
+]
