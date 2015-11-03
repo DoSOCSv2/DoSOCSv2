@@ -24,9 +24,9 @@
 {0} dbinit [-f FILE] [--no-confirm]
 {0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
 {0} newconfig [-f FILE]
-{0} oneshot [-c COMMENT] [-C COMMENT] [-f FILE] [-n NAME] [-N NAME]
-    [-s SCANNERS] [-e VER] [-r] (PATH)
-{0} print [-f FILE] (DOC-ID)
+{0} oneshot [-c COMMENT] [-C COMMENT] [-e VER] [-f FILE] [-n NAME] [-N NAME]
+    [-r] [-s SCANNERS] [-T FILE] (PATH)
+{0} print [-f FILE] [-T FILE] (DOC-ID)
 {0} scan [-c COMMENT] [-f FILE] [-n NAME] [-e VER] [-s SCANNERS] [-r] (PATH)
 {0} scanners [-f FILE]
 {0} (--help | --version)
@@ -63,6 +63,7 @@ Options:
                                 package/file, run it anyway
   -s, --scanners=SCANNERS     Comma-separated list of scanners to use
                                 ('dosocs2 scanners' to see choices)
+  -T, --template-file=FILE    Template to use for document generation
       --no-confirm            Don't prompt before initializing database with
                                 'dbinit' (dangerous!)
 
@@ -190,6 +191,7 @@ def main(sysargv=None, config=None):
     package_path = argv['PATH']
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
+    template_file = argv['--template-file'] or format_map['tag']
 
     # Configuration and scanner discovery
     config = config or configtools.Config()
@@ -261,14 +263,15 @@ def main(sysargv=None, config=None):
             if answer != 'YES':
                 errmsg('canceling operation.')
                 return 1
-        return 0 if dbinit.initialize(engine, __version__) else 1
+        license_url = 'http://spdx.org/licenses/'
+        return 0 if dbinit.initialize(engine, __version__, license_url) else 1
 
     elif argv['print']:
         with engine.begin() as conn:
             if spdxdb.fetch(conn, db.documents, doc_id) is None:
                 errmsg('document id {} not found in the database.'.format(doc_id))
                 return 1
-            print(render.render_document(conn, doc_id, format_map['tag']))
+            print(render.render_document(conn, doc_id, template_file))
 
     elif argv['generate']:
         kwargs = {
@@ -340,7 +343,7 @@ def main(sysargv=None, config=None):
             fmt = '{}: document_id: {}\n'
             sys.stderr.write(fmt.format(package_path, doc_id))
         with engine.begin() as conn:
-            print(render.render_document(conn, doc_id, format_map['tag']))
+            print(render.render_document(conn, doc_id, template_file))
 
 
 if __name__ == "__main__":
