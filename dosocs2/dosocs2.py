@@ -21,7 +21,7 @@
 
 '''Usage:
 {0} configtest [-f FILE]
-{0} dbinit [-f FILE] [--no-confirm]
+{0} dbinit [-f FILE]
 {0} generate [-C COMMENT] [-f FILE] [-N NAME] (PACKAGE-ID)
 {0} newconfig [-f FILE]
 {0} oneshot [-c COMMENT] [-C COMMENT] [-e VER] [-f FILE] [-n NAME] [-N NAME]
@@ -64,8 +64,6 @@ Options:
   -s, --scanners=SCANNERS     Comma-separated list of scanners to use
                                 ('dosocs2 scanners' to see choices)
   -T, --template-file=FILE    Template to use for document generation
-      --no-confirm            Don't prompt before initializing database with
-                                'dbinit' (dangerous!)
 
 Report bugs to <tgurney@unomaha.edu>.
 '''
@@ -254,15 +252,14 @@ def main(sysargv=None, config=None):
         return 0
 
     elif argv['dbinit']:
-        if not argv['--no-confirm']:
-            errmsg('preparing to initialize the database ({})'.format(str(engine)[7:-1]))
-            errmsg('all existing data will be deleted!')
-            errmsg('make sure you are connected to the internet before continuing.')
-            errmsg('type the word "YES" (all uppercase) to commit.')
-            answer = raw_input()
-            if answer != 'YES':
-                errmsg('canceling operation.')
-                return 1
+        errmsg('preparing to initialize the database ({})'.format(str(engine)[7:-1]))
+        errmsg('all existing data will be deleted!')
+        errmsg('make sure you are connected to the internet before continuing.')
+        errmsg('type the word "YES" (all uppercase) to commit.')
+        answer = raw_input()
+        if answer != 'YES':
+            errmsg('canceling operation.')
+            return 1
         license_url = 'http://spdx.org/licenses/'
         return 0 if dbinit.initialize(engine, __version__, license_url) else 1
 
