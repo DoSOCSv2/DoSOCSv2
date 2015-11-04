@@ -254,14 +254,16 @@ def main(sysargv=None, config=None):
         return 0
 
     elif argv['dbinit']:
+        errmsg('preparing to initialize the database ({})'.format(str(engine)[7:-1]))
+        errmsg('all existing data will be deleted!')
+        errmsg('type the word "YES" (all uppercase) to commit.')
         if not argv['--no-confirm']:
-            errmsg('preparing to initialize the database ({})'.format(str(engine)[7:-1]))
-            errmsg('all existing data will be deleted!')
-            errmsg('type the word "YES" (all uppercase) to commit.')
             answer = raw_input()
             if answer != 'YES':
                 errmsg('canceling operation.')
                 return 1
+        else:
+            print('YES')
         return 0 if dbinit.initialize(engine, __version__) else 1
 
     elif argv['print']:
