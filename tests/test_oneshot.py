@@ -18,8 +18,8 @@
 #
 # SPDX-License-Identifier: GPL-2.0+
 
-from dosocs2 import dosocs2, configtools
-from pytest import raises
+
+from .helpers import TempEnv, run_dosocs2
 from tempfile import NamedTemporaryFile
 
 TEMP_CONFIG = '''
@@ -31,26 +31,147 @@ scanner_monk_path = /dev/null
 scanner_nomos_path = /dev/null
 '''
 
-def test_oneshot(capsys):
-    with NamedTemporaryFile(mode='w+') as tf:
-        with NamedTemporaryFile(mode='w+') as tmpdb:
-            # TODO: Move this setup logic to a new context manager
-            tf.write(TEMP_CONFIG.format(tmpdb.name))
-            tf.flush()
+SHORT_TEMPLATE = '''
+SPDXVersion: {{ document.spdx_version }}
+DataLicense: {{ document.data_license }}
+DocumentName: {{ document.name }}
+DocumentComment: {{ document.document_comment | text }}
+
+## Creation Information
+{% for creator in document.creators %}
+Creator: {{ creator.creator }}
+{% endfor %}
+CreatorComment: {{ document.creator_comment | text }}
+LicenseListVersion: {{ document.license_list_version }}
+
+
+## Package Information
+
+PackageName: {{ package.name }}
+{% if package.version %}
+PackageVersion: {{ package.version }}
+{% endif %}
+PackageFileName: {{ package.file_name }}
+PackageSupplier: {{ package.supplier | noassertion }}
+PackageOriginator: {{ package.originator | noassertion }}
+PackageDownloadLocation: {{ package.download_location | noassertion }}
+PackageVerificationCode: {{ package.verification_code }}
+{% if package.checksum != None %}
+PackageChecksum: SHA1: {{ package.checksum }}
+{% endif %}
+PackageHomePage: {{ package.home_page | noassertion }}
+{% if package.source_info %}
+PackageSourceInfo: {{ package.source_info }}
+{% endif %}
+PackageLicenseConcluded: {{ package.license_concluded | noassertion }}
+{% for li in package.license_info_from_files %}
+PackageLicenseInfoFromFiles: {{ li.license_short_name }}
+{% endfor %}
+PackageLicenseDeclared: {{ package.license_declared | noassertion }}
+PackageLicenseComments: {{ package.license_comments | text }}
+PackageCopyrightText: {{ package.copyright_text | text_default }}
+PackageSummary: {{ package.summary | text }}
+PackageDescription: {{ package.description | text }}
+PackageComment: {{ package.comment | text }}
+
+## File Information
+{% for file in package.files %}
+
+
+FileName: {{ file.name }}
+FileType: {{ file.type }}
+FileChecksum: SHA1: {{ file.checksum }}
+LicenseConcluded: {{ file.license_concluded | noassertion }}
+    {% for fli in file.license_info %}
+LicenseInfoInFile: {{ fli.short_name | noassertion }}
+    {% endfor %}
+LicenseComments: {{ file.license_comments | text }}
+FileCopyrightText: {{ file.copyright_text | text_default }}
+    {% if file.project_name %}
+ArtifactOfProjectName: {{ file.project_name | noassertion }}
+ArtifactOfProjectHomePage: {{ file.project_homepage | noassertion }}
+ArtifactOfProjectURI: {{ file.project_uri | noassertion }}
+    {% endif %}
+FileComment: {{ file.comment | text }}
+FileNotice: {{ file.notice | text }}
+    {% for contributor in file.contributors %}
+FileContributor: {{ contributor.contributor }}
+    {% endfor %}
+
+{% endfor %}
+
+{% if licenses %}
+
+## License Information
+{% for license in licenses %}
+
+LicenseID: {{ license.id_string }}
+LicenseName: {{ license.name }}
+ExtractedText: <text>{{ license.extracted_text }}</text>
+LicenseCrossReference: {{ license.cross_reference }}
+LicenseComment: {{ license.comment | text }}
+{% endfor %}
+{% endif %}
+'''
+
+def test_oneshot_returns_zero(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        assert ret == 0
+
+
+def test_oneshot_same_document_as_scan_print_generate(capsys):
+    with NamedTemporaryFile(mode='w+') as template_file:
+        template_file.write(SHORT_TEMPLATE)
+        template_file.flush()
+        with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+            _ = capsys.readouterr()
             args = [
-                'dbinit', 
-                '-f',
-                tf.name,
-                '--no-confirm'
-                ]
-            ret = dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
-            args = [
-                # TODO: Add document comment and other optional args
-                # then assert that they show up in the resulting doc
                 'oneshot', 
                 '-f',
-                tf.name,
+                temp_config.name,
+                '-s',
+                'dummy',
+                '-T',
+                template_file.name,
                 '/dev/null'
                 ]
-            ret = dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
-            assert ret == 0
+            ret = run_dosocs2(args)
+            oneshot_out, _ = capsys.readouterr()
+        with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+            _ = capsys.readouterr()
+            args = [
+                'scan', 
+                '-f',
+                temp_config.name,
+                '-s',
+                'dummy',
+                '/dev/null'
+                ]
+            ret = run_dosocs2(args)
+            args = [
+                'generate', 
+                '-f',
+                temp_config.name,
+                '1'
+                ]
+            ret = run_dosocs2(args)
+            args = [
+                'print', 
+                '-f',
+                temp_config.name,
+                '-T',
+                template_file.name,
+                '1'
+                ]
+            ret = run_dosocs2(args)
+            out, err = capsys.readouterr()
+        assert out in oneshot_out
