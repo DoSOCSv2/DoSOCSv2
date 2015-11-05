@@ -125,7 +125,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
         'copyright_text': None,
         'summary': '',
         'description': '',
-        'comment': '',
+        'comment': comment or '',
         'dosocs2_dir_code': None if sha1 is not None else dir_code
         }
     if package_file_path is None:
