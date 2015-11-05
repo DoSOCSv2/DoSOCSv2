@@ -1,7 +1,7 @@
 ## Scanners
 
-The concept of scanners that provide useful information about software packages
-is an important one to `dosocs2`. `dosocs2` comes with three scanners defined:
+Scanners are the modules that gather raw data (such as license information)
+from software packages.  DoSOCS comes with three scanners defined:
 
 * `dummy`
 * `nomos` (the default)
@@ -9,9 +9,12 @@ is an important one to `dosocs2`. `dosocs2` comes with three scanners defined:
 
 During a package scan, after any unknown files are registered and their SHA-1
 digests saved, any of these scanners can be run in any combination on the
-target packages. This is accomplished using the `-s` option to `dosocs2 scan`,
-which takes a comma-separated list of scanner names. The scanners are run
-in the order specified on the command line.
+target packages by using `dosocs2 scan` with the `-s` option. Example:
+
+    $ dosocs2 scan -s nomos_deep,dummy package.tar.gz
+
+Runs the `nomos_deep` scanner, then the `dummy` scanner (in that order) on the
+file `package.tar.gz`.
 
 Below is an explanation of each scanner's operation and configuration.
 
@@ -22,7 +25,7 @@ smallest object which they can analyze. (Remember that a 'package' can be a
 directory or an archive file.)
 
 Tracking of which scanners have already run on a package is performed by
-`dosocs2` itself, regardless of how each scanner is implemented. `dosocs2`
+DoSOCS itself, regardless of how each scanner is implemented. DoSOCS
 will not run the same scanner multiple times on a package, unless the contents
 of the package change, or if `--rescan` is specified on the command line.
 
@@ -58,4 +61,4 @@ command line option to disable this behavior.
 any archives (tarballs, zip archives) found in the package, and scan those
 files also. Any license information found in these 'sub-packages' is treated as
 if it applies to that entire sub-package as if it were a regular file. Files in
-sub-packages are not registered with `dosocs2`.
+sub-packages are not registered with DoSOCS.
