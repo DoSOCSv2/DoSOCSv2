@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -32,7 +31,7 @@ scanner_nomos_path = /dev/null
 '''
 
 
-def test_generate_returns_zero(capsys):
+def test_generate_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'scan', 

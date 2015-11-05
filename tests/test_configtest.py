@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -23,7 +22,7 @@ from pytest import raises
 from tempfile import NamedTemporaryFile
 
 
-def test_configtest(capsys):
+def test_configtest_expected_output_typical_case(capsys):
     with NamedTemporaryFile(mode='w+') as tf:
         tf.write('''
 connection_uri = sqlite:///:memory:

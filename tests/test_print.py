@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -32,7 +31,7 @@ scanner_nomos_path = /dev/null
 '''
 
 
-def test_generate(capsys):
+def test_print_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'scan', 
@@ -58,3 +57,35 @@ def test_generate(capsys):
             ]
         ret = run_dosocs2(args)
         assert ret == 0
+
+
+def test_print_from_null_template_gives_empty_output(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'scan', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        args = [
+            'generate', 
+            '-f',
+            temp_config.name,
+            '1'
+            ]
+        ret = run_dosocs2(args)
+        args = [
+            'print', 
+            '-f',
+            temp_config.name,
+            '-T',
+            '/dev/null',
+            '1'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'SPDX' not in out

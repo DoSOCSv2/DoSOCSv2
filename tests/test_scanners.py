@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -30,7 +29,7 @@ default_scanners = dummy
 '''
 
 
-def test_scanners_returns_zero(capsys):
+def test_scanners_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'scanners', 

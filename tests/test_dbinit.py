@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -28,7 +27,7 @@ namespace_prefix = sqlite:///:memory:
 scanner_nomos_path = /dev/null
 '''
 
-def test_dbinit_returns_zero(capsys):
+def test_dbinit_typical_case_returns_zero(capsys):
     with NamedTemporaryFile(mode='w+') as tf:
         tf.write(TEMP_CONFIG)
         tf.flush()

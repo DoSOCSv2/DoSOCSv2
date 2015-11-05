@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -114,7 +113,7 @@ LicenseComment: {{ license.comment | text }}
 {% endif %}
 '''
 
-def test_oneshot_returns_zero(capsys):
+def test_oneshot_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'oneshot', 
@@ -126,6 +125,91 @@ def test_oneshot_returns_zero(capsys):
             ]
         ret = run_dosocs2(args)
         assert ret == 0
+
+
+def test_oneshot_with_package_comment(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '--package-comment=12345',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'PackageComment: <text>12345</text>' in out
+
+
+def test_oneshot_with_package_name(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '--package-name=12345',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'PackageName: 12345' in out
+
+
+def test_oneshot_with_package_version(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '--package-version=12345',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'PackageVersion: 12345' in out
+
+
+def test_oneshot_with_document_comment(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '--doc-comment=12345',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'DocumentComment: <text>12345</text>' in out
+
+
+def test_oneshot_with_document_name(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        _ = capsys.readouterr()
+        args = [
+            'oneshot', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '--doc-name=12345',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        out, _ = capsys.readouterr()
+        assert 'DocumentName: 12345' in out
 
 
 def test_oneshot_same_document_as_scan_print_generate(capsys):

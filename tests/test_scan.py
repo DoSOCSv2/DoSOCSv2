@@ -1,5 +1,4 @@
 # Copyright (C) 2015 University of Nebraska at Omaha
-# Copyright (C) 2015 dosocs2 contributors
 #
 # This file is part of dosocs2.
 #
@@ -32,7 +31,7 @@ scanner_nomos_path = /dev/null
 '''
 
 
-def test_scan_returns_zero(capsys):
+def test_scan_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'scan', 
@@ -61,7 +60,7 @@ def test_scan_prints_package_id_to_stderr(capsys):
         assert '/dev/null: package_id: 1' in err
 
 
-def test_scan_already_ran_on_package(capsys):
+def test_scan_already_ran_on_package_wont_run_again(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
             'scan', 
@@ -76,3 +75,21 @@ def test_scan_already_ran_on_package(capsys):
         ret_again = run_dosocs2(args)
         out, err = capsys.readouterr()
         assert 'dummy already ran on package 1' in err
+
+
+def test_scan_explicit_rescan_acknowledged(capsys):
+    with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
+        args = [
+            'scan', 
+            '-f',
+            temp_config.name,
+            '-s',
+            'dummy',
+            '-r',
+            '/dev/null'
+            ]
+        ret = run_dosocs2(args)
+        _ = capsys.readouterr()
+        ret_again = run_dosocs2(args)
+        out, err = capsys.readouterr()
+        assert 'dummy already ran' not in err
