@@ -9,7 +9,7 @@ An explanation of the configuration options is found in the default
 defined `$XDG_CONFIG_HOME` in your environment, the new config file will
 probably be at `~/.config/dosocs2/dosocs2.conf`.
 
-### Configuration discovery
+### Discovery
 
 DoSOCS will read configuration files in the following order:
 
