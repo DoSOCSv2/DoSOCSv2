@@ -98,10 +98,6 @@ For example, for user `tom`, this database would be created at
 config file and change the `connection_uri` variable to use a different
 location for the database.
 
-If you have [FOSSology](http://www.fossology.org/) installed, you also need
-to set the path of any of the supported scanners you want to use
-(see [doc/scanners.md](doc/scanners.md))
-
 
 ### Step 3 (Optional) - Add PostgreSQL configuration
 
@@ -165,10 +161,10 @@ In the default configuration, if a scanner is not specified, only `nomos`
 is run by default. It gathers license information, but is a bit slow.
 One can use the `-s` option to explicitly specify which scanners to run:
 
-    $ dosocs2 scan -s nomos_deep,dependency_check package.tar.gz
+    $ dosocs2 scan -s nomos_deep,dummy package.tar.gz
     dosocs2: package_tar_gz: package_id: 456
     dosocs2: running nomos_deep on package 456
-    dosocs2: running dependency_check on package 456
+    dosocs2: running dummy on package 456
 
 After `dosocs2 scan`, no SPDX document has yet been created.
 To create one in the database (specifying the package ID):
