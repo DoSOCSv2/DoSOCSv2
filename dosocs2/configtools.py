@@ -46,9 +46,6 @@ echo = False
 # If you used the included install-nomos.sh, the scanner_nomos_path
 # should already be correct.
 scanner_nomos_path = /usr/local/share/fossology/nomos/agent/nomossa
-scanner_copyright_path = /usr/share/fossology/copyright/agent/copyright
-scanner_monk_path = /usr/share/fossology/monk/agent/monk
-scanner_dependency_check_path = /usr/local/dependency-check/bin/dependency-check.sh
 """
 
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
@@ -56,12 +53,10 @@ XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.confi
 
 class Config:
 
-    def __init__(self, global_path=None, local_path=None):
+    def __init__(self):
         self.config_home = os.path.join(XDG_CONFIG_HOME, 'dosocs2')
-        self.local_path = local_path or os.path.join(self.config_home, 'dosocs2.conf')
-        self.global_path = global_path or '/etc/dosocs2.conf'
+        self.file_location = os.path.join(self.config_home, 'dosocs2.conf')
         self.config = self.get_from_file(DEFAULT_CONFIG.split('\n'))
-        self.update_config()
 
     def _interpolate(self, matchobj):
         return os.environ.get(matchobj.group(1)) or ''
@@ -78,10 +73,6 @@ class Config:
             config[key] = val
         return config
 
-    @property
-    def resolution_order(self):
-        return (self.global_path, self.local_path)
-
     def make_config_dirs(self):
         try:
             os.makedirs(self.config_home)
@@ -90,18 +81,16 @@ class Config:
 
     def create_local_config(self, overwrite=True):
         self.make_config_dirs()
-        if overwrite or not os.path.exists(self.local_path):
-            with open(self.local_path, 'w') as f:
+        if overwrite or not os.path.exists(self.file_location):
+            with open(self.file_location, 'w') as f:
                 f.write(DEFAULT_CONFIG)
 
     def update_config(self):
-        config_order = self.resolution_order
-        for path in config_order:
-            try:
-                with open(path) as f:
-                    self.config.update(self.get_from_file(f))
-            except EnvironmentError:
-                continue
+        try:
+            with open(self.file_location) as f:
+                self.config.update(self.get_from_file(f))
+        except EnvironmentError:
+            pass
 
     def dump_to_file(self, fileobj):
         for key, val in sorted(self.config.iteritems()):

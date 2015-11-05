@@ -28,17 +28,13 @@ def test_configtest(capsys):
         tf.write('''
 connection_uri = sqlite:///:memory:
 namespace_prefix = sqlite:///:memory:
-scanner_copyright_path = /dev/null
-scanner_dependency_check_path = /dev/null
-scanner_monk_path = /dev/null
 scanner_nomos_path = /dev/null
 ''')
         tf.flush()
         expected = '''
 -------------------------------------------------------------------------------
 
-Config resolution order:
-/dev/null
+Config location:
 {}
 
 -------------------------------------------------------------------------------
@@ -51,9 +47,6 @@ connection_uri = sqlite:///:memory:
 default_scanners = nomos
 echo = False
 namespace_prefix = sqlite:///:memory:
-scanner_copyright_path = /dev/null
-scanner_dependency_check_path = /dev/null
-scanner_monk_path = /dev/null
 scanner_nomos_path = /dev/null
 
 # end dosocs2 config
@@ -61,9 +54,6 @@ scanner_nomos_path = /dev/null
 -------------------------------------------------------------------------------
 
 Testing specified scanner paths...
-copyright (/dev/null)...ok.
-dependency_check (/dev/null)...ok.
-monk (/dev/null)...ok.
 nomos (/dev/null)...ok.
 
 -------------------------------------------------------------------------------
@@ -75,6 +65,6 @@ Testing database connection...ok.
             '-f',
             tf.name
             ]
-        dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
+        dosocs2.main(args)
     out, err = capsys.readouterr()
     assert out == expected

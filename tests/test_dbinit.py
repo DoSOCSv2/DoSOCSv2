@@ -25,9 +25,6 @@ from tempfile import NamedTemporaryFile
 TEMP_CONFIG = '''
 connection_uri = sqlite:///:memory:
 namespace_prefix = sqlite:///:memory:
-scanner_copyright_path = /dev/null
-scanner_dependency_check_path = /dev/null
-scanner_monk_path = /dev/null
 scanner_nomos_path = /dev/null
 '''
 
@@ -41,7 +38,7 @@ def test_dbinit_returns_zero(capsys):
             '-f',
             tf.name
             ]
-        ret = dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
+        ret = dosocs2.main(args)
         assert ret == 0
 
 def test_dbinit_warning_includes_connection_uri(capsys):
@@ -54,6 +51,6 @@ def test_dbinit_warning_includes_connection_uri(capsys):
             '-f',
             tf.name
             ]
-        ret = dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
+        ret = dosocs2.main(args)
         out, err = capsys.readouterr()
         assert 'sqlite:///:memory:' in err

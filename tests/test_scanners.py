@@ -25,9 +25,6 @@ from .helpers import TempEnv, run_dosocs2
 TEMP_CONFIG = '''
 connection_uri = sqlite:///{0}
 namespace_prefix = sqlite:///{0}
-scanner_copyright_path = /dev/null
-scanner_dependency_check_path = /dev/null
-scanner_monk_path = /dev/null
 scanner_nomos_path = /dev/null
 default_scanners = dummy
 '''

@@ -19,4 +19,4 @@ def TempEnv(config_text):
 
 
 def run_dosocs2(args):
-    return dosocs2.main(args, config=configtools.Config(global_path='/dev/null'))
+    return dosocs2.main(args)

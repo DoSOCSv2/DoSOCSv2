@@ -146,12 +146,11 @@ def do_scan(engine, config, package_root, package_file_path=None, selected_scann
 
 def do_configtest(engine, config):
     print_hr()
-    print('Config resolution order:')
-    for path in config.resolution_order:
-        if os.path.exists(path):
-            print(path)
-        else:
-            print(path + ' (not present)')
+    print('Config location:')
+    if os.path.exists(config.file_location):
+        print(config.file_location)
+    else:
+        print(config.file_location + ' (not present)')
     print_hr()
     print('Effective configuration:\n')
     print('# begin dosocs2 config\n')
@@ -179,7 +178,7 @@ def do_configtest(engine, config):
     print('ok.')
 
 
-def main(sysargv=None, config=None):
+def main(sysargv=None):
     argv = docopt.docopt(
         doc=__doc__.format(os.path.basename(sys.argv[0])),
         argv=sysargv,
@@ -194,7 +193,7 @@ def main(sysargv=None, config=None):
     template_file = argv['--template-file'] or format_map['tag']
 
     # Configuration and scanner discovery
-    config = config or configtools.Config()
+    config = configtools.Config()
     config.make_config_dirs()
     scanners = discover.discover()
 
@@ -208,8 +207,8 @@ def main(sysargv=None, config=None):
         except EnvironmentError as ex:
             errmsg('{}: {}'.format(alt_config_path, ex.strerror))
             return 1
-        config.local_path = alt_config_path
-        config.update_config()
+        config.file_location = alt_config_path
+    config.update_config()
 
     # Verify existence of selected scanners
     if not argv['--scanners']:
@@ -238,10 +237,10 @@ def main(sysargv=None, config=None):
         try:
             configresult = config.create_local_config()
         except EnvironmentError as e:
-            errmsg('failed to write config file to {}: {}'.format(config.local_path, e.strerror))
+            errmsg('failed to write config file to {}: {}'.format(config.file_location, e.strerror))
             return 1
         else:
-            msg('wrote config file to {}'.format(config.local_path))
+            msg('wrote config file to {}'.format(config.file_location))
             return 0
 
     elif argv['scanners']:
