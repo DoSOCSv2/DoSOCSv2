@@ -198,3 +198,6 @@ Maintainers
 -----------
 
 [Thomas T. Gurney](https://github.com/ttgurney)
+
+
+(This work has been funded through the National Science Foundation VOSS-IOS Grant: 1122642.)
