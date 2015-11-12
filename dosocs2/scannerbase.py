@@ -23,6 +23,7 @@ Includes Scanner base classes and the WorkItem class.
 """
 
 import os
+import re
 from collections import namedtuple
 
 from sqlalchemy import select, and_
@@ -61,6 +62,9 @@ class Scanner(object):
         """
         self.conn = conn
         self.register()
+        ignore_string = config.get('scanner_' + self.name + '_ignore')
+        if ignore_string is not None:
+            self.ignore_pattern = re.compile(ignore_string)
 
     def get_file_list(self, package_id, package_root):
         """Return list of WorkItems for all files in a specified package.
@@ -117,6 +121,9 @@ class Scanner(object):
         processed_files = {}
         files_to_mark = set()
         for file in all_files:
+            if self.ignore_pattern is not None:
+                if re.match(self.ignore_pattern, file.path):
+                    continue
             already_done = self.file_is_already_done(file)
             if rescan or not already_done:
                 processed_files[file] = self.process_file(file)

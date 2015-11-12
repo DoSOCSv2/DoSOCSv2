@@ -46,6 +46,10 @@ echo = False
 # If you used the included install-nomos.sh, the scanner_nomos_path
 # should already be correct.
 scanner_nomos_path = /usr/local/share/fossology/nomos/agent/nomossa
+
+# optional ignore regex
+# nomos will ignore files whose absolute path matches the regex
+# scanner_nomos_ignore = .*\.class$
 """
 
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
