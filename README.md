@@ -52,10 +52,6 @@ Dependencies
 - Python 2.7.x
 
 Optional:
-- [FOSSology](http://www.fossology.org/) 2.5.x or later version (for
-  more license/copyright scanners)
-- [OWASP dependency-check](https://github.com/jeremylong/DependencyCheck)
-  (for vulnerability identification)
 - PostgreSQL 8.x or later version (can be on a separate machine)
 
 Python libraries:
