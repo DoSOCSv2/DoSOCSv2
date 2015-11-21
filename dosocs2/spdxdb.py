@@ -25,6 +25,9 @@ from . import queries
 from . import schema as db
 from . import util
 
+"""
+SPDX Database - Query database and insert scan results
+"""
 
 def insert(conn, table, params):
     query = table.insert().values(**params)

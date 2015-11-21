@@ -74,6 +74,7 @@ def add_file_licenses(conn, rows):
             )
         [already_exists] = conn.execute(query).fetchall() or [None]
         if already_exists is None:
+            
             key = file_license_params['file_id'], file_license_params['license_id']
             to_add[key] = file_license_params
     bulk_insert(conn, db.files_licenses, list(to_add.values()))

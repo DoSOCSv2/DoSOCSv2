@@ -3,6 +3,10 @@ import os
 import pkgutil
 from . import scanners
 
+"""
+discover scanners available 
+"""
+
 def discover():
     path = os.path.dirname(scanners.__file__)
     scanner_names = [name for _, name, _ in pkgutil.iter_modules([path])]

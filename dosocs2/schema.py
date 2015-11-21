@@ -22,6 +22,11 @@ from sqlalchemy import Integer, String, Text, Boolean, DateTime
 from sqlalchemy import ForeignKeyConstraint, CheckConstraint, UniqueConstraint
 from sqlalchemy import func
 
+"""
+SPDX Schema for a relational database
+"""
+
+
 meta = MetaData()
 
 licenses = Table('licenses', meta,
