@@ -17,6 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0+
 
+<<<<<<< HEAD:tests/helpers.py
 from contextlib import contextmanager
 from dosocs2 import dosocs2, configtools
 from tempfile import NamedTemporaryFile
@@ -35,6 +36,11 @@ def TempEnv(config_text):
                 ]
             ret = run_dosocs2(args)
             yield temp_config, temp_db
+=======
+
+import subprocess
+import sys
+>>>>>>> 908acacd345c67a2b2322edeedd381709b1580d4:scripts/sonarqube_helper.py
 
 
 def run_dosocs2(args):

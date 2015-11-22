@@ -269,6 +269,7 @@ class FileLicenseScanner(Scanner):
                     'extracted_text': extracted_text
                     }
                 licenses_to_add.append(file_license_kwargs)
+            extracted_text = ''
         scanresult.add_file_licenses(self.conn, licenses_to_add)
  
 
