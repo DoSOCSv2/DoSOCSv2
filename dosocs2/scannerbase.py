@@ -65,6 +65,8 @@ class Scanner(object):
         ignore_string = config.get('scanner_' + self.name + '_ignore')
         if ignore_string is not None:
             self.ignore_pattern = re.compile(ignore_string)
+        else:
+            self.ignore_pattern = None
 
     def get_file_list(self, package_id, package_root):
         """Return list of WorkItems for all files in a specified package.
@@ -259,15 +261,15 @@ class FileLicenseScanner(Scanner):
             # Extract from nomos scan result
             licenses = []
             extracted_text = ''
-            for lics_r, text in file_lic_and_text[1]:
+            for lics_name, lics_text in file_lic_and_text[1]:
                 license_kwargs = {
                     'conn': self.conn,
-                    'short_name': lics_r,
+                    'short_name': lics_name,
                     'comment': 'found by ' + self.name
                     }
                 lic = scanresult.lookup_or_add_license(**license_kwargs)
                 licenses.append(lic)
-                extracted_text = text
+                extracted_text = lics_text
             for license in licenses:
                 file_license_kwargs = {
                     'file_id': file.file_id,

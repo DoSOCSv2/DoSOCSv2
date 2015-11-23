@@ -1,6 +1,6 @@
 import re
 import subprocess
-
+from itertools import izip
 from .. import scannerbase
 
 class Nomos(scannerbase.FileLicenseScanner):
