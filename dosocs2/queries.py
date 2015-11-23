@@ -21,7 +21,9 @@ from sqlalchemy.sql import select, case, and_, union_all
 from sqlalchemy import func
 from . import schema as db
 
-
+"""
+SPDX database - Refer: SPDX Database schema
+"""
 def license_approved_names():
     lic = db.licenses.alias()
     return (select([

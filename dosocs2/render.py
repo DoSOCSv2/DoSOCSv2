@@ -23,6 +23,9 @@ import jinja2
 from . import queries
 from . import util
 
+"""
+Render SPDX file 
+"""
 
 def _filter_text(value):
     return '<text>' + value + '</text>'
