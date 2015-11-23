@@ -255,21 +255,25 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        for (file, license_names) in processed_files.iteritems():
+        for (file, file_lic_and_text )in  processed_files.iteritems():
+            # Extract from nomos scan result
             licenses = []
-            for license_name in license_names:
+            extracted_text = ''
+            for lics_r, text in file_lic_and_text[1]:
                 license_kwargs = {
                     'conn': self.conn,
-                    'short_name': license_name,
+                    'short_name': lics_r,
                     'comment': 'found by ' + self.name
                     }
                 lic = scanresult.lookup_or_add_license(**license_kwargs)
                 licenses.append(lic)
+                extracted_text = text
             for license in licenses:
                 file_license_kwargs = {
                     'file_id': file.file_id,
                     'license_id': license['license_id'],
-                    'extracted_text': ''
+                    'extracted_text': extracted_text
                     }
                 licenses_to_add.append(file_license_kwargs)
+            extracted_text = ''
         scanresult.add_file_licenses(self.conn, licenses_to_add)
