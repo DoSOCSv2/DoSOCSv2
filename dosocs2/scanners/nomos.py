@@ -1,7 +1,9 @@
 import re
 import subprocess
 from itertools import izip
+from sqlalchemy.sql import select
 from .. import scannerbase
+from .. import schema
 
 class Nomos(scannerbase.FileLicenseScanner):
 
@@ -13,7 +15,9 @@ class Nomos(scannerbase.FileLicenseScanner):
         super(Nomos, self).__init__(conn, config)
         self.exec_path = config['scanner_' + Nomos.name + '_path']
         self.search_pattern = re.compile(r'File (.+?) contains license\(s\) (.+)')
-        self.lic_short_names_query_result = self.conn.execute("select short_name from licenses where is_spdx_official = 1")
+        lics = schema.licenses.alias()
+        official_licenses_query = select([lics.c.short_name]).where(lics.c.is_spdx_official == True)
+        self.lic_short_names_query_result = self.conn.execute(official_licenses_query)
         self.official_spdx_lic_short_name = []
         for row in self.lic_short_names_query_result:
             self.official_spdx_lic_short_name.append(str(row['short_name']).encode('ascii').strip(','))

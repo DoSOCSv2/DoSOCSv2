@@ -257,7 +257,7 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        for (file, file_lic_and_text )in  processed_files.iteritems():
+        for (file, file_lic_and_text ) in processed_files.iteritems():
             # Extract from nomos scan result
             licenses = []
             extracted_text = ''
