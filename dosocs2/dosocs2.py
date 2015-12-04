@@ -76,7 +76,7 @@ import os
 import pkg_resources
 import re
 import sys
-
+import time
 import docopt
 
 __version__ = '0.16.0'
@@ -179,6 +179,7 @@ def do_configtest(engine, config):
 
 
 def main(sysargv=None):
+    start_time = time.time()
     argv = docopt.docopt(
         doc=__doc__.format(os.path.basename(sys.argv[0])),
         argv=sysargv,
@@ -343,7 +344,7 @@ def main(sysargv=None):
             sys.stderr.write(fmt.format(package_path, doc_id))
         with engine.begin() as conn:
             print(render.render_document(conn, doc_id, template_file))
-    
+    print("time taken %s seconds" %(time.time() - start_time))
     return 0
 
 
