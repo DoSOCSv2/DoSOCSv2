@@ -272,10 +272,11 @@ class FileLicenseScanner(Scanner):
                 licenses.append(lic)
                 extracted_text.append(file_lic_name_ext_text[1][lic_ext_text])
             for license, ext_text in izip(licenses, extracted_text):
-                file_license_kwargs = {
-                    'file_id': file.file_id,
-                    'license_id': license['license_id'],
-                    'extracted_text': ext_text
-                    }
-                licenses_to_add.append(file_license_kwargs)
+                if not license['short_name'] == 'No_license_found':
+                    file_license_kwargs = {
+                        'file_id': file.file_id,
+                        'license_id': license['license_id'],
+                        'extracted_text': ext_text
+                        }
+                    licenses_to_add.append(file_license_kwargs)
         scanresult.add_file_licenses(self.conn, licenses_to_add)
