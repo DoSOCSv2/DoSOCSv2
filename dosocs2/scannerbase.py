@@ -25,7 +25,7 @@ Includes Scanner base classes and the WorkItem class.
 import os
 import re
 from collections import namedtuple
-
+from itertools import izip
 from sqlalchemy import select, and_
 
 from . import scanresult
@@ -257,25 +257,25 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        for (file, file_lic_and_text ) in processed_files.iteritems():
-            # Extract from nomos scan result
-            licenses = []
-            extracted_text = ''
-            for lics_name, lics_text in file_lic_and_text[1]:
+        processed_lic_ext_text = {}
+        licenses = []
+        extracted_text = []
+        for (file, file_lic_name_ext_text) in processed_files.iteritems():
+            for lic_ext_text in file_lic_name_ext_text[1].iterkeys():
+                # Extract from nomos scan result
                 license_kwargs = {
                     'conn': self.conn,
-                    'short_name': lics_name,
+                    'short_name': lic_ext_text,
                     'comment': 'found by ' + self.name
                     }
                 lic = scanresult.lookup_or_add_license(**license_kwargs)
                 licenses.append(lic)
-                extracted_text = lics_text
-            for license in licenses:
+                extracted_text.append(file_lic_name_ext_text[1][lic_ext_text])
+            for license, ext_text in izip(licenses, extracted_text):
                 file_license_kwargs = {
                     'file_id': file.file_id,
                     'license_id': license['license_id'],
-                    'extracted_text': extracted_text
+                    'extracted_text': ext_text
                     }
                 licenses_to_add.append(file_license_kwargs)
-            extracted_text = ''
         scanresult.add_file_licenses(self.conn, licenses_to_add)

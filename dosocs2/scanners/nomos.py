@@ -42,11 +42,14 @@ class Nomos(scannerbase.FileLicenseScanner):
         extracted_text = []
         file_name = nomos_fil_name_pattern.group(0).strip('File').strip('contains').strip(' ')
 
-
+        lic_length_track = {}
         if re.match(nomos_no_lic_match, output):
             #print(output)
             file_lics = 'No_license_found'
             extracted_text = ''
+            lic_length_track[file_lics] = extracted_text
+            scan_result = file_name, lic_length_track
+            return scan_result
         else:
             output_list = re.split(r'\s*',output)
             for item in output_list:
@@ -57,21 +60,24 @@ class Nomos(scannerbase.FileLicenseScanner):
                     lic_start_pos.append(int(output_list[counter+1].strip(',')))
                     lic_end_pos.append(int(output_list[counter+1].strip(','))+ int(output_list[counter+3].strip(',')))
             counter = 0 # Reset counter - Regardless of initialization
-        # Read file characters - for extracted text
-        file_chars = []
-        with open(file.path, 'r') as fileread:
-            for line in fileread:
-                for char in line:
-                    file_chars.append(char)
-        # Official SPDX license - comparision by short_name - Ref:SPDX db schema
-        for off_lic in self.official_spdx_lic_short_name:
-            for found_lic, start_pos, end_pos in izip(file_lics, lic_start_pos, lic_end_pos):
-                if found_lic != off_lic:
-                    extracted_text.append(''.join(file_chars[start_pos:end_pos]))
-                else:
-                    extracted_text.append('')
-        scan_result = file_name, zip(file_lics, extracted_text)
-        return scan_result
+            # Read file characters - for extracted text
+            file_chars = []
+            with open(file.path, 'r') as fileread:
+                file_chars = fileread.read()
+            # Official SPDX license - comparision by short_name - Ref:SPDX db schema
+            for off_lic in self.official_spdx_lic_short_name:
+                for found_lic, start_pos, end_pos in izip(file_lics, lic_start_pos, lic_end_pos):
+                    if found_lic != off_lic:
+                        if not found_lic in lic_length_track:
+                            lic_length_track[found_lic] = (file_chars[start_pos:end_pos])
+                        elif len(lic_length_track[found_lic]) < len(file_chars[start_pos:end_pos]):
+                            lic_length_track[found_lic] = file_chars[start_pos:end_pos]
+                        else:   
+                            continue
+                    else:
+                        extracted_text.append('')
+            scan_result = file_name, lic_length_track
+            return scan_result
                              
 
 scanner = Nomos
