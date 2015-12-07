@@ -1,5 +1,10 @@
-dosocs2 [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
+dosocs2 
 =======
+
+branch | status
+--- | ---
+master | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
+dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
 
 dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
 scan source code distributions to produce SPDX information, store that
