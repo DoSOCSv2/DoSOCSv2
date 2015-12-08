@@ -25,7 +25,6 @@ Includes Scanner base classes and the WorkItem class.
 import os
 import re
 from collections import namedtuple
-
 from sqlalchemy import select, and_
 
 from . import scanresult
@@ -65,6 +64,8 @@ class Scanner(object):
         ignore_string = config.get('scanner_' + self.name + '_ignore')
         if ignore_string is not None:
             self.ignore_pattern = re.compile(ignore_string)
+        else:
+            self.ignore_pattern = None
 
     def get_file_list(self, package_id, package_root):
         """Return list of WorkItems for all files in a specified package.
@@ -255,21 +256,23 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        for (file, license_names) in processed_files.iteritems():
-            licenses = []
-            for license_name in license_names:
+        licenses = []
+        extracted_text = []
+        for (file, scan_result) in processed_files.iteritems():
+            for key in scan_result:
                 license_kwargs = {
                     'conn': self.conn,
-                    'short_name': license_name,
+                    'short_name': key,
                     'comment': 'found by ' + self.name
                     }
                 lic = scanresult.lookup_or_add_license(**license_kwargs)
                 licenses.append(lic)
-            for license in licenses:
+                extracted_text.append(scan_result[key][3])
+            for license, ext_text in zip(licenses, extracted_text):
                 file_license_kwargs = {
-                    'file_id': file.file_id,
-                    'license_id': license['license_id'],
-                    'extracted_text': ''
-                    }
+                        'file_id': file.file_id,
+                        'license_id': license['license_id'],
+                        'extracted_text': ext_text
+                        }
                 licenses_to_add.append(file_license_kwargs)
         scanresult.add_file_licenses(self.conn, licenses_to_add)
