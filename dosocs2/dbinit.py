@@ -25,7 +25,6 @@ import json
 import os
 import pkg_resources
 import sys
-import urllib2
 
 from sqlalchemy.sql import select
 
