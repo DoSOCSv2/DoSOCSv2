@@ -25,6 +25,7 @@ Includes Scanner base classes and the WorkItem class.
 import os
 import re
 from collections import namedtuple
+
 from sqlalchemy import select, and_
 
 from . import scanresult
@@ -248,7 +249,8 @@ class Scanner(object):
 class FileLicenseScanner(Scanner):
 
     """Scanner subclass that implements store_results() for those scanners
-    whose result is a list of license short names.
+    whose result is a dictionary mapping each license short name to the
+    extracted text found for that license.
 
     New connectors to external license scanners should inherit from this and
     not from Scanner.
@@ -256,23 +258,21 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        licenses = []
-        extracted_text = []
-        for (file, scan_result) in processed_files.iteritems():
-            for key in scan_result:
+        for (file, licenses_extracted) in processed_files.iteritems():
+            licenses = []
+            for license_name in licenses_extracted:
                 license_kwargs = {
                     'conn': self.conn,
-                    'short_name': key,
+                    'short_name': license_name,
                     'comment': 'found by ' + self.name
                     }
                 lic = scanresult.lookup_or_add_license(**license_kwargs)
-                licenses.append(lic)
-                extracted_text.append(scan_result[key][3])
-            for license, ext_text in zip(licenses, extracted_text):
+                licenses.append((lic, licenses_extracted[license_name]))
+            for (license, extracted_text) in licenses:
                 file_license_kwargs = {
-                        'file_id': file.file_id,
-                        'license_id': license['license_id'],
-                        'extracted_text': ext_text
-                        }
+                    'file_id': file.file_id,
+                    'license_id': license['license_id'],
+                    'extracted_text': extracted_text or ''
+                    }
                 licenses_to_add.append(file_license_kwargs)
         scanresult.add_file_licenses(self.conn, licenses_to_add)
