@@ -24,11 +24,11 @@ Includes Scanner base classes and the WorkItem class.
 
 import os
 import re
+import string
 from collections import namedtuple
 
 from sqlalchemy import select, and_
 
-from . import scanresult
 from . import schema as db
 from . import spdxdb
 
@@ -256,6 +256,59 @@ class FileLicenseScanner(Scanner):
     not from Scanner.
     """
 
+    @staticmethod
+    def lookup_license(conn, short_name):
+        query = (
+            select([db.licenses])
+            .where(db.licenses.c.short_name == short_name)
+            )
+        [result] = conn.execute(query).fetchall() or [None]
+        if result is None:
+            return result
+        else:
+            return dict(**result)
+
+    @staticmethod
+    def lookup_or_add_license(conn, short_name, comment=None):
+        '''Add license to the database if it does not exist.
+
+        Return the new or existing license object in any case.
+        '''
+        transtable = string.maketrans('()[]<>', '------')
+        short_name = string.translate(short_name, transtable)
+        existing_license = FileLicenseScanner.lookup_license(conn, short_name)
+        if existing_license is not None:
+            return existing_license
+        new_license = {
+            # correct long name is never known for found licenses
+            'name': None,
+            'short_name': short_name,
+            'cross_reference': '',
+            'comment': comment or '',
+            'is_spdx_official': False,
+            }
+        new_license['license_id'] = spdxdb.insert(conn, db.licenses, new_license)
+        return new_license
+
+    @staticmethod
+    def add_file_licenses(conn, rows):
+        to_add = {}
+        for file_license_params in rows:
+            query = (
+                select([db.files_licenses])
+                .where(
+                    and_(
+                        db.files_licenses.c.file_id == file_license_params['file_id'],
+                        db.files_licenses.c.license_id == file_license_params['license_id']
+                        )
+                    )
+                )
+            [already_exists] = conn.execute(query).fetchall() or [None]
+            if already_exists is None:
+                key = file_license_params['file_id'], file_license_params['license_id']
+                to_add[key] = file_license_params
+        spdxdb.bulk_insert(conn, db.files_licenses, list(to_add.values()))
+
     def store_results(self, processed_files):
         licenses_to_add = []
         for (file, licenses_extracted) in processed_files.iteritems():
@@ -266,7 +319,7 @@ class FileLicenseScanner(Scanner):
                     'short_name': license_name,
                     'comment': 'found by ' + self.name
                     }
-                lic = scanresult.lookup_or_add_license(**license_kwargs)
+                lic = FileLicenseScanner.lookup_or_add_license(**license_kwargs)
                 licenses.append((lic, licenses_extracted[license_name]))
             for (license, extracted_text) in licenses:
                 file_license_kwargs = {
@@ -275,4 +328,4 @@ class FileLicenseScanner(Scanner):
                     'extracted_text': extracted_text or ''
                     }
                 licenses_to_add.append(file_license_kwargs)
-        scanresult.add_file_licenses(self.conn, licenses_to_add)
+        FileLicenseScanner.add_file_licenses(self.conn, licenses_to_add)
