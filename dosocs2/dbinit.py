@@ -25,11 +25,8 @@ import json
 import os
 import pkg_resources
 import sys
-import urllib2
 
 from sqlalchemy.sql import select
-
-from . import schema as db
 
 
 def msg(text, **kwargs):
@@ -47,11 +44,11 @@ def bulk_json_insert(conn, table, json_text):
     conn.execute(table.insert(), *rows)
 
 
-def load_fixture(conn, path):
+def load_fixture(conn, schema, path):
     with open(path) as f:
         json_text = f.read()
     table_name, _ = os.path.splitext(os.path.basename(path))
-    table = getattr(db, table_name)
+    table = getattr(schema, table_name)
     bulk_json_insert(conn, table, json_text)
 
 
@@ -63,10 +60,10 @@ def discover_fixtures():
         ]
 
 
-def load_default_creator(conn, creator_string):
+def load_default_creator(conn, schema, creator_string):
     query = (
-        select([db.creator_types.c.creator_type_id])
-        .where(db.creator_types.c.name == 'Tool')
+        select([schema.creator_types.c.creator_type_id])
+        .where(schema.creator_types.c.name == 'Tool')
         )
     creator_type_id = conn.execute(query).fetchone()['creator_type_id']
     creator_params = {
@@ -74,22 +71,22 @@ def load_default_creator(conn, creator_string):
         'name': creator_string,
         'email': ''
         }
-    conn.execute(db.creators.insert().values(**creator_params))
+    conn.execute(schema.creators.insert().values(**creator_params))
 
 
-def initialize(engine, dosocs2_version):
+def initialize(engine, schema, dosocs2_version):
     msg('dropping and creating all tables...', end='')
-    db.meta.drop_all(engine)
-    db.meta.create_all(engine)
+    schema.meta.drop_all(engine)
+    schema.meta.create_all(engine)
     print('ok.')
     with engine.begin() as conn:
         msg('loading fixtures...')
         for fixture in discover_fixtures():
             msg('  {}...'.format(os.path.basename(fixture)), end='') 
-            load_fixture(conn, fixture)
+            load_fixture(conn, schema, fixture)
             print('ok.')
         msg('loading default creator...', end='')
-        load_default_creator(conn, 'dosocs2-' + dosocs2_version)
+        load_default_creator(conn, schema, 'dosocs2-' + dosocs2_version)
         print('ok.')
         msg('committing changes...', end='')
     print('ok.')

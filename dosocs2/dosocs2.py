@@ -263,7 +263,7 @@ def main(sysargv=None):
                 return 1
         else:
             print('YES')
-        return 0 if dbinit.initialize(engine, __version__) else 1
+        return 0 if dbinit.initialize(engine, db, __version__) else 1
 
     elif argv['print']:
         with engine.begin() as conn:
