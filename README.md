@@ -198,7 +198,7 @@ larger feature set, and a more modular implementation, among other changes.
 Maintainers
 -----------
 
-[Thomas T. Gurney](https://github.com/ttgurney)
+[DoSOCSv2 organization](https://github.com/DoSOCSv2)
 
 
 (This work has been funded through the National Science Foundation VOSS-IOS Grant: 1122642.)
