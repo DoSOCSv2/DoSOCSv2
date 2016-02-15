@@ -193,7 +193,7 @@ def main(sysargv=None):
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
     template_file = argv['--template-file'] or format_map['tag']
-    project_file = os.path.abspath(argv['PROJECT-FILE']) or ''
+    project_file = argv['PROJECT-FILE'] or ''
 
     # Configuration and scanner discovery
     config = configtools.Config()
@@ -312,7 +312,7 @@ def main(sysargv=None):
             do_scan(**kwargs)
     elif argv['scanproject']:
          use_info = '[-] Contact DoSOCSv2 Organization for project level info'
-         print("{0} {1}".format(use_info, project_file))
+         print("{0} {1}".format(use_info, os.path.abspath(project_file)))
 
     elif argv['oneshot']:
         kwargs = {
