@@ -28,6 +28,7 @@
     [-r] [-s SCANNERS] [-T FILE] (PATH)
 {0} print [-f FILE] [-T FILE] (DOC-ID)
 {0} scan [-c COMMENT] [-f FILE] [-n NAME] [-e VER] [-s SCANNERS] [-r] (PATH)
+{0} scanproject [--project-file] (PROJECT-FILE)
 {0} scanners [-f FILE]
 {0} (--help | --version)
 
@@ -59,6 +60,7 @@ Options:
                                 from package name)
   -n, --package-name=NAME     Name for new package (otherwise create
                                 name from filename)
+  --project-file              Project Scan option
   -r, --rescan                If any selected scanner already ran on a
                                 package/file, run it anyway
   -s, --scanners=SCANNERS     Comma-separated list of scanners to use
@@ -67,7 +69,7 @@ Options:
   --no-confirm                Don't prompt when dropping/creating tables
                                 (dangerous!)
 
-Report bugs to <tgurney@unomaha.edu>.
+Report bugs to <skorlimarla@unomaha.edu>.
 '''
 
 from __future__ import print_function
@@ -191,6 +193,7 @@ def main(sysargv=None):
     new_doc_comment = argv['--doc-comment'] or ''
     new_doc_name = argv['--doc-name'] or argv['--package-name']
     template_file = argv['--template-file'] or format_map['tag']
+    project_file = os.path.abspath(argv['PROJECT-FILE']) or ''
 
     # Configuration and scanner discovery
     config = configtools.Config()
@@ -263,7 +266,7 @@ def main(sysargv=None):
                 return 1
         else:
             print('YES')
-        return 0 if dbinit.initialize(engine, __version__) else 1
+        return 0 if dbinit.initialize(engine, db, __version__) else 1
 
     elif argv['print']:
         with engine.begin() as conn:
@@ -307,6 +310,9 @@ def main(sysargv=None):
             kwargs['package_root'] = package_path
             kwargs['package_file_path'] = None
             do_scan(**kwargs)
+    elif argv['scanproject']:
+         use_info = '[-] Contact DoSOCSv2 Organization for project level info'
+         print("{0} {1}".format(use_info, project_file))
 
     elif argv['oneshot']:
         kwargs = {

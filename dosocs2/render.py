@@ -21,8 +21,6 @@ import time
 
 import jinja2
 from . import queries
-from . import util
-
 
 def _filter_text(value):
     return '<text>' + value + '</text>'
