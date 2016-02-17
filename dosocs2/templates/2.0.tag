@@ -28,7 +28,7 @@ DocumentComment: {{ document.document_comment | text }}
 
 ## External Document References
 {% for er in external_refs %}
-ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA1: {{ er.sha1 }}
+ExternalDocumentRef: {{ er.id_string }} {{ er.uri }} SHA256: {{ er.sha256 }}
 {% endfor %}
 
 
@@ -74,7 +74,7 @@ PackageOriginator: {{ package.originator | noassertion }}
 PackageDownloadLocation: {{ package.download_location | noassertion }}
 PackageVerificationCode: {{ package.verification_code }}
 {% if package.checksum != None %}
-PackageChecksum: SHA1: {{ package.checksum }}
+PackageChecksum: SHA256: {{ package.checksum }}
 {% endif %}
 PackageHomePage: {{ package.home_page | noassertion }}
 {% if package.source_info %}
@@ -117,7 +117,7 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 FileName: {{ file.name }}
 SPDXID: {{ file.id_string }}
 FileType: {{ file.type }}
-FileChecksum: SHA1: {{ file.checksum }}
+FileChecksum: SHA256: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded | noassertion }}
     {% for fli in file.license_info %}
 LicenseInfoInFile: {{ fli.short_name | noassertion }}

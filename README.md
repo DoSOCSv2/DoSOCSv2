@@ -1,4 +1,4 @@
-dosocs2 
+dosocs2
 =======
 
 branch | status
@@ -28,7 +28,7 @@ changes until a 1.x.x release!
   packages per document.)
 * Files in a document can only exist within a package. (SPDX 2.0 allows files
   to exist outside of a package.)
-* Checksums are always assumed to be SHA-1. (SPDX 2.0 permits SHA-1, SHA-256,
+* Checksums are always assumed to be SHA-256. (SPDX 2.0 permits SHA-1, SHA-256,
   and MD5)
 * A file may be an artifact of only one project.
 * License expression syntax is not parsed; license expressions are interpreted as license
