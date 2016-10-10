@@ -8,16 +8,19 @@ tags:
 authors:
  - name: Matt Germonprez
    orcid: 0000-0002-3957-2474
-   affiliation: University of Nebraska at Omaha
+   affiliation: 1
  - name: Thomas Gurney
-   affiliation: Raytheon 
+   affiliation: 2 
  - name: Sai Uday Shankar Korlimarla
-   affiliation: University of Nebraska at Omaha
+   affiliation: 1
  - name: Robin Gandhi 
-   affiliation: University of Nebraska at Omaha
-
+   affiliation: 1
+affiliations:
+ - name: University of Nebraska at Omaha
+   index: 1
+ - name: Raytheon
+   index: 2
 date: 10 October 2016
-
 bibliography: paper.bib
 ---
 
