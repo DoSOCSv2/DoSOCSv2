@@ -325,7 +325,7 @@ class FileLicenseScanner(Scanner):
                 file_license_kwargs = {
                     'file_id': file.file_id,
                     'license_id': license['license_id'],
-                    'extracted_text': extracted_text or ''
+                    'extracted_text': extracted_text.decode("utf-8") or ''
                     }
                 licenses_to_add.append(file_license_kwargs)
         FileLicenseScanner.add_file_licenses(self.conn, licenses_to_add)
