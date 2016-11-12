@@ -11,9 +11,14 @@ scan source code distributions to produce SPDX information, store that
 information in a relational database, and extract it in a plain-text format
 on request.
 
-dosocs2 enables easy creation of a "bill of materials" for any software package,
-and can even be used in the creation and continuous maintenance of an inventory
-of all open-source software used in an organization.
+The discovery and presention of software package license information is a complex
+problem facing organizations that rely on open source software within their 
+innovation streams. dosocs2 enables easy creation of a "bill of materials" for any 
+software package to represent associated license information. In addition, dosocs2 and 
+can be used in the creation and continuous maintenance of an inventory of all 
+open-source software used in an organization. The primary audience for dosocs2 is open source
+software teams seeking to advance the representation and maintenance of open source 
+software package license information. 
 
 [SPDX](http://www.spdx.org) is a standard format for communicating information
 about the contents of a software package, including license and copyright
