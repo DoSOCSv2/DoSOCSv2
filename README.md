@@ -190,7 +190,7 @@ and how to use it.
 Potential Organizational Use of dosocs2
 ---------------------------------------
 
-![alt text](https://cloud.githubusercontent.com/assets/656208/20312249/66f001ce-ab18-11e6-9b43-b00e653e58f1.png)
+![alt text](https://cloud.githubusercontent.com/assets/656208/20320341/30b9468c-ab37-11e6-8e3f-c63543b85453.png)
 
 History
 -------
