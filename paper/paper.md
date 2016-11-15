@@ -1,5 +1,5 @@
 ---
-title: 'DoSOCS: A System for Managing Open Source Risk'
+title: 'DoSOCS: A System for SPDX 2.0 Document Creation and Storage'
 tags:
   - Open Compliance
   - Open Source License Management
