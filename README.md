@@ -13,7 +13,7 @@ on request.
 
 The discovery and presention of software package license information is a complex
 problem facing organizations that rely on open source software within their 
-innovation streams. dosocs2 enables easy creation of a "bill of materials" for any 
+innovation streams. dosocs2 enables creation of an SPDX document for any 
 software package to represent associated license information. In addition, dosocs2 and 
 can be used in the creation and continuous maintenance of an inventory of all 
 open-source software used in an organization. The primary audience for dosocs2 is open source
@@ -187,6 +187,10 @@ Use `dosocs2 --help` to get the full help text. The `doc` directory
 here also provides more detailed information about how `dosocs2` works
 and how to use it.
 
+Potential Organizational Use of dosocs2
+---------------------------------------
+
+![alt text](https://cloud.githubusercontent.com/assets/656208/20312249/66f001ce-ab18-11e6-9b43-b00e653e58f1.png)
 
 History
 -------
