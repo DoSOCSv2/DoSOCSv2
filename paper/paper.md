@@ -25,7 +25,7 @@ bibliography: paper.bib
 ---
 
 # Summary
-DoSOCS is a command-line tool for managing SPDX 2.0 documents and data. It can scan source code distributions to produce SPDX information, store that information in a relational database, and extract it in a plain-text format on request. DoSOCS enables easy creation of a "bill of materials" for any software package, and can even be used in the creation and continuous maintenance of an inventory of all open-source software used in an organization.
+DoSOCS is a command-line tool for managing SPDX 2.0 documents and data. It can scan source code distributions to produce SPDX information, store that information in a relational database, and extract it in a plain-text format on request. DoSOCS enables the creation of SPDX documents for any software package, and can even be used in the creation and continuous maintenance of an inventory of all open-source software used in an organization.
 
 # References
 [1] DoSOCS: A System for Managing Open Compliance Risk. https://github.com/DoSOCSv2/DoSOCSv2
