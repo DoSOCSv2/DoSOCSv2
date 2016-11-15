@@ -1,5 +1,5 @@
 ---
-title: 'DoSOCS: A System for Managing Open Source Risk'
+title: 'DoSOCSv2: A System for Managing Open Source Risk'
 tags:
   - Open Compliance
   - Open Source License Management
