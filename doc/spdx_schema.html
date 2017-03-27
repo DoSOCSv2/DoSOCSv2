@@ -738,7 +738,7 @@ Referred by identifiers ( document_id ) </title></a>
   <use id='nn' x='47' y='117' xlink:href='#nn'/><a xlink:href='#external_refs.id_string'><use id='unq' x='47' y='116' xlink:href='#unq'/><title>Unq uc_external_ref_document_id_string ( document_id, id_string ) </title></a>
 <a xlink:href='#external_refs.id_string'><text id='public.external_refs.id_string' x='63' y='127'>id_string</text><title>id_string
 * varchar(255)</title></a>
-  <use id='nn' x='47' y='132' xlink:href='#nn'/><a xlink:href='#external_refs.sha1'><text id='public.external_refs.sha1' x='63' y='142'>sha1</text><title>sha1
+  <use id='nn' x='47' y='132' xlink:href='#nn'/><a xlink:href='#external_refs.sha256'><text id='public.external_refs.sha256' x='63' y='142'>sha256</text><title>sha256
 * varchar(40)</title></a>
 
 <!-- ============= Table 'annotations' ============= -->
@@ -817,8 +817,8 @@ text</title></a>
   <a xlink:href='#packages.ver_code_excluded_file_id'><text id='public.packages.ver_code_excluded_file_id' x='888' y='277' onmouseover="hghl(['packages_fk_package_packages_files'])" onmouseout="uhghl(['packages_fk_package_packages_files'])">ver_code_excluded_file_id</text><title>ver_code_excluded_file_id
 integer</title></a>
 <a xlink:href='#packages.ver_code_excluded_file_id'><use id='fk' x='1023' y='266' xlink:href='#fk'/><title>References packages_files ( ver_code_excluded_file_id -&gt; package_file_id ) </title></a>
-  <a xlink:href='#packages.sha1'><use id='unq' x='872' y='281' xlink:href='#unq'/><title>Unq uc_package_sha1 ( sha1 ) </title></a>
-<a xlink:href='#packages.sha1'><text id='public.packages.sha1' x='888' y='292'>sha1</text><title>sha1
+  <a xlink:href='#packages.sha256'><use id='unq' x='872' y='281' xlink:href='#unq'/><title>Unq uc_package_sha256 ( sha256 ) </title></a>
+<a xlink:href='#packages.sha256'><text id='public.packages.sha256' x='888' y='292'>sha256</text><title>sha256
 varchar(40)</title></a>
   <a xlink:href='#packages.home_page'><text id='public.packages.home_page' x='888' y='307'>home_page</text><title>home_page
 text</title></a>
@@ -861,8 +861,8 @@ Referred by packages_files ( file_id ) </title></a>
   <use id='nn' x='1022' y='837' xlink:href='#nn'/><a xlink:href='#files.file_type_id'><text id='public.files.file_type_id' x='1038' y='847' onmouseover="hghl(['files_files_file_type_id_fkey'])" onmouseout="uhghl(['files_files_file_type_id_fkey'])">file_type_id</text><title>file_type_id
 * integer</title></a>
 <a xlink:href='#files.file_type_id'><use id='fk' x='1113' y='836' xlink:href='#fk'/><title>References file_types ( file_type_id ) </title></a>
-  <use id='nn' x='1022' y='852' xlink:href='#nn'/><a xlink:href='#files.sha1'><use id='unq' x='1022' y='851' xlink:href='#unq'/><title>Unq uc_file_sha1 ( sha1 ) </title></a>
-<a xlink:href='#files.sha1'><text id='public.files.sha1' x='1038' y='862'>sha1</text><title>sha1
+  <use id='nn' x='1022' y='852' xlink:href='#nn'/><a xlink:href='#files.sha256'><use id='unq' x='1022' y='851' xlink:href='#unq'/><title>Unq uc_file_sha256 ( sha256 ) </title></a>
+<a xlink:href='#files.sha256'><text id='public.files.sha256' x='1038' y='862'>sha256</text><title>sha256
 * varchar(40)</title></a>
   <a xlink:href='#files.copyright_text'><text id='public.files.copyright_text' x='1038' y='877'>copyright_text</text><title>copyright_text
 text</title></a>
@@ -1486,7 +1486,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>*</td>
-		<td><a name='external_refs.sha1'>sha1</a></td>
+		<td><a name='external_refs.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1682,7 +1682,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td><a name='packages.sha1'>sha1</a></td>
+		<td><a name='packages.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1755,8 +1755,8 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 		<td> ON verification&#95;code&#44; dosocs2&#95;dir&#95;code</td>
 		<td>  </td>
 	</tr>
-	<tr>		<td>U</td><td>uc&#95;package&#95;sha1</td>
-		<td> ON sha1</td>
+	<tr>		<td>U</td><td>uc&#95;package&#95;sha256</td>
+		<td> ON sha256</td>
 		<td>  </td>
 	</tr>
 <tr><th colspan='4'><b>Foreign Keys</b></th></tr>
@@ -1787,7 +1787,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 <tr><th colspan='4'><b>Constraints</b></th></tr>
 	<tr>
-		<td>&nbsp;</td><td> uc_sha1_ds2_dir_code_exactly_one </td><td> &#40;&#40;&#40;sha1 IS NOT NULL&#41;&#41;&#58;&#58;integer &#43; &#40;&#40;dosocs2&#95;dir&#95;code IS NOT NULL&#41;&#41;&#58;&#58;integer&#41; &#61; 1 </td><td> </td>
+		<td>&nbsp;</td><td> uc_sha256_ds2_dir_code_exactly_one </td><td> &#40;&#40;&#40;sha256 IS NOT NULL&#41;&#41;&#58;&#58;integer &#43; &#40;&#40;dosocs2&#95;dir&#95;code IS NOT NULL&#41;&#41;&#58;&#58;integer&#41; &#61; 1 </td><td> </td>
 	</tr>
 </tbody>
 </table>
@@ -1812,7 +1812,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>*</td>
-		<td><a name='files.sha1'>sha1</a></td>
+		<td><a name='files.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1845,8 +1845,8 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 		<td> ON file&#95;id</td>
 		<td>  </td>
 	</tr>
-	<tr>		<td>U</td><td>uc&#95;file&#95;sha1</td>
-		<td> ON sha1</td>
+	<tr>		<td>U</td><td>uc&#95;file&#95;sha256</td>
+		<td> ON sha256</td>
 		<td>  </td>
 	</tr>
 <tr><th colspan='4'><b>Foreign Keys</b></th></tr>
