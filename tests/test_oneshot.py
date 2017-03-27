@@ -56,7 +56,7 @@ PackageOriginator: {{ package.originator | noassertion }}
 PackageDownloadLocation: {{ package.download_location | noassertion }}
 PackageVerificationCode: {{ package.verification_code }}
 {% if package.checksum != None %}
-PackageChecksum: SHA1: {{ package.checksum }}
+PackageChecksum: SHA256: {{ package.checksum }}
 {% endif %}
 PackageHomePage: {{ package.home_page | noassertion }}
 {% if package.source_info %}
@@ -79,7 +79,7 @@ PackageComment: {{ package.comment | text }}
 
 FileName: {{ file.name }}
 FileType: {{ file.type }}
-FileChecksum: SHA1: {{ file.checksum }}
+FileChecksum: SHA256: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded | noassertion }}
     {% for fli in file.license_info %}
 LicenseInfoInFile: {{ fli.short_name | noassertion }}
