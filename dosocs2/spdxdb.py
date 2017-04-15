@@ -38,14 +38,14 @@ def bulk_insert(conn, table, rows_list):
         conn.execute(table.insert(), *rows_list)
 
 
-def lookup_by_sha1(conn, table, sha1):
-    '''Lookup row by SHA-1 sum and return the row, or None.'''
-    # Freak occurence of sha1 collision probably won't happen.
+def lookup_by_sha256(conn, table, sha256):
+    '''Lookup row by SHA-256 sum and return the row, or None.'''
+    # Freak occurence of sha256 collision probably won't happen.
     # But if it does, this will fail with 'too many values to unpack'
     # (although, you will have bigger problems then...)
     query = (
         select([table])
-        .where(table.c.sha1 == sha1)
+        .where(table.c.sha256 == sha256)
         )
     [result] = conn.execute(query).fetchall() or [None]
     if result is None:
@@ -54,9 +54,9 @@ def lookup_by_sha1(conn, table, sha1):
         return dict(**result)
 
 
-def register_file(conn, path, known_sha1=None):
-    sha1 = known_sha1 or util.sha1(path)
-    file = lookup_by_sha1(conn, db.files, sha1)
+def register_file(conn, path, known_sha256=None):
+    sha256 = known_sha256 or util.sha256(path)
+    file = lookup_by_sha256(conn, db.files, sha256)
     if file is not None:
         return file
     file_type_query = (
@@ -65,7 +65,7 @@ def register_file(conn, path, known_sha1=None):
         )
     file_type_id = conn.execute(file_type_query).fetchone()['file_type_id']
     file = {
-        'sha1': sha1,
+        'sha256': sha256,
         'file_type_id': file_type_id,
         'copyright_text': None,
         'project_id': None,
@@ -96,8 +96,8 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
     # Attempt to get cached package row
     if package_file_path is not None:
         # "True package" may be cached by SHA-1 of entire package
-        sha1 = util.sha1(package_file_path)
-        package = lookup_by_sha1(conn, db.packages, sha1)
+        sha256 = util.sha256(package_file_path)
+        package = lookup_by_sha256(conn, db.packages, sha256)
         if package is not None:
             return package
     ver_code, hashes, dir_code = util.get_dir_hashes(package_root)
@@ -105,7 +105,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
         found_pkg = get_cached_dir_pkg(conn, dir_code, ver_code)
         if found_pkg is not None:
             return found_pkg
-        sha1 = None
+        sha256 = None
     # Create package row
     basename = os.path.basename(os.path.abspath(package_file_path or package_root))
     package = {
@@ -116,7 +116,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
         'download_location': None,
         'verification_code': ver_code,
         'ver_code_excluded_file_id': None,
-        'sha1': sha1, # None is permitted here
+        'sha256': sha256, # None is permitted here
         'home_page': None,
         'source_info': '',
         'concluded_license_id': None,
@@ -126,7 +126,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
         'summary': '',
         'description': '',
         'comment': comment or '',
-        'dosocs2_dir_code': None if sha1 is not None else dir_code
+        'dosocs2_dir_code': None if sha256 is not None else dir_code
         }
     if package_file_path is None:
         package['name'] = name or basename
@@ -135,8 +135,8 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
     package['package_id'] = insert(conn, db.packages, package)
     # Create packages_files rows
     row_params = []
-    for (file_path, file_sha1) in hashes.iteritems():
-        fileobj = register_file(conn, file_path, known_sha1=file_sha1)
+    for (file_path, file_sha256) in hashes.iteritems():
+        fileobj = register_file(conn, file_path, known_sha256=file_sha256)
         package_file_params = {
             'package_id': package['package_id'],
             'file_id': fileobj['file_id'],
@@ -162,7 +162,7 @@ def create_all_identifiers(conn, doc_namespace_id, package):
         select([
             db.packages_files.c.package_file_id,
             db.packages_files.c.file_name,
-            db.files.c.sha1
+            db.files.c.sha256
             ])
         .select_from(
             db.packages_files
@@ -180,7 +180,7 @@ def create_all_identifiers(conn, doc_namespace_id, package):
         file_id_params = {
             'document_namespace_id': doc_namespace_id,
             'package_file_id': file['package_file_id'],
-            'id_string': util.gen_id_string('file', file['file_name'], file['sha1'])
+            'id_string': util.gen_id_string('file', file['file_name'], file['sha256'])
             }
         rows_list.append(file_id_params)
     bulk_insert(conn, db.identifiers, rows_list)
