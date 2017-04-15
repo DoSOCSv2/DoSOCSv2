@@ -118,7 +118,7 @@ def documents_files(docid, package_id):
         pfi.c.file_name         .label('name'),
         ide.c.id_string,
         fty.c.name              .label('type'),
-        fil.c.sha1              .label('checksum'),
+        fil.c.sha256              .label('checksum'),
         lic.c.short_name        .label('license_concluded'),
         pfi.c.license_comment   .label('license_comments'),
         fil.c.copyright_text,
@@ -169,7 +169,7 @@ def documents_packages(docid):
         cre2.c.creator_text         .label('originator'),
         pac.c.download_location,
         pac.c.verification_code,
-        pac.c.sha1                  .label('checksum'),
+        pac.c.sha256                  .label('checksum'),
         pac.c.home_page,
         pac.c.source_info,
         lic1.c.short_name             .label('license_concluded'),
@@ -275,7 +275,7 @@ def external_refs(docid):
         ext.c.external_ref_id,
         ext.c.document_id,
         ext.c.id_string,
-        ext.c.sha1,
+        ext.c.sha256,
         dna.c.uri
         ])
     .select_from(
