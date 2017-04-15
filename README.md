@@ -6,6 +6,11 @@ branch | status | vulnerability scanner | status | Python | Status
 master | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2) | BlackDuck CoPilot | [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master) | Dependencies | [![Updates](https://pyup.io/repos/github/UShan89/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
 dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](https://travis-ci.org/DoSOCSv2/DoSOCSv2) | BlackDuck CoPilot | [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/dev) | Python3 | [![Python 3](https://pyup.io/repos/github/UShan89/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
 
+python | status
+--- | ---
+Dependencies | [![Updates](https://pyup.io/repos/github/UShan89/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+Python3 | [![Python 3](https://pyup.io/repos/github/UShan89/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+
 
 dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
 scan source code distributions to produce SPDX information, store that
