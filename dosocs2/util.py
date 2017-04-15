@@ -158,7 +158,7 @@ def gen_ver_code(hashes, excluded_hashes=None):
         excluded_hashes = set()
     hashes_less_excluded = (h for h in hashes if h not in excluded_hashes)
     hashblob = ''.join(sorted(hashes_less_excluded))
-    return hashlib.sha1(hashblob).hexdigest()
+    return hashlib.sha1(hashblob.encode('utf-8')).hexdigest()
 
 
 def get_dir_hashes(path, excluded_hashes=None):
@@ -184,7 +184,7 @@ def get_dir_hashes(path, excluded_hashes=None):
         and hashes.get(abspath) not in excluded_hashes
         )
     rel_listing_hashes = (
-        hashlib.sha1(relpath).hexdigest()
+        hashlib.sha1(relpath.encode('utf-8')).hexdigest()
         for relpath in sorted(relative_listing)
         )
     return (gen_ver_code(hashes.values(), excluded_hashes),

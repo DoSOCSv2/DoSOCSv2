@@ -54,7 +54,7 @@ def get_row(conn, query):
 
 
 def get_rows(conn, query):
-    return list(sorted(dict(**row) for row in conn.execute(query)))
+    return list(dict(**row) for row in conn.execute(query))
 
 
 def render_template(templatefile, context):
@@ -77,7 +77,7 @@ def render_document(conn, docid, template_file):
     query = queries.relationships(document['document_namespace_id'], package['id_string'])
     package['relationships'] = get_rows(conn, query)
     package['files'] = get_rows(conn, queries.documents_files(docid, package['package_id']))
-    for file in sorted(package['files']):
+    for file in package['files']:
         file['license_info'] = get_rows(conn, queries.files_licenses(file['file_id']))
         file['contributors'] = get_rows(conn, queries.file_contributors(file['file_id']))
         file['annotations'] = get_rows(conn, queries.annotations(docid, file['id_string']))
