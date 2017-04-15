@@ -10,3 +10,4 @@ deb_dist/
 *.out
 .cache/
 .idea/
+.idea/workspace.xml
