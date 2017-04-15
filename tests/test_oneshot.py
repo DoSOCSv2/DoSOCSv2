@@ -56,7 +56,7 @@ PackageOriginator: {{ package.originator | noassertion }}
 PackageDownloadLocation: {{ package.download_location | noassertion }}
 PackageVerificationCode: {{ package.verification_code }}
 {% if package.checksum != None %}
-PackageChecksum: SHA1: {{ package.checksum }}
+PackageChecksum: SHA256: {{ package.checksum }}
 {% endif %}
 PackageHomePage: {{ package.home_page | noassertion }}
 {% if package.source_info %}
@@ -79,7 +79,7 @@ PackageComment: {{ package.comment | text }}
 
 FileName: {{ file.name }}
 FileType: {{ file.type }}
-FileChecksum: SHA1: {{ file.checksum }}
+FileChecksum: SHA256: {{ file.checksum }}
 LicenseConcluded: {{ file.license_concluded | noassertion }}
     {% for fli in file.license_info %}
 LicenseInfoInFile: {{ fli.short_name | noassertion }}
@@ -116,7 +116,7 @@ LicenseComment: {{ license.comment | text }}
 def test_oneshot_typical_case_returns_zero(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -131,7 +131,7 @@ def test_oneshot_with_package_comment(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         _ = capsys.readouterr()
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -148,7 +148,7 @@ def test_oneshot_with_package_name(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         _ = capsys.readouterr()
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -165,7 +165,7 @@ def test_oneshot_with_package_version(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         _ = capsys.readouterr()
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -182,7 +182,7 @@ def test_oneshot_with_document_comment(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         _ = capsys.readouterr()
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -199,7 +199,7 @@ def test_oneshot_with_document_name(capsys):
     with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
         _ = capsys.readouterr()
         args = [
-            'oneshot', 
+            'oneshot',
             '-f',
             temp_config.name,
             '-s',
@@ -219,7 +219,7 @@ def test_oneshot_same_document_as_scan_print_generate(capsys):
         with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
             _ = capsys.readouterr()
             args = [
-                'oneshot', 
+                'oneshot',
                 '-f',
                 temp_config.name,
                 '-s',
@@ -233,7 +233,7 @@ def test_oneshot_same_document_as_scan_print_generate(capsys):
         with TempEnv(TEMP_CONFIG) as (temp_config, temp_db):
             _ = capsys.readouterr()
             args = [
-                'scan', 
+                'scan',
                 '-f',
                 temp_config.name,
                 '-s',
@@ -242,14 +242,14 @@ def test_oneshot_same_document_as_scan_print_generate(capsys):
                 ]
             ret = run_dosocs2(args)
             args = [
-                'generate', 
+                'generate',
                 '-f',
                 temp_config.name,
                 '1'
                 ]
             ret = run_dosocs2(args)
             args = [
-                'print', 
+                'print',
                 '-f',
                 temp_config.name,
                 '-T',
