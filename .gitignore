@@ -9,3 +9,4 @@ deb_dist/
 *.egg-info/
 *.out
 .cache/
+.idea/
