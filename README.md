@@ -6,7 +6,7 @@ branch | status
 master | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
 dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
 
-vulnerability | status
+vulnerability Scanner | status
 --- | ---
 BlackDuck CoPilot | [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master)
 
