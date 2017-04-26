@@ -7,7 +7,7 @@ from software packages.  DoSOCS comes with three scanners defined:
 * `nomos` (the default)
 * `nomos_deep`
 
-During a package scan, after any unknown files are registered and their SHA-1
+During a package scan, after any unknown files are registered and their SHA-256
 digests saved, any of these scanners can be run in any combination on the
 target packages by using `dosocs2 scan` with the `-s` option. Example:
 

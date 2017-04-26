@@ -75,10 +75,10 @@ def spdx_filetype(filename):
     return 'OTHER'
 
 
-def sha1(filename):
+def sha256(filename):
     with open(filename, 'rb') as f:
         lines = f.read()
-    checksum = hashlib.sha1(lines).hexdigest()
+    checksum = hashlib.sha256(lines).hexdigest()
     return checksum
 
 
@@ -126,15 +126,15 @@ def file_name_for_id(file_name):
     return re.sub(r'[^A-Za-z0-9]', '_', new1)[:20]
 
 
-def gen_id_string(prefix='element', file_name=None, sha1=None):
+def gen_id_string(prefix='element', file_name=None, sha256=None):
     '''Generate and return an SPDX identifier.'''
     uuid4 = str(uuid.uuid4())
-    if sha1 is None:
-        sha1part = uuid4[24:28]
+    if sha256 is None:
+        sha256part = uuid4[24:28]
     else:
-        sha1part = sha1[:4]
-    suffix = sha1part + '-' + uuid4[:8]
-    new_file_name = file_name_for_id(file_name or uuid4[19:23])
+        sha256part = sha256[:4]
+    suffix = sha256part + '-' + uuid4[:8]
+    new_file_name = file_name_for_id(file_name or uuid4[9:39])
     pieces = 'SPDXRef', prefix, new_file_name, suffix
     return '-'.join(pieces)
 
@@ -160,20 +160,19 @@ def gen_ver_code(hashes, excluded_hashes=None):
     hashblob = ''.join(sorted(hashes_less_excluded))
     return hashlib.sha1(hashblob.encode('utf-8')).hexdigest()
 
-
 def get_dir_hashes(path, excluded_hashes=None):
     '''Return a (str, dict, str) triple:
-    (ver_code, {filepath: sha1}, dir_code)
+    (ver_code, {filepath: sha256}, dir_code)
 
     ver_code: Package verification code for the directory `path`
     filepath: Relative path to a file
-    sha1: SHA-1 hex string for that file
+    sha256: SHA-1 hex string for that file
     '''
     if excluded_hashes is None:
         excluded_hashes = set()
     listing = list(sorted(allpaths(path)))
     hashes = {
-        abspath: sha1(abspath)
+        abspath: sha256(abspath)
         for abspath in listing
         if os.path.isfile(abspath)
         }
@@ -184,7 +183,7 @@ def get_dir_hashes(path, excluded_hashes=None):
         and hashes.get(abspath) not in excluded_hashes
         )
     rel_listing_hashes = (
-        hashlib.sha1(relpath.encode('utf-8')).hexdigest()
+        hashlib.sha256(relpath).hexdigest()
         for relpath in sorted(relative_listing)
         )
     return (gen_ver_code(hashes.values(), excluded_hashes),

@@ -100,9 +100,9 @@ table {
   <script type='text/ecmascript'>
   <![CDATA[
   function hghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','highlight');  }  }
-  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  } 
+  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  }
   ]]>
-  </script> 
+  </script>
 
 <style type='text/css'>
   text                { fill:#000000; font-family: Tahoma, 'Trebuchet MS', Dialog; font-size:12px; }
@@ -118,51 +118,51 @@ table {
   rect.grp            { stroke:#b1b1b1; stroke-width:1.7; }
 </style>
 <defs>
-  <pattern patternUnits='userSpaceOnUse' id='layoutBgA' width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>  
-     <line x1='-2' y1='1' x2='7' y2='10' stroke='#f3f3f3' stroke-width='.5'/>  
-     <line x1='-2' y1='6' x2='7' y2='15' stroke='#f3f3f3' stroke-width='.5'/>  
-     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#f3f3f3' stroke-width='.5'/>  
-  </pattern>  
+  <pattern patternUnits='userSpaceOnUse' id='layoutBgA' width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>
+     <line x1='-2' y1='1' x2='7' y2='10' stroke='#f3f3f3' stroke-width='.5'/>
+     <line x1='-2' y1='6' x2='7' y2='15' stroke='#f3f3f3' stroke-width='.5'/>
+     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#f3f3f3' stroke-width='.5'/>
+  </pattern>
   <radialGradient id='layoutBgB' gradientUnits='userSpaceOnUse' cx='50%' cy='50%' r='75%' fx='46%' fy='22%'>
-     <stop offset='0%' stop-opacity='.2' stop-color='#f0f0f0' />  
-     <stop offset='100%' stop-color='#e7e7e7' />  
+     <stop offset='0%' stop-opacity='.2' stop-color='#f0f0f0' />
+     <stop offset='100%' stop-color='#e7e7e7' />
   </radialGradient>
   <linearGradient id='tableHeaderGradient2' x1='0%' y1='0%' x2='0%' y2='90%' >
-          <stop offset='-50%' stop-color='#c8f5bf'/> 
-          <stop offset='20%' stop-color='#fafafa'/> 
-          <stop offset='100%' stop-color='#c8f5bf'/> 
+          <stop offset='-50%' stop-color='#c8f5bf'/>
+          <stop offset='20%' stop-color='#fafafa'/>
+          <stop offset='100%' stop-color='#c8f5bf'/>
    </linearGradient>
   <linearGradient id='tableHeaderGradient0' x1='0%' y1='0%' x2='0%' y2='90%' >
-          <stop offset='-50%' stop-color='#f5ddbf'/> 
-          <stop offset='20%' stop-color='#fafafa'/> 
-          <stop offset='100%' stop-color='#f5ddbf'/> 
+          <stop offset='-50%' stop-color='#f5ddbf'/>
+          <stop offset='20%' stop-color='#fafafa'/>
+          <stop offset='100%' stop-color='#f5ddbf'/>
    </linearGradient>
   <linearGradient id='tableHeaderGradient1' x1='0%' y1='0%' x2='0%' y2='90%' >
-          <stop offset='-50%' stop-color='#bfbff5'/> 
-          <stop offset='20%' stop-color='#fafafa'/> 
-          <stop offset='100%' stop-color='#bfbff5'/> 
+          <stop offset='-50%' stop-color='#bfbff5'/>
+          <stop offset='20%' stop-color='#fafafa'/>
+          <stop offset='100%' stop-color='#bfbff5'/>
    </linearGradient>
   <linearGradient id='tableHeaderGradient3' x1='0%' y1='0%' x2='0%' y2='90%' >
-          <stop offset='-50%' stop-color='#bfd4f5'/> 
-          <stop offset='20%' stop-color='#fafafa'/> 
-          <stop offset='100%' stop-color='#bfd4f5'/> 
+          <stop offset='-50%' stop-color='#bfd4f5'/>
+          <stop offset='20%' stop-color='#fafafa'/>
+          <stop offset='100%' stop-color='#bfd4f5'/>
    </linearGradient>
   <linearGradient id='groupUnderTitleLine' x1='0%' y1='0%' x2='100%' y2='0%' >
-          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/> 
-          <stop offset='100%' stop-color='#999999' stop-opacity='0' /> 
+          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/>
+          <stop offset='100%' stop-color='#999999' stop-opacity='0' />
    </linearGradient>
   <radialGradient id='calloutGradient' cx='25%' cy='20%' r='80%' fx='10%' fy='10%'>
 	   <stop offset='0%' stop-color='#ffffff' />
     <stop offset='100%' stop-color='#f8f6d1' />
   </radialGradient>
-  <filter id='shadow' width='120%' height='120%'> 
-      <feOffset result='offOut' in='SourceGraphic' dx='2' dy='2' /> 
-      <feColorMatrix result='matrixOut' in='offOut' type='matrix' 
-      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0' /> 
-      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' /> 
-      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' /> 
-    </filter> 
-  <filter id='fkShadow' height='130%'> 
+  <filter id='shadow' width='120%' height='120%'>
+      <feOffset result='offOut' in='SourceGraphic' dx='2' dy='2' />
+      <feColorMatrix result='matrixOut' in='offOut' type='matrix'
+      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.5 0' />
+      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' />
+      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' />
+    </filter>
+  <filter id='fkShadow' height='130%'>
     <feGaussianBlur in='SourceAlpha' stdDeviation='1.5'/> <!-- stdDeviation is how much to blur -->
     <feOffset dx='1.2' dy='1.2' result='offsetblur'/> <!-- how much to offset -->
     <feMerge>
@@ -171,8 +171,8 @@ table {
     </feMerge>
   </filter>
   <radialGradient id='legendGradient' fx='5%' fy='5%' r='75%' spreadMethod='pad'>
-          <stop offset='0%' stop-color='#eaf6ee' stop-opacity='1'/> 
-          <stop offset='100%' stop-color='#cce3ca' stop-opacity='1' /> 
+          <stop offset='0%' stop-color='#eaf6ee' stop-opacity='1'/>
+          <stop offset='100%' stop-color='#cce3ca' stop-opacity='1' />
    </radialGradient>
   <symbol id='calloutArrowDown' overflow='visible' >
       <path d='M 0,0 L 7,11 L 15,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
@@ -265,10 +265,10 @@ table {
 
 <!-- ============= Legend ============= -->
 <g transform='translate(10,10)'>
-  <rect x='10' y='10' width='260' height='64' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/> 
-  <text x='20' y='30'><tspan>Project</tspan> SPDX by <a xlink:href='http://www.dbschema.com' text-decoration='underline'>DbSchema</a></text> 
-  <text x='20' y='44'><tspan>Layout</tspan> public</text> 
-  <text x='20' y='58' style='fill:#777'><tspan>Column comments as mouse-over tooltips.</tspan></text> 
+  <rect x='10' y='10' width='260' height='64' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/>
+  <text x='20' y='30'><tspan>Project</tspan> SPDX by <a xlink:href='http://www.dbschema.com' text-decoration='underline'>DbSchema</a></text>
+  <text x='20' y='44'><tspan>Layout</tspan> public</text>
+  <text x='20' y='58' style='fill:#777'><tspan>Column comments as mouse-over tooltips.</tspan></text>
 </g>
 
 <g transform='translate(0,110)'>
@@ -626,8 +626,8 @@ creators ref creator_types ( creator_type_id )' style='fill:#cfc391;'>creator_ty
   <use id='nn' x='47' y='702' xlink:href='#nn'/><a xlink:href='#document_namespaces.document_namespace_id'><use id='pk' x='47' y='701' xlink:href='#pk'/><title>Pk document_namespaces_pkey ( document_namespace_id ) </title></a>
 <a xlink:href='#document_namespaces.document_namespace_id'><text id='public.document_namespaces.document_namespace_id' x='63' y='712' onmouseover="hghl(['documents_documents_document_namespace_id_fkey','external_refs_external_refs_document_namespace_id_fkey','identifiers_identifiers_document_namespace_id_fkey'])" onmouseout="uhghl(['documents_documents_document_namespace_id_fkey','external_refs_external_refs_document_namespace_id_fkey','identifiers_identifiers_document_namespace_id_fkey'])">document_namespace_id</text><title>document_namespace_id
 * serial</title></a>
-<a xlink:href='#document_namespaces.document_namespace_id'><use id='ref' x='198' y='701' xlink:href='#ref'/><title>Referred by documents ( document_namespace_id ) 
-Referred by external_refs ( document_namespace_id ) 
+<a xlink:href='#document_namespaces.document_namespace_id'><use id='ref' x='198' y='701' xlink:href='#ref'/><title>Referred by documents ( document_namespace_id )
+Referred by external_refs ( document_namespace_id )
 Referred by identifiers ( document_namespace_id ) </title></a>
   <use id='nn' x='47' y='717' xlink:href='#nn'/><a xlink:href='#document_namespaces.uri'><use id='unq' x='47' y='716' xlink:href='#unq'/><title>Unq uc_document_namespace_uri ( uri ) </title></a>
 <a xlink:href='#document_namespaces.uri'><text id='public.document_namespaces.uri' x='63' y='727'>uri</text><title>uri
@@ -658,8 +658,8 @@ Referred by identifiers ( document_namespace_id ) </title></a>
   <use id='nn' x='302' y='702' xlink:href='#nn'/><a xlink:href='#identifiers.identifier_id'><use id='pk' x='302' y='701' xlink:href='#pk'/><title>Pk identifiers_pkey ( identifier_id ) </title></a>
 <a xlink:href='#identifiers.identifier_id'><text id='public.identifiers.identifier_id' x='318' y='712' onmouseover="hghl(['annotations_annotations_identifier_id_fkey','relationships_relationships_left_identifier_id_fkey','relationships_relationships_right_identifier_id_fkey'])" onmouseout="uhghl(['annotations_annotations_identifier_id_fkey','relationships_relationships_left_identifier_id_fkey','relationships_relationships_right_identifier_id_fkey'])">identifier_id</text><title>identifier_id
 * serial</title></a>
-<a xlink:href='#identifiers.identifier_id'><use id='ref' x='453' y='701' xlink:href='#ref'/><title>Referred by annotations ( identifier_id ) 
-Referred by relationships ( left_identifier_id -&gt; identifier_id ) 
+<a xlink:href='#identifiers.identifier_id'><use id='ref' x='453' y='701' xlink:href='#ref'/><title>Referred by annotations ( identifier_id )
+Referred by relationships ( left_identifier_id -&gt; identifier_id )
 Referred by relationships ( right_identifier_id -&gt; identifier_id ) </title></a>
   <use id='nn' x='302' y='717' xlink:href='#nn'/><a xlink:href='#identifiers.document_namespace_id'><use id='unq' x='302' y='716' xlink:href='#unq'/><title>Unq uc_identifier_document_namespace_id ( document_namespace_id, id_string ) Unq uc_identifier_namespace_document_id ( document_namespace_id, document_id ) Unq uc_identifier_namespace_package_file_id ( document_namespace_id, package_file_id ) Unq uc_identifier_namespace_package_id ( document_namespace_id, package_id ) </title></a>
 <a xlink:href='#identifiers.document_namespace_id'><text id='public.identifiers.document_namespace_id' x='318' y='727' onmouseover="hghl(['identifiers_identifiers_document_namespace_id_fkey'])" onmouseout="uhghl(['identifiers_identifiers_document_namespace_id_fkey'])">document_namespace_id</text><title>document_namespace_id
@@ -691,9 +691,9 @@ integer</title></a>
   <use id='nn' x='287' y='72' xlink:href='#nn'/><a xlink:href='#documents.document_id'><use id='pk' x='287' y='71' xlink:href='#pk'/><title>Pk documents_pkey ( document_id ) </title></a>
 <a xlink:href='#documents.document_id'><text id='public.documents.document_id' x='303' y='82' onmouseover="hghl(['annotations_annotations_document_id_fkey','documents_creators_documents_creators_document_id_fkey','external_refs_external_refs_document_id_fkey','identifiers_identifiers_document_id_fkey'])" onmouseout="uhghl(['annotations_annotations_document_id_fkey','documents_creators_documents_creators_document_id_fkey','external_refs_external_refs_document_id_fkey','identifiers_identifiers_document_id_fkey'])">document_id</text><title>document_id
 * serial</title></a>
-<a xlink:href='#documents.document_id'><use id='ref' x='438' y='71' xlink:href='#ref'/><title>Referred by annotations ( document_id ) 
-Referred by documents_creators ( document_id ) 
-Referred by external_refs ( document_id ) 
+<a xlink:href='#documents.document_id'><use id='ref' x='438' y='71' xlink:href='#ref'/><title>Referred by annotations ( document_id )
+Referred by documents_creators ( document_id )
+Referred by external_refs ( document_id )
 Referred by identifiers ( document_id ) </title></a>
   <use id='nn' x='287' y='87' xlink:href='#nn'/><a xlink:href='#documents.document_namespace_id'><use id='unq' x='287' y='86' xlink:href='#unq'/><title>Unq uc_document_document_namespace_id ( document_namespace_id ) </title></a>
 <a xlink:href='#documents.document_namespace_id'><text id='public.documents.document_namespace_id' x='303' y='97' onmouseover="hghl(['documents_documents_document_namespace_id_fkey'])" onmouseout="uhghl(['documents_documents_document_namespace_id_fkey'])">document_namespace_id</text><title>document_namespace_id
@@ -738,7 +738,7 @@ Referred by identifiers ( document_id ) </title></a>
   <use id='nn' x='47' y='117' xlink:href='#nn'/><a xlink:href='#external_refs.id_string'><use id='unq' x='47' y='116' xlink:href='#unq'/><title>Unq uc_external_ref_document_id_string ( document_id, id_string ) </title></a>
 <a xlink:href='#external_refs.id_string'><text id='public.external_refs.id_string' x='63' y='127'>id_string</text><title>id_string
 * varchar(255)</title></a>
-  <use id='nn' x='47' y='132' xlink:href='#nn'/><a xlink:href='#external_refs.sha1'><text id='public.external_refs.sha1' x='63' y='142'>sha1</text><title>sha1
+  <use id='nn' x='47' y='132' xlink:href='#nn'/><a xlink:href='#external_refs.sha256'><text id='public.external_refs.sha256' x='63' y='142'>sha256</text><title>sha256
 * varchar(40)</title></a>
 
 <!-- ============= Table 'annotations' ============= -->
@@ -793,9 +793,9 @@ timestamptz</title></a>
   <use id='nn' x='872' y='147' xlink:href='#nn'/><a xlink:href='#packages.package_id'><use id='pk' x='872' y='146' xlink:href='#pk'/><title>Pk packages_pkey ( package_id ) </title></a>
 <a xlink:href='#packages.package_id'><text id='public.packages.package_id' x='888' y='157' onmouseover="hghl(['documents_documents_package_id_fkey','packages_files_fk_package_files_packages','identifiers_identifiers_package_id_fkey','packages_scans_packages_scans_package_id_fkey'])" onmouseout="uhghl(['documents_documents_package_id_fkey','packages_files_fk_package_files_packages','identifiers_identifiers_package_id_fkey','packages_scans_packages_scans_package_id_fkey'])">package_id</text><title>package_id
 * serial</title></a>
-<a xlink:href='#packages.package_id'><use id='ref' x='1023' y='146' xlink:href='#ref'/><title>Referred by documents ( package_id ) 
-Referred by packages_files ( package_id ) 
-Referred by identifiers ( package_id ) 
+<a xlink:href='#packages.package_id'><use id='ref' x='1023' y='146' xlink:href='#ref'/><title>Referred by documents ( package_id )
+Referred by packages_files ( package_id )
+Referred by identifiers ( package_id )
 Referred by packages_scans ( package_id ) </title></a>
   <use id='nn' x='872' y='162' xlink:href='#nn'/><a xlink:href='#packages.name'><text id='public.packages.name' x='888' y='172'>name</text><title>name
 * varchar(255)</title></a>
@@ -817,8 +817,8 @@ text</title></a>
   <a xlink:href='#packages.ver_code_excluded_file_id'><text id='public.packages.ver_code_excluded_file_id' x='888' y='277' onmouseover="hghl(['packages_fk_package_packages_files'])" onmouseout="uhghl(['packages_fk_package_packages_files'])">ver_code_excluded_file_id</text><title>ver_code_excluded_file_id
 integer</title></a>
 <a xlink:href='#packages.ver_code_excluded_file_id'><use id='fk' x='1023' y='266' xlink:href='#fk'/><title>References packages_files ( ver_code_excluded_file_id -&gt; package_file_id ) </title></a>
-  <a xlink:href='#packages.sha1'><use id='unq' x='872' y='281' xlink:href='#unq'/><title>Unq uc_package_sha1 ( sha1 ) </title></a>
-<a xlink:href='#packages.sha1'><text id='public.packages.sha1' x='888' y='292'>sha1</text><title>sha1
+  <a xlink:href='#packages.sha256'><use id='unq' x='872' y='281' xlink:href='#unq'/><title>Unq uc_package_sha256 ( sha256 ) </title></a>
+<a xlink:href='#packages.sha256'><text id='public.packages.sha256' x='888' y='292'>sha256</text><title>sha256
 varchar(40)</title></a>
   <a xlink:href='#packages.home_page'><text id='public.packages.home_page' x='888' y='307'>home_page</text><title>home_page
 text</title></a>
@@ -854,15 +854,15 @@ varchar(40)</title></a>
   <use id='nn' x='1022' y='822' xlink:href='#nn'/><a xlink:href='#files.file_id'><use id='pk' x='1022' y='821' xlink:href='#pk'/><title>Pk files_pkey ( file_id ) </title></a>
 <a xlink:href='#files.file_id'><text id='public.files.file_id' x='1038' y='832' onmouseover="hghl(['file_contributors_file_contributors_file_id_fkey','files_licenses_files_licenses_file_id_fkey','files_scans_files_scans_file_id_fkey','packages_files_packages_files_file_id_fkey'])" onmouseout="uhghl(['file_contributors_file_contributors_file_id_fkey','files_licenses_files_licenses_file_id_fkey','files_scans_files_scans_file_id_fkey','packages_files_packages_files_file_id_fkey'])">file_id</text><title>file_id
 * serial</title></a>
-<a xlink:href='#files.file_id'><use id='ref' x='1113' y='821' xlink:href='#ref'/><title>Referred by file_contributors ( file_id ) 
-Referred by files_licenses ( file_id ) 
-Referred by files_scans ( file_id ) 
+<a xlink:href='#files.file_id'><use id='ref' x='1113' y='821' xlink:href='#ref'/><title>Referred by file_contributors ( file_id )
+Referred by files_licenses ( file_id )
+Referred by files_scans ( file_id )
 Referred by packages_files ( file_id ) </title></a>
   <use id='nn' x='1022' y='837' xlink:href='#nn'/><a xlink:href='#files.file_type_id'><text id='public.files.file_type_id' x='1038' y='847' onmouseover="hghl(['files_files_file_type_id_fkey'])" onmouseout="uhghl(['files_files_file_type_id_fkey'])">file_type_id</text><title>file_type_id
 * integer</title></a>
 <a xlink:href='#files.file_type_id'><use id='fk' x='1113' y='836' xlink:href='#fk'/><title>References file_types ( file_type_id ) </title></a>
-  <use id='nn' x='1022' y='852' xlink:href='#nn'/><a xlink:href='#files.sha1'><use id='unq' x='1022' y='851' xlink:href='#unq'/><title>Unq uc_file_sha1 ( sha1 ) </title></a>
-<a xlink:href='#files.sha1'><text id='public.files.sha1' x='1038' y='862'>sha1</text><title>sha1
+  <use id='nn' x='1022' y='852' xlink:href='#nn'/><a xlink:href='#files.sha256'><use id='unq' x='1022' y='851' xlink:href='#unq'/><title>Unq uc_file_sha256 ( sha256 ) </title></a>
+<a xlink:href='#files.sha256'><text id='public.files.sha256' x='1038' y='862'>sha256</text><title>sha256
 * varchar(40)</title></a>
   <a xlink:href='#files.copyright_text'><text id='public.files.copyright_text' x='1038' y='877'>copyright_text</text><title>copyright_text
 text</title></a>
@@ -884,7 +884,7 @@ integer</title></a>
   <use id='nn' x='947' y='627' xlink:href='#nn'/><a xlink:href='#packages_files.package_file_id'><use id='pk' x='947' y='626' xlink:href='#pk'/><title>Pk packages_files_pkey ( package_file_id ) </title></a>
 <a xlink:href='#packages_files.package_file_id'><text id='public.packages_files.package_file_id' x='963' y='637' onmouseover="hghl(['packages_fk_package_packages_files','identifiers_identifiers_package_file_id_fkey'])" onmouseout="uhghl(['packages_fk_package_packages_files','identifiers_identifiers_package_file_id_fkey'])">package_file_id</text><title>package_file_id
 * serial</title></a>
-<a xlink:href='#packages_files.package_file_id'><use id='ref' x='1068' y='626' xlink:href='#ref'/><title>Referred by packages ( ver_code_excluded_file_id -&gt; package_file_id ) 
+<a xlink:href='#packages_files.package_file_id'><use id='ref' x='1068' y='626' xlink:href='#ref'/><title>Referred by packages ( ver_code_excluded_file_id -&gt; package_file_id )
 Referred by identifiers ( package_file_id ) </title></a>
   <use id='nn' x='947' y='642' xlink:href='#nn'/><a xlink:href='#packages_files.package_id'><use id='unq' x='947' y='641' xlink:href='#unq'/><title>Unq uc_package_id_file_name ( package_id, file_name ) </title></a>
 <a xlink:href='#packages_files.package_id'><text id='public.packages_files.package_id' x='963' y='652' onmouseover="hghl(['packages_files_fk_package_files_packages'])" onmouseout="uhghl(['packages_files_fk_package_files_packages'])">package_id</text><title>package_id
@@ -933,10 +933,10 @@ integer</title></a>
   <use id='nn' x='1097' y='87' xlink:href='#nn'/><a xlink:href='#licenses.license_id'><use id='pk' x='1097' y='86' xlink:href='#pk'/><title>Pk licenses_pkey ( license_id ) </title></a>
 <a xlink:href='#licenses.license_id'><text id='public.licenses.license_id' x='1113' y='97' onmouseover="hghl(['documents_documents_data_license_id_fkey','files_licenses_files_licenses_license_id_fkey','packages_packages_concluded_license_id_fkey','packages_packages_declared_license_id_fkey','packages_files_packages_files_concluded_license_id_fkey'])" onmouseout="uhghl(['documents_documents_data_license_id_fkey','files_licenses_files_licenses_license_id_fkey','packages_packages_concluded_license_id_fkey','packages_packages_declared_license_id_fkey','packages_files_packages_files_concluded_license_id_fkey'])">license_id</text><title>license_id
 * serial</title></a>
-<a xlink:href='#licenses.license_id'><use id='ref' x='1203' y='86' xlink:href='#ref'/><title>Referred by documents ( data_license_id -&gt; license_id ) 
-Referred by files_licenses ( license_id ) 
-Referred by packages ( concluded_license_id -&gt; license_id ) 
-Referred by packages ( declared_license_id -&gt; license_id ) 
+<a xlink:href='#licenses.license_id'><use id='ref' x='1203' y='86' xlink:href='#ref'/><title>Referred by documents ( data_license_id -&gt; license_id )
+Referred by files_licenses ( license_id )
+Referred by packages ( concluded_license_id -&gt; license_id )
+Referred by packages ( declared_license_id -&gt; license_id )
 Referred by packages_files ( concluded_license_id -&gt; license_id ) </title></a>
   <a xlink:href='#licenses.name'><text id='public.licenses.name' x='1113' y='112'>name</text><title>name
 varchar(255)</title></a>
@@ -997,7 +997,7 @@ varchar(255)</title></a>
   <use id='nn' x='1352' y='627' xlink:href='#nn'/><a xlink:href='#scanners.scanner_id'><use id='pk' x='1352' y='626' xlink:href='#pk'/><title>Pk scanners_pkey ( scanner_id ) </title></a>
 <a xlink:href='#scanners.scanner_id'><text id='public.scanners.scanner_id' x='1368' y='637' onmouseover="hghl(['files_scans_files_scans_scanner_id_fkey','packages_scans_packages_scans_scanner_id_fkey'])" onmouseout="uhghl(['files_scans_files_scans_scanner_id_fkey','packages_scans_packages_scans_scanner_id_fkey'])">scanner_id</text><title>scanner_id
 * serial</title></a>
-<a xlink:href='#scanners.scanner_id'><use id='ref' x='1428' y='626' xlink:href='#ref'/><title>Referred by files_scans ( scanner_id ) 
+<a xlink:href='#scanners.scanner_id'><use id='ref' x='1428' y='626' xlink:href='#ref'/><title>Referred by files_scans ( scanner_id )
 Referred by packages_scans ( scanner_id ) </title></a>
   <use id='nn' x='1352' y='642' xlink:href='#nn'/><a xlink:href='#scanners.name'><use id='unq' x='1352' y='641' xlink:href='#unq'/><title>Unq uc_scanner_name ( name ) </title></a>
 <a xlink:href='#scanners.name'><text id='public.scanners.name' x='1368' y='652'>name</text><title>name
@@ -1049,9 +1049,9 @@ Referred by packages_scans ( scanner_id ) </title></a>
   <use id='nn' x='572' y='342' xlink:href='#nn'/><a xlink:href='#creators.creator_id'><use id='pk' x='572' y='341' xlink:href='#pk'/><title>Pk creators_pkey ( creator_id ) </title></a>
 <a xlink:href='#creators.creator_id'><text id='public.creators.creator_id' x='588' y='352' onmouseover="hghl(['annotations_annotations_creator_id_fkey','documents_creators_documents_creators_creator_id_fkey','packages_packages_originator_id_fkey','packages_packages_supplier_id_fkey'])" onmouseout="uhghl(['annotations_annotations_creator_id_fkey','documents_creators_documents_creators_creator_id_fkey','packages_packages_originator_id_fkey','packages_packages_supplier_id_fkey'])">creator_id</text><title>creator_id
 * serial</title></a>
-<a xlink:href='#creators.creator_id'><use id='ref' x='663' y='341' xlink:href='#ref'/><title>Referred by annotations ( creator_id ) 
-Referred by documents_creators ( creator_id ) 
-Referred by packages ( originator_id -&gt; creator_id ) 
+<a xlink:href='#creators.creator_id'><use id='ref' x='663' y='341' xlink:href='#ref'/><title>Referred by annotations ( creator_id )
+Referred by documents_creators ( creator_id )
+Referred by packages ( originator_id -&gt; creator_id )
 Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
   <use id='nn' x='572' y='357' xlink:href='#nn'/><a xlink:href='#creators.creator_type_id'><text id='public.creators.creator_type_id' x='588' y='367' onmouseover="hghl(['creators_creators_creator_type_id_fkey'])" onmouseout="uhghl(['creators_creators_creator_type_id_fkey'])">creator_type_id</text><title>creator_type_id
 * integer</title></a>
@@ -1486,7 +1486,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>*</td>
-		<td><a name='external_refs.sha1'>sha1</a></td>
+		<td><a name='external_refs.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1682,7 +1682,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td><a name='packages.sha1'>sha1</a></td>
+		<td><a name='packages.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1755,8 +1755,8 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 		<td> ON verification&#95;code&#44; dosocs2&#95;dir&#95;code</td>
 		<td>  </td>
 	</tr>
-	<tr>		<td>U</td><td>uc&#95;package&#95;sha1</td>
-		<td> ON sha1</td>
+	<tr>		<td>U</td><td>uc&#95;package&#95;sha256</td>
+		<td> ON sha256</td>
 		<td>  </td>
 	</tr>
 <tr><th colspan='4'><b>Foreign Keys</b></th></tr>
@@ -1787,7 +1787,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 <tr><th colspan='4'><b>Constraints</b></th></tr>
 	<tr>
-		<td>&nbsp;</td><td> uc_sha1_ds2_dir_code_exactly_one </td><td> &#40;&#40;&#40;sha1 IS NOT NULL&#41;&#41;&#58;&#58;integer &#43; &#40;&#40;dosocs2&#95;dir&#95;code IS NOT NULL&#41;&#41;&#58;&#58;integer&#41; &#61; 1 </td><td> </td>
+		<td>&nbsp;</td><td> uc_sha256_ds2_dir_code_exactly_one </td><td> &#40;&#40;&#40;sha256 IS NOT NULL&#41;&#41;&#58;&#58;integer &#43; &#40;&#40;dosocs2&#95;dir&#95;code IS NOT NULL&#41;&#41;&#58;&#58;integer&#41; &#61; 1 </td><td> </td>
 	</tr>
 </tbody>
 </table>
@@ -1812,7 +1812,7 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 	</tr>
 	<tr>
 		<td>*</td>
-		<td><a name='files.sha1'>sha1</a></td>
+		<td><a name='files.sha256'>sha256</a></td>
 		<td> varchar&#40; 40 &#41;   </td>
 		<td>  </td>
 	</tr>
@@ -1845,8 +1845,8 @@ Referred by packages ( supplier_id -&gt; creator_id ) </title></a>
 		<td> ON file&#95;id</td>
 		<td>  </td>
 	</tr>
-	<tr>		<td>U</td><td>uc&#95;file&#95;sha1</td>
-		<td> ON sha1</td>
+	<tr>		<td>U</td><td>uc&#95;file&#95;sha256</td>
+		<td> ON sha256</td>
 		<td>  </td>
 	</tr>
 <tr><th colspan='4'><b>Foreign Keys</b></th></tr>
