@@ -97,5 +97,5 @@ class Config:
             pass
 
     def dump_to_file(self, fileobj):
-        for key, val in sorted(self.config.iteritems()):
+        for key, val in sorted(self.config.items()):
             fileobj.write('{} = {}\n'.format(key, val))
