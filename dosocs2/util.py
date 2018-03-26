@@ -183,7 +183,7 @@ def get_dir_hashes(path, excluded_hashes=None):
         and hashes.get(abspath) not in excluded_hashes
         )
     rel_listing_hashes = (
-        hashlib.sha256(relpath).hexdigest()
+        hashlib.sha256(relpath.endoce('utf-8')).hexdigest()
         for relpath in sorted(relative_listing)
         )
     return (gen_ver_code(hashes.values(), excluded_hashes),
