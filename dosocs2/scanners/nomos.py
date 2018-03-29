@@ -36,7 +36,7 @@ class Nomos(scannerbase.FileLicenseScanner):
     def _get_licenses(self, file, nomos_output):
         parsed_output = [
             Nomos.Evidence(*item)
-            for item in re.findall(self.search_pattern, nomos_output)
+            for item in re.findall(self.search_pattern, nomos_output.decode('utf-8'))
             ]
         all_evidence = defaultdict(list)
         for evidence_item in parsed_output:
