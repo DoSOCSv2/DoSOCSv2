@@ -1,19 +1,30 @@
-dosocs2 
+dosocs2
 =======
 
-branch | status
+branch | status | vulnerability scanner | status | Python | Status
+--- | --- | --- | --- | --- | ---
+master | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2) | BlackDuck CoPilot | [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master) | Dependencies | [![Updates](https://pyup.io/repos/github/UShan89/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](https://travis-ci.org/DoSOCSv2/DoSOCSv2) | BlackDuck CoPilot | [![Black Duck Security Risk](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/master/badge-risk.svg)](https://copilot.blackducksoftware.com/github/groups/UShan89/locations/DoSOCSv2/public/results/branches/dev) | Python3 | [![Python 3](https://pyup.io/repos/github/UShan89/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+
+python | status
 --- | ---
-master | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=master)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
-dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](https://travis-ci.org/DoSOCSv2/DoSOCSv2)
+Dependencies | [![Updates](https://pyup.io/repos/github/UShan89/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+Python3 | [![Python 3](https://pyup.io/repos/github/UShan89/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/UShan89/DoSOCSv2/)
+
 
 dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
 scan source code distributions to produce SPDX information, store that
 information in a relational database, and extract it in a plain-text format
 on request.
 
-dosocs2 enables easy creation of a "bill of materials" for any software package,
-and can even be used in the creation and continuous maintenance of an inventory
-of all open-source software used in an organization.
+The discovery and presentation of software package license information is a complex
+problem facing organizations that rely on open source software within their 
+innovation streams. dosocs2 enables creation of an SPDX document for any 
+software package to represent associated license information. In addition, dosocs2 
+can be used in the creation and continuous maintenance of an inventory of all 
+open-source software used in an organization. The primary audience for dosocs2 is open source
+software teams seeking to advance the representation and maintenance of open source 
+software package license information. 
 
 [SPDX](http://www.spdx.org) is a standard format for communicating information
 about the contents of a software package, including license and copyright
@@ -28,7 +39,7 @@ changes until a 1.x.x release!
   packages per document.)
 * Files in a document can only exist within a package. (SPDX 2.0 allows files
   to exist outside of a package.)
-* Checksums are always assumed to be SHA-1. (SPDX 2.0 permits SHA-1, SHA-256,
+* Checksums are always assumed to be SHA-256. (SPDX 2.0 permits SHA-1, SHA-256,
   and MD5)
 * A file may be an artifact of only one project.
 * License expression syntax is not parsed; license expressions are interpreted as license
@@ -182,6 +193,10 @@ Use `dosocs2 --help` to get the full help text. The `doc` directory
 here also provides more detailed information about how `dosocs2` works
 and how to use it.
 
+Potential Organizational Use of dosocs2
+---------------------------------------
+
+![alt text](https://cloud.githubusercontent.com/assets/656208/20320341/30b9468c-ab37-11e6-8e3f-c63543b85453.png)
 
 History
 -------
