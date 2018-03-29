@@ -30,6 +30,7 @@ import uuid
 import zipfile
 
 import magic
+magic = magic.Magic(magic_file="path_to_magic_file")
 
 
 def bool_from_str(s):
@@ -43,23 +44,23 @@ def bool_from_str(s):
 
 def is_source(magic_string):
     return (
-        ' source' in magic_string and ' text' in magic_string or
-        ' script' in magic_string and ' text' in magic_string or
-        ' program' in magic_string and ' text' in magic_string or
-        ' shell script' in magic_string or
-        ' text executable' in magic_string or
-        'HTML' in magic_string and 'text' in magic_string or
-        'XML' in magic_string and 'text' in magic_string
+        b' source' in magic_string and b' text' in magic_string or
+        b' script' in magic_string and b' text' in magic_string or
+        b' program' in magic_string and b' text' in magic_string or
+        b' shell script' in magic_string or
+        b' text executable' in magic_string or
+        b'HTML' in magic_string and b'text' in magic_string or
+        b'XML' in magic_string and b'text' in magic_string
         )
 
 
 def is_binary(magic_string):
     return (
-        ' executable' in magic_string or
-        ' relocatable' in magic_string or
-        ' shared object' in magic_string or
-        ' dynamically linked' in magic_string or
-        ' ar archive' in magic_string
+        b' executable' in magic_string or
+        b' relocatable' in magic_string or
+        b' shared object' in magic_string or
+        b' dynamically linked' in magic_string or
+        b' ar archive' in magic_string
         )
 
 
@@ -70,7 +71,7 @@ def spdx_filetype(filename):
         return 'SOURCE'
     if is_binary(magic_string):
         return 'BINARY'
-    if 'archive' in magic_string:
+    if b'archive' in magic_string:
         return 'ARCHIVE'
     return 'OTHER'
 
@@ -183,7 +184,7 @@ def get_dir_hashes(path, excluded_hashes=None):
         and hashes.get(abspath) not in excluded_hashes
         )
     rel_listing_hashes = (
-        hashlib.sha256(relpath).hexdigest()
+        hashlib.sha256((relpath).encode('utf-8')).hexdigest()
         for relpath in sorted(relative_listing)
         )
     return (gen_ver_code(hashes.values(), excluded_hashes),
