@@ -9,3 +9,5 @@ deb_dist/
 *.egg-info/
 *.out
 .cache/
+.idea/
+.idea/workspace.xml

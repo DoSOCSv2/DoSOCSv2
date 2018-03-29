@@ -274,8 +274,8 @@ class FileLicenseScanner(Scanner):
 
         Return the new or existing license object in any case.
         '''
-        transtable = string.maketrans('()[]<>', '------')
-        short_name = string.translate(short_name, transtable)
+        transtable = str.maketrans('()[]<>', '------')
+        short_name = str.translate(short_name, transtable)
         existing_license = FileLicenseScanner.lookup_license(conn, short_name)
         if existing_license is not None:
             return existing_license
@@ -311,7 +311,7 @@ class FileLicenseScanner(Scanner):
 
     def store_results(self, processed_files):
         licenses_to_add = []
-        for (file, licenses_extracted) in processed_files.iteritems():
+        for (file, licenses_extracted) in processed_files.items():
             licenses = []
             for license_name in licenses_extracted:
                 license_kwargs = {
