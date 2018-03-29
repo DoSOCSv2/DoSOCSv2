@@ -30,6 +30,7 @@ import uuid
 import zipfile
 
 import magic
+magic = magic.Magic(magic_file="path_to_magic_file")
 
 
 def bool_from_str(s):
