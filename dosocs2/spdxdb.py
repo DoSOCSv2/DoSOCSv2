@@ -135,7 +135,7 @@ def register_package(conn, package_root, name=None, version=None, comment=None,
     package['package_id'] = insert(conn, db.packages, package)
     # Create packages_files rows
     row_params = []
-    for (file_path, file_sha256) in hashes.iteritems():
+    for (file_path, file_sha256) in hashes.items():
         fileobj = register_file(conn, file_path, known_sha256=file_sha256)
         package_file_params = {
             'package_id': package['package_id'],
