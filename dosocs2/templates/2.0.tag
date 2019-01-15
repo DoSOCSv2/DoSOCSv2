@@ -159,7 +159,7 @@ Relationship: {{ relationship.left_id_string }} {{ relationship.type }} {{ relat
 
 LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
-ExtractedText: <text>{{ license.extracted_text }}</text>
+ExtractedText: {{ license.extracted_text }}
 LicenseCrossReference: {{ license.cross_reference }}
 LicenseComment: {{ license.comment | text }}
 {% endfor %}
