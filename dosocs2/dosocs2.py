@@ -260,7 +260,7 @@ def main(sysargv=None):
         errmsg('all existing data will be deleted!')
         errmsg('type the word "YES" (all uppercase) to commit.')
         if not argv['--no-confirm']:
-            answer = raw_input()
+            answer = input()
             if answer != 'YES':
                 errmsg('canceling operation.')
                 return 1

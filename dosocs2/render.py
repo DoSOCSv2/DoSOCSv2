@@ -23,12 +23,11 @@ import jinja2
 from . import queries
 
 def _filter_text(value):
-    return '<text>' + value + '</text>'
-
+    return value
 
 def _filter_text_default(value, default_value='NOASSERTION'):
     if value:
-        return '<text>' + value + '</text>'
+        return value
     else:
         return default_value
 
