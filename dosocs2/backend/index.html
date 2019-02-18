@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Enter github URL</h1>
+
+<textarea id="URL"></textarea>
+<button id="sub">
+Click to submit!</button>
+
+<script type="application/javascript">
+document.getElementById('sub').onclick = function() {
+const OKURL = document.getElementById('URL').value;
+var OKS = OKURL.split('/');
+var OKL = OKS.length;
+window.location.replace("https://localhost:5555/api/" + OKS[OKL-2] + "/" + OKS[OKL-1]);
+}
+</script>
+
+<p id="demo"></p>
+
+</body>
+</html> 
