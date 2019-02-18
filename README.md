@@ -65,7 +65,7 @@ details.
 Dependencies
 ------------
 
-- Python 2.7.x
+- Python 3.6
 
 Optional:
 - PostgreSQL 8.x or later version (can be on a separate machine)
