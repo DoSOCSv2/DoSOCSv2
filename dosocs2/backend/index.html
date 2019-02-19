@@ -6,14 +6,22 @@
 
 <textarea id="URL"></textarea>
 <button id="sub">
-Click to submit!</button>
+I want to know everything!</button>
+<button id="package">
+Just the package info, please</button>
 
 <script type="application/javascript">
 document.getElementById('sub').onclick = function() {
 const OKURL = document.getElementById('URL').value;
 var OKS = OKURL.split('/');
 var OKL = OKS.length;
-window.location.replace("https://localhost:5555/api/" + OKS[OKL-2] + "/" + OKS[OKL-1]);
+window.location.replace("api/" + OKS[OKL-2] + "/" + OKS[OKL-1]);
+}
+document.getElementById('package').onclick = function() {
+const OKURL = document.getElementById('URL').value;
+var OKS = OKURL.split('/');
+var OKL = OKS.length;
+window.location.replace("api/" + OKS[OKL-2] + "/" + OKS[OKL-1] + "/package");
 }
 </script>
 
