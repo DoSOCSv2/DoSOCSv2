@@ -8,8 +8,8 @@ dev | [![Build Status](https://travis-ci.org/DoSOCSv2/DoSOCSv2.svg?branch=dev)](
 
 python | status
 --- | ---
-Dependencies | [![Updates](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/)
-Python3 | [![Python 3](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/)
+Dependencies | [![Updates](https://pyup.io/repos/github/DoSOCSv2/DoSOCSv2/shield.svg)](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/)
+Python3 | [![Python 3](https://pyup.io/repos/github/DoSOCSv2/DoSOCSv2/python-3-shield.svg)](https://pyup.io/repos/github/Nebrethar/DoSOCSv2/)
 
 
 dosocs2 is a command-line tool for managing SPDX 2.0 documents and data. It can
