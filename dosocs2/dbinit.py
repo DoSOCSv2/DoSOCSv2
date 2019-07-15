@@ -78,7 +78,7 @@ def initialize(engine, schema, dosocs2_version):
     msg('dropping and creating all tables...', end='')
     schema.meta.drop_all(engine)
     schema.meta.create_all(engine)
-    self.session = sessionmaker(bind=engine)()
+    #self.session = sessionmaker(bind=engine)()
     print('ok.')
     with engine.begin() as conn:
         msg('loading fixtures...')
