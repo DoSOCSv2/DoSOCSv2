@@ -106,7 +106,7 @@ FileContributor: {{ contributor.contributor }}
 
 LicenseID: {{ license.id_string }}
 LicenseName: {{ license.name }}
-ExtractedText: <text>{{ license.extracted_text }}</text>
+ExtractedText: {{ license.extracted_text }}
 LicenseCrossReference: {{ license.cross_reference }}
 LicenseComment: {{ license.comment | text }}
 {% endfor %}
@@ -141,7 +141,7 @@ def test_oneshot_with_package_comment(capsys):
             ]
         ret = run_dosocs2(args)
         out, _ = capsys.readouterr()
-        assert 'PackageComment: <text>12345</text>' in out
+        assert 'PackageComment: 12345' in out
 
 
 def test_oneshot_with_package_name(capsys):
@@ -192,7 +192,7 @@ def test_oneshot_with_document_comment(capsys):
             ]
         ret = run_dosocs2(args)
         out, _ = capsys.readouterr()
-        assert 'DocumentComment: <text>12345</text>' in out
+        assert 'DocumentComment: 12345' in out
 
 
 def test_oneshot_with_document_name(capsys):
